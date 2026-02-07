@@ -1,0 +1,35 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Data files (too large for git)
+data/raw/
+data/processed/
+protac_data/
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.ckpt
+*.zip
+*.sdf
+*.mol2
+*.npy
+
+# Model checkpoints
+checkpoints/
+logs/
+wandb/
+
+# Secrets
+.env
+*.log
+.DS_Store
+*.swp
+*.swo
+
+notebooks/.ipynb_checkpoints/
