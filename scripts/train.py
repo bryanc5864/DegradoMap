@@ -228,9 +228,13 @@ def run_training(args):
     struct_results = process_data()
 
     # Step 2: Build model
-    logger.info("Step 2: Building DegradoMap model...")
+    # ESM-2 embeddings: 1280 + 4 structural = 1284 dim
+    # Handcrafted features: 28 dim
+    node_input_dim = 1284 if getattr(args, 'use_esm', False) else 28
+    logger.info(f"Step 2: Building DegradoMap model (node_input_dim={node_input_dim})...")
+
     model = DegradoMap(
-        node_input_dim=28,
+        node_input_dim=node_input_dim,
         sug_hidden_dim=128,
         sug_output_dim=64,
         sug_num_layers=4,
@@ -250,7 +254,8 @@ def run_training(args):
     n_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     logger.info(f"Model parameters: {n_params:,} total, {n_trainable:,} trainable")
 
-    trainer = DegradoMapTrainer(model, config={
+    # Trainer config - pos_weight will be set per-split if class_weights enabled
+    trainer_config = {
         "lr": args.lr,
         "weight_decay": 1e-5,
         "max_grad_norm": 1.0,
@@ -259,7 +264,9 @@ def run_training(args):
         "lambda_dmax": 0.3,
         "lambda_esi": 0.2,
         "lambda_ubsite": 0.2,
-    }, device=device)
+        "pos_weight": None,  # Will be computed per-split if --class-weights
+    }
+    trainer = DegradoMapTrainer(model, config=trainer_config, device=device)
 
     all_results = {}
 
@@ -336,9 +343,47 @@ def run_training(args):
                 samples, split_type=split_type,
             )
 
-            train_dataset = DegradationDataset(train_data, structure_dir="data/processed/structures")
-            val_dataset = DegradationDataset(val_data, structure_dir="data/processed/structures")
-            test_dataset = DegradationDataset(test_data, structure_dir="data/processed/structures")
+            # Compute class weights if enabled
+            if getattr(args, 'class_weights', False):
+                n_pos = sum(1 for s in train_data if s['label'] > 0.5)
+                n_neg = len(train_data) - n_pos
+                if n_pos > 0:
+                    pos_weight = n_neg / n_pos
+                    logger.info(f"Class weights enabled: pos_weight = {pos_weight:.3f} (neg={n_neg}, pos={n_pos})")
+                    # Update trainer config and recreate loss function
+                    trainer.config["pos_weight"] = pos_weight
+                    from src.training.losses import DegradoMapLoss
+                    trainer.loss_fn = DegradoMapLoss(
+                        lambda_degrad=trainer.config.get("lambda_degrad", 1.0),
+                        lambda_dc50=trainer.config.get("lambda_dc50", 0.3),
+                        lambda_dmax=trainer.config.get("lambda_dmax", 0.3),
+                        lambda_esi=trainer.config.get("lambda_esi", 0.2),
+                        lambda_ubsite=trainer.config.get("lambda_ubsite", 0.2),
+                        label_smoothing=trainer.config.get("label_smoothing", 0.05),
+                        pos_weight=pos_weight,
+                    )
+                else:
+                    logger.warning("No positive samples in training data, skipping class weights")
+
+            use_esm = getattr(args, 'use_esm', False)
+            train_dataset = DegradationDataset(
+                train_data,
+                structure_dir="data/processed/structures",
+                esm_dir="data/processed/esm_embeddings",
+                use_esm=use_esm,
+            )
+            val_dataset = DegradationDataset(
+                val_data,
+                structure_dir="data/processed/structures",
+                esm_dir="data/processed/esm_embeddings",
+                use_esm=use_esm,
+            )
+            test_dataset = DegradationDataset(
+                test_data,
+                structure_dir="data/processed/structures",
+                esm_dir="data/processed/esm_embeddings",
+                use_esm=use_esm,
+            )
 
             train_loader = DataLoader(train_dataset, batch_size=args.batch_size,
                                        shuffle=True, num_workers=0,
@@ -369,6 +414,10 @@ def run_training(args):
             logger.info(f"  AUROC:    {test_metrics['auroc']:.4f}")
             logger.info(f"  AUPRC:    {test_metrics['auprc']:.4f}")
             logger.info(f"  F1:       {test_metrics['f1']:.4f}")
+            if 'optimal_threshold' in test_metrics:
+                logger.info(f"  Optimal threshold: {test_metrics['optimal_threshold']:.2f}")
+                logger.info(f"  F1 @ optimal:  {test_metrics['f1_at_optimal']:.4f}")
+                logger.info(f"  Acc @ optimal: {test_metrics['accuracy_at_optimal']:.4f}")
 
             all_results[f"phase2_{split_type}"] = {
                 "training_log": phase2_log,
@@ -409,6 +458,10 @@ def main():
                         help="Comma-separated split types to evaluate")
     parser.add_argument("--seed", type=int, default=42,
                         help="Random seed")
+    parser.add_argument("--use-esm", action="store_true",
+                        help="Use ESM-2 embeddings as node features (1284-dim instead of 28-dim)")
+    parser.add_argument("--class-weights", action="store_true",
+                        help="Use inverse class frequency weights for training")
 
     args = parser.parse_args()
 

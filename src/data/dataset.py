@@ -281,12 +281,19 @@ class DegradationDataset(Dataset):
 
     def __init__(self, samples: List[Dict],
                  structure_dir: str = "data/processed/structures",
-                 radius: float = 10.0):
+                 esm_dir: str = "data/processed/esm_embeddings",
+                 radius: float = 10.0,
+                 use_esm: bool = False):
         super().__init__()
 
         self.samples = samples
         self.structure_dir = Path(structure_dir)
+        self.esm_dir = Path(esm_dir)
         self.radius = radius
+        self.use_esm = use_esm
+
+        if use_esm:
+            logger.info(f"Using ESM-2 embeddings from {esm_dir}")
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -297,22 +304,43 @@ class DegradationDataset(Dataset):
         # Load structure
         uniprot_id = sample.get("uniprot_id", "unknown")
         struct_path = self.structure_dir / f"{uniprot_id}.pt"
+        esm_path = self.esm_dir / f"{uniprot_id}_esm.pt"
+
+        # Load ESM embeddings if available and enabled
+        esm_embeddings = None
+        if self.use_esm and esm_path.exists():
+            esm_data = torch.load(str(esm_path), weights_only=False)
+            esm_embeddings = esm_data.get("embeddings", None)
 
         if struct_path.exists():
             processed = torch.load(str(struct_path), weights_only=False)
+
+            # Handle ESM embedding length mismatch
+            n_residues = len(processed["residues"])
+            if esm_embeddings is not None and esm_embeddings.shape[0] != n_residues:
+                # Pad or truncate ESM embeddings to match structure
+                if esm_embeddings.shape[0] < n_residues:
+                    padding = torch.zeros(n_residues - esm_embeddings.shape[0], esm_embeddings.shape[1])
+                    esm_embeddings = torch.cat([esm_embeddings, padding], dim=0)
+                else:
+                    esm_embeddings = esm_embeddings[:n_residues]
+
             graph = protein_to_graph(
                 coords=processed["coords"],
                 residues=processed["residues"],
                 plddt=processed["plddt"],
                 sasa=processed["sasa"],
                 disorder=processed["disorder"],
+                esm_embeddings=esm_embeddings,
                 radius=self.radius,
+                use_esm=self.use_esm,
             )
         else:
             # Create placeholder
             n = 100
+            feat_dim = 1284 if self.use_esm else 28
             graph = Data(
-                x=torch.randn(n, 28),
+                x=torch.randn(n, feat_dim),
                 pos=torch.randn(n, 3) * 10,
                 edge_index=torch.zeros(2, 0, dtype=torch.long),
                 edge_vec=torch.zeros(0, 3),

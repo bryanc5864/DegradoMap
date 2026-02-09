@@ -106,7 +106,9 @@ def protein_to_graph(coords: torch.Tensor, residues: List[str],
                      plddt: Optional[torch.Tensor] = None,
                      sasa: Optional[torch.Tensor] = None,
                      disorder: Optional[torch.Tensor] = None,
-                     radius: float = 10.0) -> Data:
+                     esm_embeddings: Optional[torch.Tensor] = None,
+                     radius: float = 10.0,
+                     use_esm: bool = False) -> Data:
     """
     Convert protein structure to a graph for the E(3)-equivariant GNN.
 
@@ -116,7 +118,9 @@ def protein_to_graph(coords: torch.Tensor, residues: List[str],
         plddt: [N] pLDDT scores per residue
         sasa: [N] SASA values per residue
         disorder: [N] disorder scores per residue
+        esm_embeddings: [N, 1280] ESM-2 per-residue embeddings (optional)
         radius: Radius for edge construction (Å)
+        use_esm: Whether to use ESM embeddings (replaces handcrafted features)
 
     Returns:
         PyG Data object with node features, edge indices, and coordinates
@@ -146,8 +150,17 @@ def protein_to_graph(coords: torch.Tensor, residues: List[str],
         node_feats.append(feat)
         lysine_mask.append(float(is_lys))
 
-    x = torch.stack(node_feats)  # [N, 28]
+    x_handcrafted = torch.stack(node_feats)  # [N, 28]
     lysine_mask = torch.tensor(lysine_mask, dtype=torch.float)  # [N]
+
+    # Use ESM embeddings if provided and enabled
+    if use_esm and esm_embeddings is not None:
+        # ESM embeddings: [N, 1280]
+        # Concatenate with key structural features (pLDDT, SASA, lysine, disorder)
+        structural_feats = x_handcrafted[:, 24:28]  # Last 4 features: pLDDT, SASA, is_lys, disorder
+        x = torch.cat([esm_embeddings, structural_feats], dim=-1)  # [N, 1284]
+    else:
+        x = x_handcrafted  # [N, 28]
 
     # Edge construction (radius graph) — pure PyTorch, no torch-cluster needed
     dist_matrix = torch.cdist(coords.unsqueeze(0), coords.unsqueeze(0)).squeeze(0)  # [N, N]

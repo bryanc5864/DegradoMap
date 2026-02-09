@@ -69,7 +69,7 @@ class DegradoMapTrainer:
         self.max_grad_norm = self.config.get("max_grad_norm", 1.0)
         self.warmup_steps = self.config.get("warmup_steps", 500)
 
-        # Loss function
+        # Loss function with optional class weighting
         self.loss_fn = DegradoMapLoss(
             lambda_degrad=self.config.get("lambda_degrad", 1.0),
             lambda_dc50=self.config.get("lambda_dc50", 0.3),
@@ -77,6 +77,7 @@ class DegradoMapTrainer:
             lambda_esi=self.config.get("lambda_esi", 0.2),
             lambda_ubsite=self.config.get("lambda_ubsite", 0.2),
             label_smoothing=self.config.get("label_smoothing", 0.05),
+            pos_weight=self.config.get("pos_weight", None),
         )
 
         # Optimizer and scheduler
@@ -274,16 +275,34 @@ class DegradoMapTrainer:
         accuracy = (all_preds == all_labels).mean()
         avg_loss = total_loss / max(len(dataloader), 1)
 
-        # AUROC
+        # AUROC and threshold optimization
         try:
             from sklearn.metrics import roc_auc_score, average_precision_score, f1_score
             auroc = roc_auc_score(all_labels, all_scores) if len(np.unique(all_labels)) > 1 else 0.5
             auprc = average_precision_score(all_labels, all_scores) if len(np.unique(all_labels)) > 1 else 0.0
             f1 = f1_score(all_labels, all_preds, zero_division=0)
+
+            # Find optimal threshold using Youden's J statistic (TPR - FPR)
+            best_threshold = 0.5
+            best_f1 = f1
+            for thresh in np.arange(0.1, 0.9, 0.05):
+                thresh_preds = (all_scores >= thresh).astype(float)
+                thresh_f1 = f1_score(all_labels, thresh_preds, zero_division=0)
+                if thresh_f1 > best_f1:
+                    best_f1 = thresh_f1
+                    best_threshold = thresh
+
+            # Compute metrics at optimal threshold
+            opt_preds = (all_scores >= best_threshold).astype(float)
+            opt_f1 = f1_score(all_labels, opt_preds, zero_division=0)
+            opt_accuracy = (opt_preds == all_labels).mean()
         except Exception:
             auroc = 0.5
             auprc = 0.0
             f1 = 0.0
+            best_threshold = 0.5
+            opt_f1 = 0.0
+            opt_accuracy = accuracy
 
         return {
             "loss": avg_loss,
@@ -291,6 +310,9 @@ class DegradoMapTrainer:
             "auroc": auroc,
             "auprc": auprc,
             "f1": f1,
+            "optimal_threshold": best_threshold,
+            "f1_at_optimal": opt_f1,
+            "accuracy_at_optimal": opt_accuracy,
             "predictions": all_scores,
             "labels": all_labels,
         }

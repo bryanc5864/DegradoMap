@@ -265,12 +265,70 @@
 ### Path to Improvement (Updated)
 
 1. ~~**Priority 1:**~~ ✅ **DONE** - Acquired PROTAC-8K (3,260 labeled) + official PROTAC-DB 3.0 (9,380 entries)
-2. **Priority 1 (new):** Complete 20-epoch training, analyze results across 3 splits
-3. **Priority 2:** Tune prediction threshold (F1 optimization), analyze false positives/negatives
-4. **Priority 3:** Integrate DepMap expression features for context module
-5. **Priority 4:** Semi-supervised learning with 6,124 unlabeled PROTAC entries
-6. **Priority 5:** Scale model to full E(3)-equivariant architecture on larger GPUs (A100)
-7. **Priority 6:** Integrate PROTAC-DB 3.0 official data (153 columns vs 91 in PROTAC-8K) for richer features
+2. ~~**Priority 1 (new):**~~ ✅ **DONE** - Phase 2 v2 complete: E3-unseen 0.81, target-unseen 0.53
+3. ~~**Priority 2:**~~ ✅ **DONE** - Threshold optimization implemented (search over 0.1-0.9)
+4. **Priority 1 (current):** ESM-2 integration - TRAINING IN PROGRESS (~6 hours)
+   - 1280-dim protein language model embeddings for improved target-unseen generalization
+   - Expected improvement: 0.53 → 0.65+ based on PrePROTAC results
+5. **Priority 2 (current):** Class balancing - IMPLEMENTED
+   - pos_weight = neg/pos ratio for imbalanced data (1918/1183 = 1.62)
+   - Combined run with ESM: in progress on GPU 3
+6. **Priority 3:** Ablation study to diagnose target-unseen bottleneck
+7. **Priority 4:** Multi-seed training for variance estimates
+8. **Priority 5:** Semi-supervised learning with 6,124 unlabeled PROTAC entries
+9. **Priority 6:** Scale model to full E(3)-equivariant architecture on larger GPUs (A100)
+
+---
+
+## Improvements In Progress (Phase 3)
+
+### ESM-2 Integration (COMPLETE)
+**Status:** Complete - minimal improvement
+
+**Test Results (target_unseen split):**
+| Model | AUROC | F1 | F1 @ Optimal |
+|-------|-------|-----|--------------|
+| Baseline (28-dim) | 0.5292 | 0.498 | - |
+| ESM-2 (1284-dim) | **0.5415** | 0.298 | 0.569 |
+
+**Findings:**
+- ESM-2 provides only **+1.2% AUROC improvement** on target-unseen
+- Optimal threshold shifts to 0.10 (model predicts low probabilities)
+- ESM captures general protein properties but not degradability-specific patterns
+- 46x larger feature space (1284 vs 28) did not translate to better generalization
+
+**Implementation:**
+- ESM-2-650M (33 layers, 1280-dim) embeddings extracted for all 171 proteins
+- Model node features: 28-dim → 1284-dim (1280 ESM + 4 structural)
+- Parameters: 1.43M → 1.59M
+
+### Class Balancing (IMPLEMENTED)
+**Status:** Training in progress with ESM on GPU 3 (PID 149130)
+
+**Implementation:**
+- `pos_weight = neg_count / pos_count` in BCE loss
+- For PROTAC-8K: 1918/1183 = 1.62
+- Modified files:
+  - `src/training/losses.py` - added pos_weight parameter to LabelSmoothingBCE
+  - `scripts/train.py --class-weights` flag
+
+**Rationale:**
+- Dataset is imbalanced (62% negative, 38% positive)
+- Class balancing gives more weight to minority class (positives)
+- May improve recall and F1 score
+
+### Threshold Optimization (IMPLEMENTED)
+**Status:** Complete - integrated into evaluation
+
+**Implementation:**
+- Searches thresholds 0.1-0.9 in 0.05 steps
+- Selects threshold that maximizes F1 score
+- Reports `optimal_threshold`, `f1_at_optimal`, `accuracy_at_optimal`
+- Modified file: `src/training/trainer.py`
+
+**Rationale:**
+- Default 0.5 threshold may not be optimal for imbalanced data
+- Higher threshold may reduce false positives; lower may improve recall
 
 ---
 

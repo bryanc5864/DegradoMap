@@ -47,11 +47,13 @@ class FocalLoss(nn.Module):
 
 
 class LabelSmoothingBCE(nn.Module):
-    """Binary cross-entropy with label smoothing."""
+    """Binary cross-entropy with label smoothing and optional class weighting."""
 
-    def __init__(self, smoothing: float = 0.05):
+    def __init__(self, smoothing: float = 0.05, pos_weight: float = None):
         super().__init__()
         self.smoothing = smoothing
+        # pos_weight: weight for positive class (typically neg_count / pos_count)
+        self.pos_weight = pos_weight
 
     def forward(self, logits: torch.Tensor, targets: torch.Tensor,
                 weights: torch.Tensor = None) -> torch.Tensor:
@@ -67,7 +69,14 @@ class LabelSmoothingBCE(nn.Module):
         # Smooth labels
         smoothed = targets * (1 - self.smoothing) + 0.5 * self.smoothing
 
-        loss = F.binary_cross_entropy_with_logits(logits, smoothed, reduction='none')
+        # Apply class weighting via pos_weight parameter
+        pos_weight_tensor = None
+        if self.pos_weight is not None:
+            pos_weight_tensor = torch.tensor([self.pos_weight], device=logits.device)
+
+        loss = F.binary_cross_entropy_with_logits(
+            logits, smoothed, reduction='none', pos_weight=pos_weight_tensor
+        )
 
         if weights is not None:
             loss = loss * weights
@@ -84,7 +93,8 @@ class DegradoMapLoss(nn.Module):
 
     def __init__(self, lambda_degrad: float = 1.0, lambda_dc50: float = 0.3,
                  lambda_dmax: float = 0.3, lambda_esi: float = 0.2,
-                 lambda_ubsite: float = 0.2, label_smoothing: float = 0.05):
+                 lambda_ubsite: float = 0.2, label_smoothing: float = 0.05,
+                 pos_weight: float = None):
         super().__init__()
 
         self.lambda_degrad = lambda_degrad
@@ -93,7 +103,8 @@ class DegradoMapLoss(nn.Module):
         self.lambda_esi = lambda_esi
         self.lambda_ubsite = lambda_ubsite
 
-        self.degrad_loss = LabelSmoothingBCE(smoothing=label_smoothing)
+        # pos_weight for class balancing: neg_count / pos_count
+        self.degrad_loss = LabelSmoothingBCE(smoothing=label_smoothing, pos_weight=pos_weight)
         self.dc50_loss = nn.HuberLoss(delta=1.0)
         self.dmax_loss = nn.HuberLoss(delta=0.1)
         self.esi_loss = nn.BCEWithLogitsLoss()
