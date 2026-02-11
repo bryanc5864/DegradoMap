@@ -279,11 +279,16 @@ class DegradationDataset(Dataset):
     Uses structure features from Module A input and context features from Module C.
     """
 
+    # Class-level cache for Ub sites (loaded once)
+    _ub_sites_cache = None
+
     def __init__(self, samples: List[Dict],
                  structure_dir: str = "data/processed/structures",
                  esm_dir: str = "data/processed/esm_embeddings",
+                 ub_sites_file: str = "data/raw/phosphosite/phosphosite_ubiquitination.csv",
                  radius: float = 10.0,
-                 use_esm: bool = False):
+                 use_esm: bool = False,
+                 use_ub_sites: bool = False):
         super().__init__()
 
         self.samples = samples
@@ -291,9 +296,44 @@ class DegradationDataset(Dataset):
         self.esm_dir = Path(esm_dir)
         self.radius = radius
         self.use_esm = use_esm
+        self.use_ub_sites = use_ub_sites
 
         if use_esm:
             logger.info(f"Using ESM-2 embeddings from {esm_dir}")
+
+        if use_ub_sites:
+            if DegradationDataset._ub_sites_cache is None:
+                DegradationDataset._ub_sites_cache = self._load_ub_sites(ub_sites_file)
+            self.ub_sites = DegradationDataset._ub_sites_cache
+            logger.info(f"Using known Ub sites for {len(self.ub_sites)} proteins")
+        else:
+            self.ub_sites = {}
+
+    def _load_ub_sites(self, filepath: str) -> Dict[str, List[int]]:
+        """Load ubiquitination sites from PhosphoSitePlus."""
+        sites_by_protein = {}
+        try:
+            df = pd.read_csv(filepath)
+            if "ACC_ID" in df.columns and "MOD_RSD" in df.columns:
+                if "ORGANISM" in df.columns:
+                    df = df[df["ORGANISM"].str.lower() == "human"]
+                for _, row in df.iterrows():
+                    uniprot = str(row.get("ACC_ID", "")).strip()
+                    mod_rsd = str(row.get("MOD_RSD", ""))
+                    if not uniprot or uniprot == "nan":
+                        continue
+                    try:
+                        pos_str = mod_rsd.split("-")[0]
+                        if pos_str.startswith("K"):
+                            pos = int(pos_str[1:])
+                            if uniprot not in sites_by_protein:
+                                sites_by_protein[uniprot] = []
+                            sites_by_protein[uniprot].append(pos)
+                    except (ValueError, IndexError):
+                        continue
+        except Exception as e:
+            logger.warning(f"Error loading Ub sites: {e}")
+        return sites_by_protein
 
     def __len__(self) -> int:
         return len(self.samples)
@@ -325,6 +365,10 @@ class DegradationDataset(Dataset):
                 else:
                     esm_embeddings = esm_embeddings[:n_residues]
 
+            # Get known Ub sites for this protein
+            known_ub_positions = self.ub_sites.get(uniprot_id, [])
+            residue_numbers = processed.get("residue_numbers", list(range(1, n_residues + 1)))
+
             graph = protein_to_graph(
                 coords=processed["coords"],
                 residues=processed["residues"],
@@ -334,7 +378,13 @@ class DegradationDataset(Dataset):
                 esm_embeddings=esm_embeddings,
                 radius=self.radius,
                 use_esm=self.use_esm,
+                known_ub_sites=known_ub_positions if self.use_ub_sites else None,
+                residue_numbers=residue_numbers if self.use_ub_sites else None,
             )
+
+            # Add protein-level Ub count as graph attribute
+            if self.use_ub_sites:
+                graph.ub_site_count = torch.tensor([len(known_ub_positions)], dtype=torch.float32)
         else:
             # Create placeholder
             n = 100

@@ -108,7 +108,9 @@ def protein_to_graph(coords: torch.Tensor, residues: List[str],
                      disorder: Optional[torch.Tensor] = None,
                      esm_embeddings: Optional[torch.Tensor] = None,
                      radius: float = 10.0,
-                     use_esm: bool = False) -> Data:
+                     use_esm: bool = False,
+                     known_ub_sites: Optional[List[int]] = None,
+                     residue_numbers: Optional[List[int]] = None) -> Data:
     """
     Convert protein structure to a graph for the E(3)-equivariant GNN.
 
@@ -121,6 +123,8 @@ def protein_to_graph(coords: torch.Tensor, residues: List[str],
         esm_embeddings: [N, 1280] ESM-2 per-residue embeddings (optional)
         radius: Radius for edge construction (Å)
         use_esm: Whether to use ESM embeddings (replaces handcrafted features)
+        known_ub_sites: List of residue positions known to be ubiquitinated (from PhosphoSitePlus)
+        residue_numbers: List of residue numbers corresponding to each position in the structure
 
     Returns:
         PyG Data object with node features, edge indices, and coordinates
@@ -153,12 +157,25 @@ def protein_to_graph(coords: torch.Tensor, residues: List[str],
     x_handcrafted = torch.stack(node_feats)  # [N, 28]
     lysine_mask = torch.tensor(lysine_mask, dtype=torch.float)  # [N]
 
+    # Create known Ub site feature (MAPD insight: E2-accessible Ub sites predict degradability)
+    known_ub_mask = torch.zeros(n_residues, dtype=torch.float)
+    if known_ub_sites is not None and residue_numbers is not None:
+        ub_set = set(known_ub_sites)
+        for i, res_num in enumerate(residue_numbers):
+            if res_num in ub_set and residues[i] == 'K':
+                known_ub_mask[i] = 1.0
+
     # Use ESM embeddings if provided and enabled
     if use_esm and esm_embeddings is not None:
         # ESM embeddings: [N, 1280]
-        # Concatenate with key structural features (pLDDT, SASA, lysine, disorder)
+        # Concatenate with key structural features (pLDDT, SASA, lysine, disorder) + known_ub
         structural_feats = x_handcrafted[:, 24:28]  # Last 4 features: pLDDT, SASA, is_lys, disorder
-        x = torch.cat([esm_embeddings, structural_feats], dim=-1)  # [N, 1284]
+        known_ub_feat = known_ub_mask.unsqueeze(-1)  # [N, 1]
+        x = torch.cat([esm_embeddings, structural_feats, known_ub_feat], dim=-1)  # [N, 1285]
+    elif known_ub_sites is not None:
+        # Add known Ub site as additional feature to handcrafted
+        known_ub_feat = known_ub_mask.unsqueeze(-1)  # [N, 1]
+        x = torch.cat([x_handcrafted, known_ub_feat], dim=-1)  # [N, 29]
     else:
         x = x_handcrafted  # [N, 28]
 
@@ -178,6 +195,7 @@ def protein_to_graph(coords: torch.Tensor, residues: List[str],
         edge_vec=edge_vec,
         edge_len=edge_len,
         lysine_mask=lysine_mask,
+        known_ub_mask=known_ub_mask,
         num_nodes=n_residues,
     )
 

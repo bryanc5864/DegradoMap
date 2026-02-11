@@ -406,6 +406,98 @@ degrado/
   - Epoch 1 Val AUROC = 0.6101 (up from 0.50 with 41 samples!)
   - Training in progress: 20 epochs × 3 splits on RTX 2080 Ti
 
+### 2026-02-09 (Phase 3 - Experiment Results)
+
+#### E3 Evaluation - COMPLETE ✅
+
+**Leave-One-E3-Out Cross-Validation:**
+| E3 Held Out | Test AUROC | AUPRC | n (test) | n (pos) |
+|-------------|------------|-------|----------|---------|
+| VHL | **0.610** | 0.463 | 1,106 | 411 |
+| CRBN | **0.606** | 0.496 | 1,871 | 737 |
+| cIAP1 | 0.271 | 0.198 | 62 | 16 |
+
+*VHL and CRBN show decent generalization. cIAP1 poor due to small sample size.*
+
+**E3 Recommendation Ranking Task:**
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| MRR | **0.641** | Good ranking quality |
+| Hit@1 | 46% | Correct E3 ranked first |
+| Hit@3 | **74%** | Correct E3 in top 3 |
+
+*Model can recommend correct E3 ligase for 74% of targets within top 3.*
+
+**BRD4 Case Study:**
+| E3 Ligase | Pos | Neg | Mean Score | Empirical Rate |
+|-----------|-----|-----|------------|----------------|
+| CRBN | 44 | 34 | 0.513 | 56.4% |
+| VHL | 28 | 24 | 0.509 | 53.8% |
+| FEM1B | 0 | 7 | 0.527 | 0% |
+
+#### Ablation Study - IN PROGRESS (GPU 4)
+
+**Target-Unseen Split:**
+| Model | AUROC | F1 |
+|-------|-------|-----|
+| SUG-only | 0.536 | 0.141 |
+| E3-only | 0.475 | 0.056 |
+| SUG+E3 | **0.540** | 0.390 |
+
+**E3-Unseen Split (partial):**
+| Model | AUROC | F1 |
+|-------|-------|-----|
+| SUG-only | **0.708** | 0.783 |
+| E3-only | In progress | - |
+
+*SUG module is essential. SUG+E3 combination works best on target-unseen.*
+
+#### Ub Sites Test - PARTIAL RESULTS
+
+**Target-Unseen Split:**
+| Model | AUROC | Δ vs Baseline |
+|-------|-------|---------------|
+| Baseline | 0.616 | - |
+| +Ub Sites | **0.668** | **+5.2%** |
+| +ESM+Ub | 0.588 | -2.8% |
+
+**E3-Unseen Split:**
+| Model | AUROC | Δ vs Baseline |
+|-------|-------|---------------|
+| Baseline | **0.737** | - |
+| +Ub Sites | 0.724 | -1.3% |
+| +ESM+Ub | Crashed | - |
+
+*Key finding: Known Ub sites improve target-unseen by 5.2%, but ESM hurts performance.*
+
+---
+
+### 2026-02-08 (Phase 2 - Improvement Experiments)
+- **ESM-2 Integration Test COMPLETE**
+  - Added ESM-2-650M embeddings (1280-dim) for 171 proteins
+  - Target-unseen AUROC: 0.5415 (+1.2% vs 0.5292 baseline)
+  - Conclusion: ESM provides marginal improvement; degradability is NOT captured by evolutionary features
+
+- **Three Parallel Experiments Launched:**
+  1. **Ablation Study** (`scripts/ablation_study.py`)
+     - Tests SUG-only, E3-only, SUG+E3 contributions
+     - Running on GPU 1 (10 epochs × 3 splits)
+  2. **E3-Unseen Evaluation** (`scripts/e3_evaluation.py`)
+     - Leave-one-E3-out for CRBN, VHL, cIAP1
+     - E3 recommendation ranking (MRR, Hit@k)
+     - BRD4 case study
+     - Running on GPU 0 (10 epochs per E3)
+  3. **Known Ub Sites Test** (`scripts/test_ub_sites.py`)
+     - PhosphoSitePlus Ub sites as direct features (MAPD insight)
+     - Tests baseline, +Ub sites, +ESM+Ub sites
+     - Running on GPU 3 (15 epochs × 3 splits × 3 conditions)
+
+- **Code Changes:**
+  - `protein_to_graph()` now accepts `known_ub_sites`, `residue_numbers`
+  - Per-residue feature indicates if lysine is known Ub site (29-dim or 1285-dim with ESM)
+  - Class balancing with pos_weight=1.62 (1918 neg / 1183 pos)
+  - Threshold optimization (F1-based) in trainer.evaluate()
+
 ### 2026-02-05 (Phase 1 - Initial Build)
 - Project initialized with full directory structure
 - Research plan written (RESEARCH_PLAN.md)

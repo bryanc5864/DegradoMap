@@ -1,0 +1,68 @@
+{
+  "per_e3": {
+    "VHL": {
+      "auroc": 0.6096868490608973,
+      "auprc": 0.4627487391540475,
+      "f1": 0.0048543689320388345,
+      "n_test": 1106,
+      "n_pos": 411,
+      "best_val_auroc": 0.6624183006535947
+    },
+    "CRBN": {
+      "auroc": 0.6055586665039402,
+      "auprc": 0.49610538881596367,
+      "f1": 0.0,
+      "n_test": 1871,
+      "n_pos": 737,
+      "best_val_auroc": 0.6156674560638166
+    },
+    "cIAP1": {
+      "auroc": 0.2710597826086956,
+      "auprc": 0.1984643304383816,
+      "f1": 0.0,
+      "n_test": 62,
+      "n_pos": 16,
+      "best_val_auroc": 0.7753653653653654
+    }
+  },
+  "ranking": {
+    "mrr": 0.6407936507936508,
+    "hit_at_1": 0.46,
+    "hit_at_3": 0.74,
+    "n_evaluated": 50
+  },
+  "case_studies": {
+    "BRD4": {
+      "VHL": {
+        "positive_samples": 28,
+        "negative_samples": 24,
+        "mean_score": 0.5087821575311514,
+        "empirical_rate": 0.5384615384615384
+      },
+      "CRBN": {
+        "positive_samples": 44,
+        "negative_samples": 34,
+        "mean_score": 0.513289213180542,
+        "empirical_rate": 0.5641025641025641
+      },
+      "FEM1B": {
+        "positive_samples": 0,
+        "negative_samples": 7,
+        "mean_score": 0.5271914005279541,
+        "empirical_rate": 0.0
+      },
+      "MDM2": {
+        "positive_samples": 1,
+        "negative_samples": 0,
+        "mean_score": 0.5140342712402344,
+        "empirical_rate": 1.0
+      },
+      "KEAP1": {
+        "positive_samples": 1,
+        "negative_samples": 0,
+        "mean_score": 0.5271914005279541,
+        "empirical_rate": 1.0
+      }
+    }
+  }
+}
