@@ -169,22 +169,87 @@ def create_data_splits(samples: list, split_type: str = "random",
         test_idx = indices[n_train + n_val:]
 
     elif split_type == "target_unseen":
-        # Group by target gene
-        targets = list(set(s["target_gene"] for s in samples))
+        # Group by target gene with BALANCED E3 splitting
+        # FIX: Select test targets to minimize E3 distribution shift
+        from collections import defaultdict
+
+        # Get overall E3 distribution (target: 60% CRBN, 36% VHL)
+        overall_e3 = defaultdict(int)
+        for s in samples:
+            overall_e3[s["e3_name"]] += 1
+        total_samples = len(samples)
+
+        # For each target, compute its E3 breakdown
+        target_samples = defaultdict(list)
+        target_e3_breakdown = defaultdict(lambda: defaultdict(int))
+        for i, s in enumerate(samples):
+            target_samples[s["target_gene"]].append(i)
+            target_e3_breakdown[s["target_gene"]][s["e3_name"]] += 1
+
+        targets = list(target_samples.keys())
         rng.shuffle(targets)
 
-        n_test_targets = max(1, int(len(targets) * (1 - train_ratio - val_ratio)))
-        n_val_targets = max(1, int(len(targets) * val_ratio))
+        # Greedy selection: pick test targets that best match overall E3 distribution
+        test_targets = set()
+        test_e3_counts = defaultdict(int)
+        test_size = 0
+        target_test_ratio = 1 - train_ratio - val_ratio
 
-        test_targets = set(targets[:n_test_targets])
-        val_targets = set(targets[n_test_targets:n_test_targets + n_val_targets])
+        for target in targets:
+            if test_size >= len(samples) * target_test_ratio:
+                break
+
+            # Compute what adding this target would do to E3 distribution
+            candidate_e3 = test_e3_counts.copy()
+            for e3, count in target_e3_breakdown[target].items():
+                candidate_e3[e3] += count
+            candidate_total = test_size + len(target_samples[target])
+
+            # Check if this improves or maintains E3 balance
+            if candidate_total > 0:
+                crbn_pct = candidate_e3.get('CRBN', 0) / candidate_total
+                vhl_pct = candidate_e3.get('VHL', 0) / candidate_total
+                target_crbn = overall_e3['CRBN'] / total_samples
+                target_vhl = overall_e3['VHL'] / total_samples
+
+                # Accept if within 10% of target distribution
+                if abs(crbn_pct - target_crbn) < 0.15 and abs(vhl_pct - target_vhl) < 0.15:
+                    test_targets.add(target)
+                    for e3, count in target_e3_breakdown[target].items():
+                        test_e3_counts[e3] += count
+                    test_size += len(target_samples[target])
+                elif test_size < len(samples) * target_test_ratio * 0.5:
+                    # Accept anyway if we need more test samples
+                    test_targets.add(target)
+                    for e3, count in target_e3_breakdown[target].items():
+                        test_e3_counts[e3] += count
+                    test_size += len(target_samples[target])
+
+        # Remaining targets go to train/val
+        remaining_targets = [t for t in targets if t not in test_targets]
+        rng.shuffle(remaining_targets)
+        n_val_targets = max(1, int(len(remaining_targets) * val_ratio / (train_ratio + val_ratio)))
+        val_targets = set(remaining_targets[:n_val_targets])
+        train_targets = set(remaining_targets[n_val_targets:])
 
         train_idx = [i for i, s in enumerate(samples)
-                     if s["target_gene"] not in test_targets | val_targets]
+                     if s["target_gene"] in train_targets]
         val_idx = [i for i, s in enumerate(samples)
                    if s["target_gene"] in val_targets]
         test_idx = [i for i, s in enumerate(samples)
                     if s["target_gene"] in test_targets]
+
+        # Log E3 distribution to verify
+        train_e3 = defaultdict(int)
+        test_e3 = defaultdict(int)
+        for i in train_idx:
+            train_e3[samples[i]["e3_name"]] += 1
+        for i in test_idx:
+            test_e3[samples[i]["e3_name"]] += 1
+        train_total = sum(train_e3.values())
+        test_total = sum(test_e3.values())
+        logger.info(f"  E3 distribution - Train: CRBN={100*train_e3.get('CRBN',0)/train_total:.1f}%, VHL={100*train_e3.get('VHL',0)/train_total:.1f}%")
+        logger.info(f"  E3 distribution - Test: CRBN={100*test_e3.get('CRBN',0)/test_total:.1f}%, VHL={100*test_e3.get('VHL',0)/test_total:.1f}%")
 
     elif split_type == "e3_unseen":
         # Hold out one E3 ligase

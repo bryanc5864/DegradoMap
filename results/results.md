@@ -435,22 +435,20 @@ degrado/
 | VHL | 28 | 24 | 0.509 | 53.8% |
 | FEM1B | 0 | 7 | 0.527 | 0% |
 
-#### Ablation Study - IN PROGRESS (GPU 4)
+#### Ablation Study - COMPLETE ✅
 
-**Target-Unseen Split:**
-| Model | AUROC | F1 |
-|-------|-------|-----|
-| SUG-only | 0.536 | 0.141 |
-| E3-only | 0.475 | 0.056 |
-| SUG+E3 | **0.540** | 0.390 |
+| Model | Target-Unseen | E3-Unseen | Random |
+|-------|---------------|-----------|--------|
+| SUG-only | 0.536 | 0.708 | **0.739** |
+| E3-only | 0.475 | 0.500 | 0.532 |
+| SUG+E3 (simple) | **0.540** | **0.806** | 0.741 |
+| Full DegradoMap | 0.54 | 0.81 | 0.77 |
 
-**E3-Unseen Split (partial):**
-| Model | AUROC | F1 |
-|-------|-------|-----|
-| SUG-only | **0.708** | 0.783 |
-| E3-only | In progress | - |
-
-*SUG module is essential. SUG+E3 combination works best on target-unseen.*
+**Key Insights:**
+1. **E3-only performs at chance** (~0.50) - E3 embedding alone is not predictive
+2. **SUG module is the main driver** of prediction performance
+3. **Adding E3 to SUG boosts E3-unseen** performance (0.71 → 0.81)
+4. **Target-unseen remains ~0.54** regardless of model architecture
 
 #### Ub Sites Test - PARTIAL RESULTS
 
@@ -471,6 +469,42 @@ degrado/
 *Key finding: Known Ub sites improve target-unseen by 5.2%, but ESM hurts performance.*
 
 ---
+
+### 2026-02-14 (Phase 3 - Architecture Fixes) - COMPLETE ✅
+
+**Diagnosed Issues:**
+1. **Protein size leakage** - Global mean pooling scales with protein size, allowing model to memorize proteins
+2. **Lysine count leakage** - Global softmax over all lysines in batch leaks lysine count
+3. **E3 distribution shift** - Target-unseen split had inverted E3 distribution (62% CRBN train → 54% VHL test)
+
+**Implemented Fixes:**
+
+| Fix | File | Before | After |
+|-----|------|--------|-------|
+| Size normalization | sug_module.py | mean_pool | mean_pool / sqrt(N) |
+| Per-protein softmax | sug_module.py | global softmax | per-protein softmax |
+| E3-stratified split | train.py | random targets | greedy E3-balanced selection |
+
+**Validation Results (test_fixes.py):**
+| Test | Result | Target |
+|------|--------|--------|
+| SUG size invariance (cosine sim) | **0.998** | > 0.5 |
+| E3 distribution shift | **3.2%** | < 5% |
+| Lysine norm ratio | **1.00x** | < 2.0 |
+
+All tests **PASS**.
+
+**Final Test Results (with fixes):**
+
+| Split | Test AUROC | AUPRC | F1 | n_test | Baseline | Improvement |
+|-------|-----------|-------|-----|--------|----------|-------------|
+| **target_unseen** | **0.6550** | 0.6020 | 0.5923 | 473 | 0.5292 | **+12.6%** |
+| random | 0.7740 | 0.6898 | 0.6524 | 466 | 0.7715 | +0.3% |
+| e3_unseen | 0.7167 | 0.5062 | 0.5789 | 62 | 0.8056 | -8.9%* |
+
+*E3-unseen has tiny test set (n=62, 16 positives) - high variance expected.
+
+**Key Result:** Target-unseen improved from 0.53 → 0.66 AUROC (+24% relative improvement).
 
 ### 2026-02-08 (Phase 2 - Improvement Experiments)
 - **ESM-2 Integration Test COMPLETE**

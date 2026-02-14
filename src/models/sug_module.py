@@ -452,10 +452,17 @@ class SUGModule(nn.Module):
         # Per-lysine UGS scores
         ugs_scores, lysine_indices = self.ugs_scorer(h, lysine_mask, edge_index, batch)
 
-        # Global pool
+        # Global pool with protein-size normalization (FIX: removes protein identity leakage)
         mean_pool = global_mean_pool(h, batch)  # [B, hidden_dim]
         max_pool = global_max_pool(h, batch)     # [B, hidden_dim]
-        sug_vector = self.global_pool(torch.cat([mean_pool, max_pool], dim=-1))  # [B, output_dim]
+
+        # Normalize mean_pool by sqrt of protein size to reduce size-dependent features
+        from torch_geometric.utils import degree
+        num_nodes_per_graph = degree(batch, dtype=torch.float)
+        size_norm = torch.sqrt(num_nodes_per_graph).clamp(min=1.0).unsqueeze(-1)  # [B, 1]
+        mean_pool_normalized = mean_pool / size_norm  # Scale-invariant
+
+        sug_vector = self.global_pool(torch.cat([mean_pool_normalized, max_pool], dim=-1))  # [B, output_dim]
 
         # Lysine summary: aggregate lysine features weighted by UGS scores
         if len(lysine_indices) > 0:
@@ -469,8 +476,13 @@ class SUGModule(nn.Module):
             num_graphs = batch.max().item() + 1
             lys_summary = torch.zeros(num_graphs, self.output_dim, device=x.device)
 
-            # Weighted aggregation
-            weights = F.softmax(ugs_scores.detach(), dim=0)
+            # FIX: Per-protein softmax instead of global (removes lysine count leakage)
+            weights = torch.zeros_like(ugs_scores)
+            for b in range(num_graphs):
+                protein_mask = lys_batch == b
+                if protein_mask.any():
+                    weights[protein_mask] = F.softmax(ugs_scores[protein_mask].detach(), dim=0)
+
             weighted_feats = lys_transformed * weights.unsqueeze(-1)
             lys_summary.index_add_(0, lys_batch, weighted_feats)
         else:
