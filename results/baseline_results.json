@@ -1,0 +1,116 @@
+{
+  "target_unseen": [
+    {
+      "model": "LogisticRegression",
+      "auroc": 0.3244782305689029,
+      "auprc": 0.35163125742500334,
+      "f1": 0.25507246376811593,
+      "f1_optimal": 0.5294117647058824,
+      "accuracy": 0.45665961945031713,
+      "optimal_threshold": 0.15000000000000002
+    },
+    {
+      "model": "RandomForest",
+      "auroc": 0.5259142427465797,
+      "auprc": 0.46689018759571904,
+      "f1": 0.26865671641791045,
+      "f1_optimal": 0.5955249569707401,
+      "accuracy": 0.5856236786469344,
+      "optimal_threshold": 0.25000000000000006
+    },
+    {
+      "model": "GradientBoosting",
+      "auroc": 0.6071232072772622,
+      "auprc": 0.4949569199085686,
+      "f1": 0.34,
+      "f1_optimal": 0.6256239600665557,
+      "accuracy": 0.5813953488372093,
+      "optimal_threshold": 0.1
+    },
+    {
+      "model": "MLP",
+      "auroc": 0.44089975424568095,
+      "auprc": 0.4132941372793538,
+      "f1": 0.2634730538922156,
+      "f1_optimal": 0.5905631659056316,
+      "accuracy": 0.4799154334038055,
+      "optimal_threshold": 0.1
+    }
+  ],
+  "e3_unseen": [
+    {
+      "model": "LogisticRegression",
+      "auroc": NaN,
+      "auprc": 0.0,
+      "f1": 0.0,
+      "f1_optimal": 0.0,
+      "accuracy": 1.0,
+      "optimal_threshold": 0.5
+    },
+    {
+      "model": "RandomForest",
+      "auroc": NaN,
+      "auprc": 0.0,
+      "f1": 0.0,
+      "f1_optimal": 0.0,
+      "accuracy": 0.0,
+      "optimal_threshold": 0.5
+    },
+    {
+      "model": "GradientBoosting",
+      "auroc": NaN,
+      "auprc": 0.0,
+      "f1": 0.0,
+      "f1_optimal": 0.0,
+      "accuracy": 0.0,
+      "optimal_threshold": 0.5
+    },
+    {
+      "model": "MLP",
+      "auroc": NaN,
+      "auprc": 0.0,
+      "f1": 0.0,
+      "f1_optimal": 0.0,
+      "accuracy": 1.0,
+      "optimal_threshold": 0.5
+    }
+  ],
+  "random": [
+    {
+      "model": "LogisticRegression",
+      "auroc": 0.6782438004300736,
+      "auprc": 0.5269452911402077,
+      "f1": 0.36153846153846153,
+      "f1_optimal": 0.5930470347648262,
+      "accuracy": 0.6437768240343348,
+      "optimal_threshold": 0.30000000000000004
+    },
+    {
+      "model": "RandomForest",
+      "auroc": 0.8252184892185681,
+      "auprc": 0.7509399048554,
+      "f1": 0.6583850931677019,
+      "f1_optimal": 0.683291770573566,
+      "accuracy": 0.7639484978540773,
+      "optimal_threshold": 0.3500000000000001
+    },
+    {
+      "model": "GradientBoosting",
+      "auroc": 0.8208092485549133,
+      "auprc": 0.7396388174001319,
+      "f1": 0.6542056074766355,
+      "f1_optimal": 0.6836734693877551,
+      "accuracy": 0.7618025751072961,
+      "optimal_threshold": 0.3500000000000001
+    },
+    {
+      "model": "MLP",
+      "auroc": 0.7766576574799265,
+      "auprc": 0.6707703088878789,
+      "f1": 0.5666666666666667,
+      "f1_optimal": 0.6331658291457286,
+      "accuracy": 0.721030042918455,
+      "optimal_threshold": 0.3500000000000001
+    }
+  ]
+}

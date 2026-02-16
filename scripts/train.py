@@ -252,9 +252,9 @@ def create_data_splits(samples: list, split_type: str = "random",
         logger.info(f"  E3 distribution - Test: CRBN={100*test_e3.get('CRBN',0)/test_total:.1f}%, VHL={100*test_e3.get('VHL',0)/test_total:.1f}%")
 
     elif split_type == "e3_unseen":
-        # Hold out one E3 ligase
-        e3s = list(set(s["e3_name"] for s in samples))
-        held_out_e3 = rng.choice(e3s)
+        # Hold out VHL (1124 samples) - second largest E3, gives meaningful test set
+        # CRBN (2011) is too large to hold out, others are too small
+        held_out_e3 = "VHL"
 
         test_idx = [i for i, s in enumerate(samples) if s["e3_name"] == held_out_e3]
         remaining = [i for i, s in enumerate(samples) if s["e3_name"] != held_out_e3]
