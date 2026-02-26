@@ -1,0 +1,265 @@
+{
+  "split": "target_unseen",
+  "n_samples": 473,
+  "error_analysis": {
+    "error_counts": {
+      "correct": 256,
+      "false_positive": 162,
+      "false_negative": 55
+    },
+    "accuracy": 0.5412262156448203,
+    "n_samples": 473,
+    "by_size": {
+      "accuracy": {
+        "<200": NaN,
+        "200-400": 0.6756756756756757,
+        "400-600": 0.6666666666666666,
+        "600-1000": 0.24285714285714285,
+        ">1000": 0.6633165829145728
+      },
+      "count": {
+        "<200": 0,
+        "200-400": 74,
+        "400-600": 60,
+        "600-1000": 140,
+        ">1000": 199
+      }
+    },
+    "by_disorder": {
+      "accuracy": {
+        "0-0.2": 0.6583333333333333,
+        "0.2-0.4": 0.6375,
+        "0.4-0.6": 0.38860103626943004,
+        "0.6-0.8": NaN,
+        "0.8-1.0": NaN
+      },
+      "count": {
+        "0-0.2": 120,
+        "0.2-0.4": 160,
+        "0.4-0.6": 193,
+        "0.6-0.8": 0,
+        "0.8-1.0": 0
+      }
+    },
+    "by_e3": {
+      "accuracy": {
+        "CRBN": 0.5677655677655677,
+        "MDM2": 1.0,
+        "UBR": 1.0,
+        "VHL": 0.48128342245989303,
+        "cIAP1": 0.75
+      },
+      "total": {
+        "CRBN": 273,
+        "MDM2": 4,
+        "UBR": 1,
+        "VHL": 187,
+        "cIAP1": 8
+      },
+      "positives": {
+        "CRBN": 122.0,
+        "MDM2": 0.0,
+        "UBR": 0.0,
+        "VHL": 75.0,
+        "cIAP1": 2.0
+      }
+    },
+    "by_confidence": {
+      "accuracy": {
+        "low": 0.49291784702549574,
+        "medium": 0.6833333333333333,
+        "high": NaN,
+        "very_high": NaN
+      },
+      "count": {
+        "low": 353,
+        "medium": 120,
+        "high": 0,
+        "very_high": 0
+      }
+    },
+    "top_false_positives": [
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907601356506,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907601356506,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907005310059,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907005310059,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907005310059,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907005310059,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907005310059,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907005310059,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q09472",
+        "target": "Q09472",
+        "e3": "CRBN",
+        "pred_prob": 0.5861907005310059,
+        "num_residues": 2414,
+        "mean_disorder": 0.5562331080436707
+      },
+      {
+        "uniprot": "Q92793",
+        "target": "Q92793",
+        "e3": "CRBN",
+        "pred_prob": 0.5843577980995178,
+        "num_residues": 2442,
+        "mean_disorder": 0.5630282163619995
+      }
+    ],
+    "top_false_negatives": [
+      {
+        "uniprot": "P07195",
+        "target": "P07195",
+        "e3": "VHL",
+        "pred_prob": 0.2711552083492279,
+        "num_residues": 334,
+        "mean_disorder": 0.03899819776415825
+      },
+      {
+        "uniprot": "O15264",
+        "target": "O15264",
+        "e3": "VHL",
+        "pred_prob": 0.27370592951774597,
+        "num_residues": 365,
+        "mean_disorder": 0.11395300924777985
+      },
+      {
+        "uniprot": "O15264",
+        "target": "O15264",
+        "e3": "VHL",
+        "pred_prob": 0.27370592951774597,
+        "num_residues": 365,
+        "mean_disorder": 0.11395300924777985
+      },
+      {
+        "uniprot": "O15264",
+        "target": "O15264",
+        "e3": "VHL",
+        "pred_prob": 0.27370592951774597,
+        "num_residues": 365,
+        "mean_disorder": 0.11395300924777985
+      },
+      {
+        "uniprot": "P11802",
+        "target": "P11802",
+        "e3": "VHL",
+        "pred_prob": 0.27827188372612,
+        "num_residues": 303,
+        "mean_disorder": 0.14403636753559113
+      },
+      {
+        "uniprot": "P11802",
+        "target": "P11802",
+        "e3": "VHL",
+        "pred_prob": 0.27827188372612,
+        "num_residues": 303,
+        "mean_disorder": 0.14403636753559113
+      },
+      {
+        "uniprot": "P11802",
+        "target": "P11802",
+        "e3": "VHL",
+        "pred_prob": 0.2782719135284424,
+        "num_residues": 303,
+        "mean_disorder": 0.14403636753559113
+      },
+      {
+        "uniprot": "Q13882",
+        "target": "Q13882",
+        "e3": "CRBN",
+        "pred_prob": 0.28015583753585815,
+        "num_residues": 451,
+        "mean_disorder": 0.11496414244174957
+      },
+      {
+        "uniprot": "O15264",
+        "target": "O15264",
+        "e3": "CRBN",
+        "pred_prob": 0.28194794058799744,
+        "num_residues": 365,
+        "mean_disorder": 0.11395300924777985
+      },
+      {
+        "uniprot": "P11802",
+        "target": "P11802",
+        "e3": "cIAP1",
+        "pred_prob": 0.28675612807273865,
+        "num_residues": 303,
+        "mean_disorder": 0.14403636753559113
+      }
+    ]
+  },
+  "calibration": {
+    "brier_score": 0.24036891072856034,
+    "ece": 0.09498017017375567,
+    "mce": 0.13477962521406317,
+    "calibration_curve": {
+      "prob_true": [
+        0.3220338983050847,
+        0.34782608695652173,
+        0.3076923076923077,
+        0.47058823529411764
+      ],
+      "prob_pred": [
+        0.28523653846676067,
+        0.3257718643416529,
+        0.4424719329063709,
+        0.5549716723510643
+      ]
+    }
+  }
+}

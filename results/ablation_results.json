@@ -1,80 +1,142 @@
-{
-  "target_unseen": {
-    "sug_only": {
-      "auroc": 0.5361917042768106,
-      "auprc": 0.3497440215495843,
-      "f1": 0.140625,
-      "f1_optimal": 0.4808743169398907,
-      "threshold_optimal": 0.25000000000000006,
-      "best_val_auroc": 0.7139557471808965
-    },
-    "e3_only": {
-      "auroc": 0.47511283043197944,
-      "auprc": 0.31633075940370436,
-      "f1": 0.056074766355140186,
-      "f1_optimal": 0.45727482678983833,
-      "threshold_optimal": 0.1,
-      "best_val_auroc": 0.5398464891500047
-    },
-    "sug_e3_simple": {
-      "auroc": 0.5396088545024715,
-      "auprc": 0.3844233346152216,
-      "f1": 0.389937106918239,
-      "f1_optimal": 0.45727482678983833,
-      "threshold_optimal": 0.1,
-      "best_val_auroc": 0.760672320667109
-    }
+[
+  {
+    "ablation": "full_model",
+    "description": "Full model (baseline)",
+    "val_auroc": 0.5836113291470434,
+    "test_auroc": 0.4771943659905366,
+    "test_auprc": 0.4062809775198732
   },
-  "e3_unseen": {
-    "sug_only": {
-      "auroc": 0.7083333333333333,
-      "auprc": 0.6587301587301587,
-      "f1": 0.782608695652174,
-      "f1_optimal": 0.782608695652174,
-      "threshold_optimal": 0.40000000000000013,
-      "best_val_auroc": 0.7418768610965142
-    },
-    "e3_only": {
-      "auroc": 0.5,
-      "auprc": 0.5294117647058824,
-      "f1": 0.0,
-      "f1_optimal": 0.6923076923076923,
-      "threshold_optimal": 0.1,
-      "best_val_auroc": 0.5150055467974543
-    },
-    "sug_e3_simple": {
-      "auroc": 0.8055555555555556,
-      "auprc": 0.7477954144620811,
-      "f1": 0.782608695652174,
-      "f1_optimal": 0.782608695652174,
-      "threshold_optimal": 0.3500000000000001,
-      "best_val_auroc": 0.7569043031470777
-    }
+  {
+    "ablation": "no_plddt",
+    "description": "Remove pLDDT",
+    "val_auroc": 0.5583464154892727,
+    "test_auroc": 0.5279499688222132,
+    "test_auprc": 0.43406598419320885
   },
-  "random": {
-    "sug_only": {
-      "auroc": 0.7387796168794019,
-      "auprc": 0.6696590342004636,
-      "f1": 0.588957055214724,
-      "f1_optimal": 0.6150234741784038,
-      "threshold_optimal": 0.30000000000000004,
-      "best_val_auroc": 0.7303562074384494
-    },
-    "e3_only": {
-      "auroc": 0.5316044901260629,
-      "auprc": 0.3876981556233426,
-      "f1": 0.0,
-      "f1_optimal": 0.5495934959349593,
-      "threshold_optimal": 0.3500000000000001,
-      "best_val_auroc": 0.5210238949107466
-    },
-    "sug_e3_simple": {
-      "auroc": 0.7405650141056246,
-      "auprc": 0.6657457934964486,
-      "f1": 0.6153846153846154,
-      "f1_optimal": 0.6309859154929578,
-      "threshold_optimal": 0.45000000000000007,
-      "best_val_auroc": 0.758683563686183
-    }
+  {
+    "ablation": "no_sasa",
+    "description": "Remove SASA",
+    "val_auroc": 0.5180206698063841,
+    "test_auroc": 0.40257858636246924,
+    "test_auprc": 0.38625099181145045
+  },
+  {
+    "ablation": "no_lysine",
+    "description": "Remove lysine indicator",
+    "val_auroc": 0.5405873888016745,
+    "test_auroc": 0.5781737152917874,
+    "test_auprc": 0.5264419895222423
+  },
+  {
+    "ablation": "no_physicochemical",
+    "description": "Remove physicochemical",
+    "val_auroc": 0.5804716117216117,
+    "test_auroc": 0.5510490408245607,
+    "test_auprc": 0.4472864989763432
+  },
+  {
+    "ablation": "no_disorder",
+    "description": "Remove disorder",
+    "val_auroc": 0.545951072736787,
+    "test_auroc": 0.5651982540439423,
+    "test_auprc": 0.4499320320519339
+  },
+  {
+    "ablation": "only_onehot",
+    "description": "Only AA one-hot",
+    "val_auroc": 0.5286499215070644,
+    "test_auroc": 0.5316546234823754,
+    "test_auprc": 0.436785457540395
+  },
+  {
+    "ablation": "layers_2",
+    "description": "GNN layers=2",
+    "val_auroc": 0.5274561747776033,
+    "test_auroc": 0.4658786633899424,
+    "test_auprc": 0.43426141879388425
+  },
+  {
+    "ablation": "layers_6",
+    "description": "GNN layers=6",
+    "val_auroc": 0.5673403976975405,
+    "test_auroc": 0.5999156365770459,
+    "test_auprc": 0.5183204432101585
+  },
+  {
+    "ablation": "layers_8",
+    "description": "GNN layers=8",
+    "val_auroc": 0.5768086080586081,
+    "test_auroc": 0.5648681363019477,
+    "test_auprc": 0.46478284596975794
+  },
+  {
+    "ablation": "hidden_64",
+    "description": "Hidden dim=64",
+    "val_auroc": 0.5565149136577707,
+    "test_auroc": 0.4455030627590507,
+    "test_auprc": 0.4064785482070914
+  },
+  {
+    "ablation": "hidden_256",
+    "description": "Hidden dim=256",
+    "val_auroc": 0.5683379120879121,
+    "test_auroc": 0.5815299123353996,
+    "test_auprc": 0.501694633217823
+  },
+  {
+    "ablation": "heads_1",
+    "description": "Attention heads=1",
+    "val_auroc": 0.5742248822605966,
+    "test_auroc": 0.5236859479881157,
+    "test_auprc": 0.4328050292601451
+  },
+  {
+    "ablation": "heads_8",
+    "description": "Attention heads=8",
+    "val_auroc": 0.5480769230769231,
+    "test_auroc": 0.5897736859479881,
+    "test_auprc": 0.5035710561332171
+  },
+  {
+    "ablation": "cutoff_6",
+    "description": "Cutoff=6A",
+    "val_auroc": 0.5905121664050235,
+    "test_auroc": 0.5038605435938818,
+    "test_auprc": 0.42342154748371885
+  },
+  {
+    "ablation": "cutoff_12",
+    "description": "Cutoff=12A",
+    "val_auroc": 0.539589874411303,
+    "test_auroc": 0.41358251109562405,
+    "test_auprc": 0.3843377742814498
+  },
+  {
+    "ablation": "lr_5e4",
+    "description": "LR=5e-4",
+    "val_auroc": 0.5538494243851386,
+    "test_auroc": 0.665535707735759,
+    "test_auprc": 0.6317241180985678
+  },
+  {
+    "ablation": "lr_5e3",
+    "description": "LR=5e-3",
+    "val_auroc": 0.5,
+    "test_auroc": 0.5,
+    "test_auprc": 0.42071881606765327
+  },
+  {
+    "ablation": "dropout_0",
+    "description": "Dropout=0",
+    "val_auroc": 0.5778878859236002,
+    "test_auroc": 0.6164765433004439,
+    "test_auprc": 0.5714590852528363
+  },
+  {
+    "ablation": "dropout_0.2",
+    "description": "Dropout=0.2",
+    "val_auroc": 0.5580847723704866,
+    "test_auroc": 0.5226680849502989,
+    "test_auprc": 0.4327307601407732
   }
-}
+]

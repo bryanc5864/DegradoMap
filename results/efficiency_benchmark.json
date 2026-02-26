@@ -1,0 +1,85 @@
+{
+  "DegradoMap": {
+    "parameters": {
+      "total": 1426117,
+      "trainable": 1426117
+    },
+    "inference": {
+      "mean_time_ms": 17.332108815511067,
+      "std_time_ms": 0.6202129131284464,
+      "max_memory_mb": 0.30224609375,
+      "n_samples": 50
+    },
+    "training": {
+      "total_time_s": 25.926606453955173,
+      "time_per_epoch_s": 5.185321290791035,
+      "peak_memory_mb": 75.736328125,
+      "n_samples": 100,
+      "epochs": 5
+    }
+  },
+  "SchNet": {
+    "parameters": {
+      "total": 270209,
+      "trainable": 270209
+    },
+    "inference": {
+      "mean_time_ms": 4.908757656812668,
+      "std_time_ms": 0.038125934310721664,
+      "max_memory_mb": 0.0,
+      "n_samples": 50
+    },
+    "training": {
+      "total_time_s": 6.983446769416332,
+      "time_per_epoch_s": 1.3966893538832665,
+      "peak_memory_mb": 57.65771484375,
+      "n_samples": 100,
+      "epochs": 5
+    }
+  },
+  "EGNN": {
+    "parameters": {
+      "total": 442241,
+      "trainable": 442241
+    },
+    "inference": {
+      "mean_time_ms": 5.376210014025371,
+      "std_time_ms": 0.27583808091207174,
+      "max_memory_mb": 0.0,
+      "n_samples": 50
+    },
+    "training": {
+      "total_time_s": 8.509071722626686,
+      "time_per_epoch_s": 1.7018143445253373,
+      "peak_memory_mb": 60.93798828125,
+      "n_samples": 100,
+      "epochs": 5
+    }
+  },
+  "by_protein_size": {
+    "small (<200)": {
+      "mean_time_ms": 34.93273910135031,
+      "std_time_ms": 11.602096172574687,
+      "mean_size": 147.125,
+      "n_proteins": 8
+    },
+    "medium (200-500)": {
+      "mean_time_ms": 33.46017114818096,
+      "std_time_ms": 12.74236178280075,
+      "mean_size": 380.7,
+      "n_proteins": 62
+    },
+    "large (500-1000)": {
+      "mean_time_ms": 42.67446622252464,
+      "std_time_ms": 18.980752156582888,
+      "mean_size": 771.0,
+      "n_proteins": 68
+    },
+    "xlarge (>1000)": {
+      "mean_time_ms": 39.91867005825043,
+      "std_time_ms": 18.30226321818264,
+      "mean_size": 1430.1,
+      "n_proteins": 33
+    }
+  }
+}

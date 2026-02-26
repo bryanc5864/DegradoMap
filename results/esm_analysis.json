@@ -1,0 +1,131 @@
+{
+  "per_protein": {
+    "by_size": {
+      "medium": {
+        "correct": 80,
+        "total": 122,
+        "accuracy": 0.6557377049180327
+      },
+      "large": {
+        "correct": 202,
+        "total": 339,
+        "accuracy": 0.5958702064896755
+      },
+      "small": {
+        "correct": 10,
+        "total": 12,
+        "accuracy": 0.8333333333333334
+      }
+    },
+    "by_disorder": {
+      "ordered": {
+        "correct": 144,
+        "total": 264,
+        "accuracy": 0.5454545454545454
+      },
+      "partially_disordered": {
+        "correct": 148,
+        "total": 209,
+        "accuracy": 0.7081339712918661
+      }
+    },
+    "helped": [],
+    "hurt": []
+  },
+  "feature_importance": {
+    "top_features": [
+      {
+        "index": 1139,
+        "importance": 0.012274187208376667
+      },
+      {
+        "index": 947,
+        "importance": 0.010936097597191457
+      },
+      {
+        "index": 641,
+        "importance": 0.009603925676115945
+      },
+      {
+        "index": 469,
+        "importance": 0.009222708088189676
+      },
+      {
+        "index": 512,
+        "importance": 0.008824858935892934
+      },
+      {
+        "index": 545,
+        "importance": 0.008050995505466832
+      },
+      {
+        "index": 708,
+        "importance": 0.0077467190231910385
+      },
+      {
+        "index": 1123,
+        "importance": 0.00771625096116654
+      },
+      {
+        "index": 705,
+        "importance": 0.007245062566748669
+      },
+      {
+        "index": 451,
+        "importance": 0.007227824346850034
+      },
+      {
+        "index": 1258,
+        "importance": 0.007129567092995618
+      },
+      {
+        "index": 999,
+        "importance": 0.0068304033037755564
+      },
+      {
+        "index": 891,
+        "importance": 0.006817754401665776
+      },
+      {
+        "index": 992,
+        "importance": 0.006699931255759305
+      },
+      {
+        "index": 1019,
+        "importance": 0.006578798892486701
+      },
+      {
+        "index": 461,
+        "importance": 0.006235524020875378
+      },
+      {
+        "index": 874,
+        "importance": 0.00618885788135611
+      },
+      {
+        "index": 1101,
+        "importance": 0.006009652058000981
+      },
+      {
+        "index": 169,
+        "importance": 0.005961481168622519
+      },
+      {
+        "index": 191,
+        "importance": 0.005838795001840069
+      }
+    ],
+    "importance_stats": {
+      "mean": 0.00078125,
+      "std": 0.0012249141088067424,
+      "max": 0.012274187208376667,
+      "min": 0.0
+    },
+    "rf_auroc": 0.5945879030187433
+  },
+  "comparison": {
+    "esm_only": 0.5344973040384404,
+    "structure_only": 0.33078714741591164,
+    "combined": 0.40748450280600085
+  }
+}
