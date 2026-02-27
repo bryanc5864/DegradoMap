@@ -1,0 +1,122 @@
+{
+  "description": "Case study analysis for clinically relevant targets (trained model)",
+  "checkpoint": "checkpoints/phase2_target_unseen/best_model.pt",
+  "targets": {
+    "P10275": {
+      "info": {
+        "name": "AR",
+        "full_name": "Androgen Receptor",
+        "disease": "Prostate cancer",
+        "known_protacs": [
+          "ARV-110 (bavdegalutamide)",
+          "ARV-766"
+        ],
+        "clinical_stage": "Phase II",
+        "e3_used": "CRBN"
+      },
+      "protein_length": 920,
+      "lysine_count": 40,
+      "predictions": {
+        "CRBN": 0.5599581003189087,
+        "VHL": 0.5688796043395996
+      },
+      "actual_crbn": {
+        "degraded": 92.0,
+        "total": 212,
+        "rate": 0.4339622641509434
+      },
+      "actual_vhl": {
+        "degraded": 23.0,
+        "total": 91,
+        "rate": 0.25274725274725274
+      }
+    },
+    "P03372": {
+      "info": {
+        "name": "ESR1/ER",
+        "full_name": "Estrogen Receptor Alpha",
+        "disease": "Breast cancer",
+        "known_protacs": [
+          "ARV-471"
+        ],
+        "clinical_stage": "Phase III",
+        "e3_used": "CRBN"
+      },
+      "protein_length": 595,
+      "lysine_count": 29,
+      "predictions": {
+        "CRBN": 0.606151819229126,
+        "VHL": 0.6083390712738037
+      },
+      "actual_crbn": {
+        "degraded": 29.0,
+        "total": 53,
+        "rate": 0.5471698113207547
+      },
+      "actual_vhl": {
+        "degraded": 11.0,
+        "total": 13,
+        "rate": 0.8461538461538461
+      }
+    },
+    "Q06187": {
+      "info": {
+        "name": "BTK",
+        "full_name": "Bruton's Tyrosine Kinase",
+        "disease": "B-cell malignancies (CLL, MCL)",
+        "known_protacs": [
+          "NX-2127",
+          "NX-5948"
+        ],
+        "clinical_stage": "Phase I/II",
+        "e3_used": "CRBN"
+      },
+      "protein_length": 659,
+      "lysine_count": 53,
+      "predictions": {
+        "CRBN": 0.5158881545066833,
+        "VHL": 0.46536335349082947
+      },
+      "actual_crbn": {
+        "degraded": 82.0,
+        "total": 134,
+        "rate": 0.6119402985074627
+      },
+      "actual_vhl": {
+        "degraded": 0.0,
+        "total": 7,
+        "rate": 0.0
+      }
+    },
+    "O60885": {
+      "info": {
+        "name": "BRD4",
+        "full_name": "Bromodomain-containing protein 4",
+        "disease": "Various cancers",
+        "known_protacs": [
+          "ARV-825",
+          "dBET1",
+          "MZ1"
+        ],
+        "clinical_stage": "Preclinical",
+        "e3_used": "VHL/CRBN"
+      },
+      "protein_length": 1362,
+      "lysine_count": 113,
+      "predictions": {
+        "CRBN": 0.6232972741127014,
+        "VHL": 0.6260107755661011
+      },
+      "actual_crbn": {
+        "degraded": 44.0,
+        "total": 78,
+        "rate": 0.5641025641025641
+      },
+      "actual_vhl": {
+        "degraded": 28.0,
+        "total": 52,
+        "rate": 0.5384615384615384
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "pooling_type": "lysine_weighted",
+    "val_auroc": 0.5707317073170732,
+    "test_auroc": 0.6234042553191489,
+    "test_auprc": 0.4346570791407463,
+    "n_test": 72,
+    "n_pos": 25.0
+  },
+  {
+    "pooling_type": "mean",
+    "val_auroc": 0.5701219512195121,
+    "test_auroc": 0.6234042553191489,
+    "test_auprc": 0.4342121186505028,
+    "n_test": 72,
+    "n_pos": 25.0
+  }
+]

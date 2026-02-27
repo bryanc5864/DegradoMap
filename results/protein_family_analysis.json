@@ -1,0 +1,43 @@
+{
+  "description": "Protein family breakdown analysis (trained model)",
+  "split": "target_unseen",
+  "checkpoint": "checkpoints/phase2_target_unseen/best_model.pt",
+  "families": {
+    "bromodomain": {
+      "n_samples": 2,
+      "pos_rate": 0.5,
+      "auroc": 0.0,
+      "auprc": 0.5
+    },
+    "epigenetic": {
+      "n_samples": 1,
+      "pos_rate": 0.0,
+      "auroc": null,
+      "auprc": null
+    },
+    "kinase": {
+      "n_samples": 4,
+      "pos_rate": 0.25,
+      "auroc": 0.8333333333333334,
+      "auprc": 0.5
+    },
+    "nuclear_receptor": {
+      "n_samples": 1,
+      "pos_rate": 0.0,
+      "auroc": null,
+      "auprc": null
+    },
+    "other": {
+      "n_samples": 51,
+      "pos_rate": 0.43137254901960786,
+      "auroc": 0.5047021943573669,
+      "auprc": 0.4670952908316923
+    },
+    "overall": {
+      "n_samples": 59,
+      "pos_rate": 0.4067796610169492,
+      "auroc": 0.506547619047619,
+      "auprc": 0.44542996149323033
+    }
+  }
+}
