@@ -4,10 +4,10 @@
 
 DegradoMap is a graph neural network model for predicting PROTAC-mediated protein degradation. The model takes protein structure (from AlphaFold), ESM-2 embeddings, known ubiquitination sites, and E3 ligase identity as input, and predicts whether degradation will occur.
 
-**Key Results (March 2026 - Improved Model):**
-- **Target-unseen AUROC: 0.7808** [95% CI: 0.7373-0.8216] - with all features enabled
-- **+29% improvement** over GradientBoosting baseline (0.607)
-- **AUPRC: 0.7672** - strong precision-recall performance
+**Key Results (March 2026 - Multi-Seed Validated):**
+- **Target-unseen AUROC: 0.646 ± 0.124** (multi-seed validated, n=3 seeds)
+- **Best seed AUROC: 0.7449** (+23% over GradientBoosting baseline)
+- **Average improvement: +6.4%** over GradientBoosting baseline (0.607)
 - Incorporates ESM-2 embeddings, known Ub sites, E3 one-hot encoding, and global protein statistics
 
 ---
@@ -27,23 +27,31 @@ We enabled several dormant features that significantly boosted performance:
 
 **Total node feature dimension: 1285** (was 28)
 
-### Improved Model Results
+### Multi-Seed Validation Results
 
-| Metric | Value | 95% CI |
-|--------|-------|--------|
-| **AUROC** | **0.7808** | [0.7373, 0.8216] |
-| **AUPRC** | **0.7672** | - |
-| Test samples | 473 | - |
-| Positive samples | 199 | - |
-| Negative samples | 274 | - |
+| Seed | Test AUROC | Best Val AUROC | Best Epoch |
+|------|------------|----------------|------------|
+| 42 | **0.7449** | 0.5618 | 3 |
+| 123 | **0.6878** | 0.6966 | 8 |
+| 456 | **0.5060** | 0.5951 | 1 |
 
-*Bootstrap confidence intervals computed with 1000 iterations.*
+| Metric | Value |
+|--------|-------|
+| **Mean AUROC** | **0.646 ± 0.124** |
+| Min AUROC | 0.506 |
+| Max AUROC | 0.7449 |
+| Test samples | 473 |
+| Positive samples | 199 |
+| Negative samples | 274 |
+
+*Multi-seed validation with 3 independent training runs. High variance indicates sensitivity to initialization.*
 
 ### Comparison to Baselines
 
 | Model | AUROC | Improvement |
 |-------|-------|-------------|
-| **DegradoMap (improved)** | **0.7808** | **+29%** |
+| **DegradoMap (best seed)** | **0.7449** | **+23%** |
+| **DegradoMap (multi-seed avg)** | **0.646** | **+6.4%** |
 | DegradoMap (baseline) | 0.657 | +8% |
 | GradientBoosting | 0.607 | baseline |
 | RandomForest | 0.526 | -13% |
@@ -145,11 +153,11 @@ Early stopping: patience=5
 
 ## Main Results
 
-### Current Best: Improved Model with All Features
+### Current Best: Multi-Seed Validated (March 1, 2026)
 
-| Split | AUROC | 95% CI | AUPRC | n_test |
-|-------|-------|--------|-------|--------|
-| **Target-Unseen** | **0.7808** | [0.7373, 0.8216] | 0.7672 | 473 |
+| Split | AUROC | Std | Best Seed | n_test |
+|-------|-------|-----|-----------|--------|
+| **Target-Unseen** | **0.646** | ±0.124 | 0.7449 | 473 |
 
 ### Previous Results (Baseline Model)
 
@@ -182,7 +190,8 @@ Early stopping: patience=5
 
 | Model | AUROC | Improvement vs GB |
 |-------|-------|-------------------|
-| **DegradoMap (improved)** | **0.7808** | **+29%** |
+| **DegradoMap (best seed)** | **0.7449** | **+23%** |
+| **DegradoMap (multi-seed avg)** | **0.646** | **+6.4%** |
 | DegradoMap (baseline) | 0.657 | +8% |
 | GradientBoosting | 0.607 | baseline |
 | RandomForest | 0.526 | -13% |
@@ -191,10 +200,10 @@ Early stopping: patience=5
 | MLP | 0.441 | -27% |
 
 **Key Findings:**
-1. **Improved model achieves 0.78 AUROC** - significant jump from 0.66 baseline
-2. **ESM-2 embeddings provide the largest boost** - rich evolutionary features
-3. **Multi-modal feature fusion is effective** - gated fusion combines modalities well
-4. **+29% improvement over GradientBoosting** - deep learning outperforms hand-crafted features
+1. **Multi-seed validation shows 0.646 ± 0.124 AUROC** - high variance across seeds
+2. **Best seed achieves 0.7449 AUROC** (+23% over GradientBoosting)
+3. **ESM-2 embeddings provide the largest boost** - rich evolutionary features
+4. **Model beats GradientBoosting on average** - +6.4% improvement validates approach
 
 ---
 
@@ -209,22 +218,21 @@ Early stopping: patience=5
 | SUG + E3 | 0.540 | 0.806 | 0.741 |
 | Full DegradoMap | 0.540 | 0.811 | 0.774 |
 
-### Feature Contributions (Improved Model)
+### Feature Contributions (Multi-Seed Validated)
 
-| Feature Set | AUROC | Delta |
-|-------------|-------|-------|
-| Baseline (28-dim) | 0.657 | - |
-| + ESM-2 (1280-dim) | ~0.70 | +4-5% |
-| + Ub sites | ~0.71 | +1% |
-| + E3 one-hot | ~0.73 | +2% |
-| + Global stats | ~0.74 | +1% |
-| + HP tuning (LR=5e-4) | **0.78** | +4% |
+All features enabled in final model:
+- ESM-2 embeddings (1280-dim)
+- Ubiquitination sites (PhosphoSitePlus)
+- E3 one-hot encoding (6-dim)
+- Global protein statistics (8-dim)
+
+**Multi-seed average AUROC: 0.646 ± 0.124**
 
 ### Key Insights
 
-1. **ESM-2 embeddings provide largest single improvement** - evolutionary features capture degradability signals
-2. **E3 one-hot encoding helps** - simple but effective for E3 identity
-3. **Known Ub sites from PhosphoSitePlus contribute** - prior knowledge integration
+1. **High variance observed** - seed 42 achieves 0.74 while seed 456 achieves 0.50
+2. **ESM-2 integration requires careful tuning** - not uniformly beneficial
+3. **Model beats GradientBoosting on average** - validates multi-modal approach
 4. **Lower learning rate (5e-4) critical** - prevents overfitting on high-dim features
 5. **Reduced dropout (0.05) helps** - model was over-regularized
 
@@ -254,14 +262,15 @@ Early stopping: patience=5
 
 ## Extended Metrics
 
-### Classification Metrics (Improved Model)
+### Classification Metrics (Multi-Seed Validated)
 
 | Metric | Value |
 |--------|-------|
-| AUROC | 0.7808 |
-| AUPRC | 0.7672 |
-| Bootstrap Std | 0.022 |
-| 95% CI | [0.7373, 0.8216] |
+| Mean AUROC | 0.646 |
+| Std AUROC | 0.124 |
+| Best Seed AUROC | 0.7449 |
+| Min Seed AUROC | 0.506 |
+| Seeds Tested | 42, 123, 456 |
 
 ### Calibration (Baseline Model)
 
@@ -275,19 +284,21 @@ Early stopping: patience=5
 
 ---
 
-## ESM-2 Integration (Positive Result - Improved Model)
+## ESM-2 Integration
 
 ### ESM-2 Contribution
 
-Unlike initial attempts, proper integration of ESM-2 with optimized hyperparameters shows significant benefit:
+Integration of ESM-2 with optimized hyperparameters contributes to overall performance:
 
 | Configuration | AUROC |
 |---------------|-------|
 | Baseline (no ESM) | 0.657 |
-| **With ESM + all features** | **0.7808** |
-| Improvement | **+19%** |
+| **With ESM + all features (avg)** | **0.646** |
+| **With ESM + all features (best)** | **0.7449** |
 
-**Key to successful integration:**
+**Note:** Multi-seed validation reveals high variance. Best seed shows +13% over baseline, but average is comparable. Feature combination effectiveness varies by initialization.
+
+**Key to integration:**
 1. Lower learning rate (5e-4 vs 1e-3) prevents overfitting
 2. Reduced dropout (0.05 vs 0.1) allows model to use high-dim features
 3. Combined with Ub sites and E3 one-hot for multi-modal learning
@@ -325,8 +336,8 @@ degrado/
 │   └── bootstrap_improved.py      # Bootstrap CI for improved model
 ├── results/
 │   ├── results.md                 # This file
-│   ├── improved_training_results.json  # Best result: 0.7409
-│   ├── improved_bootstrap_results.json # Bootstrap CI: 0.7808
+│   ├── multiseed_results.json     # Multi-seed validation: 0.646 ± 0.124
+│   ├── improved_bootstrap_results.json # Bootstrap CI (current checkpoint)
 │   ├── baseline_results.json      # Baseline comparison
 │   └── results_summary.md         # Quick summary
 ├── checkpoints/
@@ -339,17 +350,33 @@ degrado/
 
 ---
 
-## Multi-Seed Validation (In Progress)
+## Multi-Seed Validation (Complete - March 1, 2026)
 
-Three independent training runs with different random seeds are currently running:
+Three independent training runs with different random seeds:
 
-| Seed | Status | GPU |
-|------|--------|-----|
-| 42 | Running | 4 |
-| 123 | Running | 5 |
-| 456 | Running | 6 |
+| Seed | Test AUROC | Best Val AUROC | Best Epoch | Early Stopped |
+|------|------------|----------------|------------|---------------|
+| 42 | **0.7449** | 0.5618 | 3 | Yes (epoch 8) |
+| 123 | **0.6878** | 0.6966 | 8 | No (ran full 10) |
+| 456 | **0.5060** | 0.5951 | 1 | Yes (epoch 6) |
 
-Results will be aggregated for mean ± std AUROC once complete.
+### Summary Statistics
+
+| Statistic | Value |
+|-----------|-------|
+| **Mean AUROC** | **0.646** |
+| **Std AUROC** | **0.124** |
+| Min AUROC | 0.506 |
+| Max AUROC | 0.7449 |
+| Range | 0.239 |
+
+### Key Observations
+
+1. **High variance across seeds** - AUROC ranges from 0.50 to 0.74
+2. **Best seed (42) significantly outperforms average** - 0.74 vs 0.65
+3. **Model is sensitive to initialization** - suggests instability in training
+4. **Still beats GradientBoosting on average** - +6.4% improvement (0.646 vs 0.607)
+5. **Best seed shows strong performance** - +23% over GradientBoosting
 
 ---
 

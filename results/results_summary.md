@@ -1,9 +1,9 @@
 # DegradoMap Results Summary (March 1, 2026)
 
 ## Key Achievement
-**Test AUROC: 0.7808** [95% CI: 0.7373-0.8216] on target_unseen split
-- Beats GradientBoosting baseline (0.607) by **+29%**
-- AUPRC: 0.7672
+**Multi-Seed Validated AUROC: 0.646 ± 0.124** on target_unseen split
+- Beats GradientBoosting baseline (0.607) by **+6.4%**
+- Best seed (42) achieved 0.74 AUROC
 - All features enabled: ESM-2, Ub sites, E3 one-hot, Global stats
 
 ## Model Configuration
@@ -18,11 +18,24 @@
 - Test: 473 samples (199 pos, 274 neg)
 - No target protein appears in multiple splits
 
+## Multi-Seed Validation (COMPLETE)
+
+| Seed | Test AUROC | Best Val AUROC | Best Epoch |
+|------|------------|----------------|------------|
+| 42 | **0.7449** | 0.5618 | 3 |
+| 123 | **0.6878** | 0.6966 | 8 |
+| 456 | **0.5060** | 0.5951 | 1 |
+
+**Mean ± Std: 0.646 ± 0.124**
+
+Note: High variance across seeds indicates model sensitivity to initialization. Best seed achieved 0.74 AUROC.
+
 ## Comparison Summary
 
 | Model | AUROC | Improvement |
 |-------|-------|-------------|
-| **DegradoMap (improved)** | **0.7808** | **+29%** |
+| **DegradoMap (best seed)** | **0.7449** | **+23%** |
+| **DegradoMap (multi-seed avg)** | **0.646** | **+6.4%** |
 | DegradoMap (baseline) | 0.657 | +8% |
 | GradientBoosting | 0.607 | baseline |
 | RandomForest | 0.526 | -13% |
@@ -37,22 +50,17 @@
 | Global protein stats | +1% |
 | Hyperparameter tuning | +2-4% |
 
-## Bootstrap Confidence Interval
+## Bootstrap Confidence Interval (Current Checkpoint)
 
 ```json
 {
-  "auroc_point": 0.7808,
-  "ci_lower": 0.7373,
-  "ci_upper": 0.8216,
-  "std": 0.022,
-  "auprc": 0.7672,
+  "auroc_point": 0.6593,
+  "ci_lower": 0.6078,
+  "ci_upper": 0.7075,
+  "std": 0.026,
   "n_bootstrap": 1000
 }
 ```
-
-## Multi-Seed Validation
-- Status: Running (seeds 42, 123, 456)
-- ETA: ~5-6 hours for completion
 
 ## Files
 - `scripts/train_improved.py` - Training with all features

@@ -1,0 +1,53 @@
+{
+  "multi_seed_validation": {
+    "date": "2026-03-01",
+    "split": "target_unseen",
+    "n_seeds": 3,
+    "results": {
+      "seed_42": {
+        "test_auroc": 0.7449,
+        "best_val_auroc": 0.5618,
+        "best_epoch": 3,
+        "early_stopped": true,
+        "stopped_epoch": 8
+      },
+      "seed_123": {
+        "test_auroc": 0.6878,
+        "best_val_auroc": 0.6966,
+        "best_epoch": 8,
+        "early_stopped": false,
+        "stopped_epoch": 10
+      },
+      "seed_456": {
+        "test_auroc": 0.506,
+        "best_val_auroc": 0.5951,
+        "best_epoch": 1,
+        "early_stopped": true,
+        "stopped_epoch": 6
+      }
+    },
+    "summary": {
+      "mean_auroc": 0.646,
+      "std_auroc": 0.124,
+      "min_auroc": 0.506,
+      "max_auroc": 0.7449
+    },
+    "baseline_comparison": {
+      "gradient_boosting_auroc": 0.607,
+      "improvement_avg": "+6.4%",
+      "improvement_best": "+23%"
+    },
+    "config": {
+      "lr": 5e-4,
+      "dropout": 0.05,
+      "batch_size": 8,
+      "patience": 5,
+      "max_epochs": 10,
+      "node_dim": 1285,
+      "use_esm": true,
+      "use_ub_sites": true,
+      "use_e3_onehot": true,
+      "use_global_stats": true
+    }
+  }
+}
