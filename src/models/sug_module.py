@@ -377,11 +377,13 @@ class SUGModule(nn.Module):
     def __init__(self, node_input_dim: int = 28, hidden_dim: int = 256,
                  output_dim: int = 128, num_layers: int = 6,
                  max_radius: float = 10.0, num_basis: int = 8,
-                 dropout: float = 0.1):
+                 dropout: float = 0.1, use_global_stats: bool = False):
         super().__init__()
 
         self.hidden_dim = hidden_dim
         self.output_dim = output_dim
+        self.use_global_stats = use_global_stats
+        self.node_input_dim = node_input_dim
 
         # Input projection
         self.input_proj = nn.Sequential(
@@ -489,10 +491,46 @@ class SUGModule(nn.Module):
             num_graphs = batch.max().item() + 1
             lys_summary = torch.zeros(num_graphs, self.output_dim, device=x.device)
 
-        return {
+        result = {
             "sug_vector": sug_vector,
             "ugs_scores": ugs_scores,
             "lysine_indices": lysine_indices,
             "node_features": h,
             "lysine_summary": lys_summary,
         }
+
+        # Compute global protein statistics if enabled
+        if self.use_global_stats:
+            # Extract pLDDT and SASA from node features
+            # For ESM features (1285 dim): pLDDT is at idx 1280, SASA at 1281
+            # For handcrafted (28/29 dim): pLDDT at idx 24, SASA at idx 25
+            if self.node_input_dim >= 1280:
+                plddt_idx, sasa_idx = 1280, 1281
+            else:
+                plddt_idx, sasa_idx = 24, 25
+
+            global_stats_list = []
+            for b in range(num_graphs):
+                mask = batch == b
+                node_feats = x[mask]  # [N_b, feat_dim]
+                plddt = node_feats[:, plddt_idx]  # Already normalized to [0,1]
+                sasa = node_feats[:, sasa_idx]    # Already normalized
+
+                # Compute aggregated statistics: mean, std, min, max for each
+                plddt_stats = torch.stack([
+                    plddt.mean(),
+                    plddt.std() if plddt.numel() > 1 else torch.tensor(0.0, device=x.device),
+                    plddt.min(),
+                    plddt.max()
+                ])
+                sasa_stats = torch.stack([
+                    sasa.mean(),
+                    sasa.std() if sasa.numel() > 1 else torch.tensor(0.0, device=x.device),
+                    sasa.min(),
+                    sasa.max()
+                ])
+                global_stats_list.append(torch.cat([plddt_stats, sasa_stats]))
+
+            result["global_stats"] = torch.stack(global_stats_list)  # [B, 8]
+
+        return result

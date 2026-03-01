@@ -56,8 +56,14 @@ class DegradoMap(nn.Module):
         pred_hidden_dim: int = 128,
         # General
         dropout: float = 0.1,
+        # New features
+        use_e3_onehot: bool = False,
+        use_global_stats: bool = False,
     ):
         super().__init__()
+
+        self.use_e3_onehot = use_e3_onehot
+        self.use_global_stats = use_global_stats
 
         # Module A: Structural Ubiquitination Geometry
         self.sug_module = SUGModule(
@@ -68,6 +74,7 @@ class DegradoMap(nn.Module):
             max_radius=sug_max_radius,
             num_basis=sug_num_basis,
             dropout=dropout,
+            use_global_stats=use_global_stats,
         )
 
         # Module B: E3 Compatibility Network
@@ -88,15 +95,30 @@ class DegradoMap(nn.Module):
             dropout=context_dropout,
         )
 
+        # E3 one-hot dimension (6 families: CRBN, VHL, MDM2, cIAP1, DCAF16, Other)
+        self.e3_onehot_dim = 6 if use_e3_onehot else 0
+        # Global stats dimension (8: mean/std/min/max of pLDDT and SASA)
+        self.global_stats_dim = 8 if use_global_stats else 0
+
+        # Adjusted SUG dim includes global stats if enabled
+        adjusted_sug_dim = sug_output_dim + self.global_stats_dim
+
         # Module D: Fusion and Prediction
         self.fusion_module = FusionModule(
-            sug_dim=sug_output_dim,
+            sug_dim=adjusted_sug_dim,
             compat_dim=e3_output_dim,
             context_dim=context_output_dim,
             fusion_hidden_dim=fusion_hidden_dim,
             pred_hidden_dim=pred_hidden_dim,
             dropout=dropout,
+            e3_onehot_dim=self.e3_onehot_dim,
+            lysine_summary_dim=sug_output_dim,  # Original SUG output dim (without global stats)
         )
+
+        # E3 name to index mapping
+        self.e3_to_idx = {
+            'CRBN': 0, 'VHL': 1, 'MDM2': 2, 'cIAP1': 3, 'DCAF16': 4,
+        }
 
     def forward(
         self,
@@ -131,9 +153,15 @@ class DegradoMap(nn.Module):
             - context_vector: [B] context representation
         """
         batch = protein_graph.batch if hasattr(protein_graph, 'batch') and protein_graph.batch is not None else torch.zeros(protein_graph.x.size(0), dtype=torch.long, device=protein_graph.x.device)
+        num_graphs = batch.max().item() + 1
 
         # Module A: SUG
         sug_out = self.sug_module(protein_graph)
+        sug_vector = sug_out["sug_vector"]
+
+        # Add global stats to SUG vector if enabled
+        if self.use_global_stats and "global_stats" in sug_out:
+            sug_vector = torch.cat([sug_vector, sug_out["global_stats"]], dim=-1)
 
         # Module B: E3 Compatibility
         e3_out = self.e3_compat_module(
@@ -151,18 +179,25 @@ class DegradoMap(nn.Module):
             )
         else:
             # No context: use zero vector
-            num_graphs = batch.max().item() + 1
             context_vector = torch.zeros(
                 num_graphs, self.context_module.output_dim,
                 device=protein_graph.x.device,
             )
 
+        # E3 one-hot encoding
+        e3_onehot = None
+        if self.use_e3_onehot:
+            e3_idx = self.e3_to_idx.get(e3_name, 5)  # 5 = "Other"
+            e3_onehot = torch.zeros(num_graphs, 6, device=protein_graph.x.device)
+            e3_onehot[:, e3_idx] = 1.0
+
         # Module D: Fusion and Prediction
         fusion_out = self.fusion_module(
-            sug_vector=sug_out["sug_vector"],
+            sug_vector=sug_vector,
             compat_vector=e3_out["compat_vector"],
             context_vector=context_vector,
             lysine_summary=sug_out["lysine_summary"],
+            e3_onehot=e3_onehot,
         )
 
         # Combine all outputs

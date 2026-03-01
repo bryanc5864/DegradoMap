@@ -127,10 +127,17 @@ class FusionModule(nn.Module):
 
     def __init__(self, sug_dim: int = 128, compat_dim: int = 128,
                  context_dim: int = 128, fusion_hidden_dim: int = 256,
-                 pred_hidden_dim: int = 128, dropout: float = 0.1):
+                 pred_hidden_dim: int = 128, dropout: float = 0.1,
+                 e3_onehot_dim: int = 0, lysine_summary_dim: int = None):
         super().__init__()
 
-        total_input_dim = sug_dim + compat_dim + context_dim
+        self.e3_onehot_dim = e3_onehot_dim
+        total_input_dim = sug_dim + compat_dim + context_dim + e3_onehot_dim
+
+        # lysine_summary_dim is the original SUG output_dim (without global stats)
+        # if not provided, assume same as sug_dim
+        if lysine_summary_dim is None:
+            lysine_summary_dim = sug_dim
 
         # Gated fusion
         self.fusion = GatedFusion(
@@ -139,9 +146,9 @@ class FusionModule(nn.Module):
             output_dim=pred_hidden_dim,
         )
 
-        # Also incorporate lysine summary
+        # Also incorporate lysine summary (uses original SUG output_dim)
         self.lysine_gate = nn.Sequential(
-            nn.Linear(sug_dim + pred_hidden_dim, pred_hidden_dim),
+            nn.Linear(lysine_summary_dim + pred_hidden_dim, pred_hidden_dim),
             nn.Sigmoid(),
         )
 
@@ -152,13 +159,15 @@ class FusionModule(nn.Module):
 
     def forward(self, sug_vector: torch.Tensor, compat_vector: torch.Tensor,
                 context_vector: torch.Tensor,
-                lysine_summary: Optional[torch.Tensor] = None) -> Dict[str, torch.Tensor]:
+                lysine_summary: Optional[torch.Tensor] = None,
+                e3_onehot: Optional[torch.Tensor] = None) -> Dict[str, torch.Tensor]:
         """
         Args:
             sug_vector: [B, sug_dim] from Module A
             compat_vector: [B, compat_dim] from Module B
             context_vector: [B, context_dim] from Module C
             lysine_summary: [B, sug_dim] from Module A's lysine aggregation
+            e3_onehot: [B, 6] E3 ligase one-hot encoding (optional)
 
         Returns:
             Dictionary with:
@@ -167,8 +176,11 @@ class FusionModule(nn.Module):
             - dc50_pred: [B] predicted log10(DC50)
             - dmax_pred: [B] predicted Dmax fraction
         """
-        # Gated fusion of three modalities
-        fused = self.fusion(sug_vector, compat_vector, context_vector)  # [B, pred_hidden_dim]
+        # Gated fusion of modalities (including E3 one-hot if provided)
+        if e3_onehot is not None and self.e3_onehot_dim > 0:
+            fused = self.fusion(sug_vector, compat_vector, context_vector, e3_onehot)
+        else:
+            fused = self.fusion(sug_vector, compat_vector, context_vector)
 
         # Optionally incorporate lysine summary
         if lysine_summary is not None:

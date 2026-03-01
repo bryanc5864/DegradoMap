@@ -1,0 +1,51 @@
+{
+  "description": "Statistical significance tests for model comparisons",
+  "method": "Welch t-test for GNN comparisons, one-sample t-test for single-value baselines",
+  "degradomap_cv": {
+    "n_folds": 5,
+    "n_seeds": 3,
+    "mean_auroc": 0.5559980230810597,
+    "std_auroc": 0.08725155725728671,
+    "all_aurocs": [
+      0.547270161727993,
+      0.3584608705090633,
+      0.3661266688375122,
+      0.6097670250896057,
+      0.6097639564000589,
+      0.6658350517994794,
+      0.6222794959908362,
+      0.6382843324424081,
+      0.5948623308302575,
+      0.5866314052795032,
+      0.5998519992236024,
+      0.5890091226708075,
+      0.5232921534492523,
+      0.5111269584915158,
+      0.5174088134740021
+    ]
+  },
+  "comparisons": [
+    {
+      "model1": "DegradoMap",
+      "model2": "EGNN",
+      "diff": -0.09422299627808733,
+      "p_welch": 0.3400909035717081,
+      "p_bootstrap": 0.0,
+      "significant": false
+    },
+    {
+      "model1": "DegradoMap",
+      "model2": "GradientBoosting",
+      "diff": -0.05112518419620249,
+      "p_value": 0.04574450556004165,
+      "significant": true
+    },
+    {
+      "model1": "DegradoMap",
+      "model2": "RandomForest",
+      "diff": 0.030083780334480004,
+      "p_value": 0.21791884342143247,
+      "significant": false
+    }
+  ]
+}

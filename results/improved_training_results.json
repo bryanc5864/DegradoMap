@@ -1,0 +1,13 @@
+{
+  "mode": "single",
+  "auroc": 0.7409125921578696,
+  "auprc": 0.6342236189006198,
+  "config": {
+    "use_esm": true,
+    "use_ub_sites": true,
+    "use_e3_onehot": true,
+    "use_global_stats": true,
+    "lr": 0.0005,
+    "dropout": 0.05
+  }
+}
