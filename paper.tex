@@ -381,10 +381,11 @@ Each residue is represented by the 1,285-dimensional feature vector described in
 
 \begin{table}[t]
 \centering
-\caption{Node feature specification for the improved model (1,285 dimensions). When ESM-2 embeddings are unavailable, amino acid one-hot (20-dim) replaces the ESM-2 features, yielding 28 dimensions.}
+\caption{Node feature specification (1,285-dim). Without ESM-2, uses AA one-hot (28-dim).}
 \label{tab:nodefeats_main}
-\footnotesize
-\begin{tabular}{@{}l@{\;\;}r@{\;\;}l@{}}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}lrl@{}}
 \toprule
 \textbf{Feature} & \textbf{Dim} & \textbf{Source} \\
 \midrule
@@ -603,154 +604,30 @@ The model correctly identifies the best E3 ligase as its top recommendation for 
 This capability provides actionable guidance for early-stage E3 selection: rather than synthesizing PROTACs for multiple E3 ligases in parallel (a costly approach), researchers can prioritize the E3 ligase most likely to succeed.
 The MRR of 0.641 indicates that the correct E3 is ranked, on average, between positions 1 and 2---substantially better than random ranking, which would yield MRR $\approx$ 0.2 for 10 candidate E3 ligases.
 
-\subsection{Negative Result: E(3)-Equivariance}
+\subsection{Architectural Insights}
 \label{sec:equivariant}
 
-We implemented an E(3)-equivariant variant of the SUG module using vector message passing with coordinate updates and spherical harmonics encoding, following EGNN~\cite{satorras2021egnn} and GVP~\cite{jing2021gvp} design principles.
-The equivariant model (1.04M parameters) achieves 0.626 AUROC on target-unseen evaluation, \emph{underperforming} the invariant model (0.657 AUROC, 1.43M parameters) by 3.1 percentage points.
+\paragraph{E(3)-equivariance underperforms.}
+An E(3)-equivariant SUG variant achieves only 0.626 AUROC vs.\ 0.657 for the invariant model.
+Since degradability is a scalar property, pairwise distance features suffice; equivariant vector representations add overhead without benefit~\cite{zhang2023gearnet}.
 
-This result has a principled interpretation.
-Degradability is a \emph{scalar} property: rotating a protein in 3D does not change whether it can be degraded.
-The invariant model achieves this symmetry naturally through pairwise distance features.
-The equivariant model maintains intermediate vector representations that transform under SO(3), but these are ultimately projected to a scalar---the additional representational capacity is wasted, and the equivariant constraints reduce the effective hypothesis space without compensating benefit.
-This finding is consistent with observations in related protein property prediction tasks~\cite{zhang2023gearnet}.
-Figure~\ref{fig:training} compares training dynamics of the invariant and equivariant architectures.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{fig3_training_curves.pdf}
-\Description{Two-panel plot showing training loss and validation AUROC across epochs for invariant and E(3)-equivariant architectures, with vertical dotted lines marking phase transitions.}
-\caption{Training dynamics comparison. (a)~Training loss and (b)~validation AUROC across epochs for the invariant model (random split, 20 epochs) and E(3)-equivariant variant (target-unseen split, 50 epochs). Vertical dotted lines mark phase transitions. The equivariant model converges slower and plateaus at a lower validation AUROC.}
-\label{fig:training}
-\end{figure}
-
-\subsection{ESM-2 Integration: Benefits and Challenges}
+\paragraph{ESM-2 requires careful integration.}
 \label{sec:esm_integration}
+ESM-2 embeddings alone achieve only 0.534 AUROC, and naive combination with structure \emph{decreases} performance to 0.407.
+However, with tuned hyperparameters (LR=$5\times10^{-4}$, dropout=0.05), the improved model achieves 0.7449 best-seed AUROC (+23\% over gradient boosting).
+The high variance across seeds (0.506--0.745, std=0.124) reflects optimization challenges with high-dimensional features in limited data.
 
-We investigated whether ESM-2-650M protein language model embeddings~\cite{lin2023esm2} (1,280 dimensions per residue) could improve predictions.
-The answer is nuanced: naive integration fails, but careful integration with tuned hyperparameters achieves the best single-seed result.
-Table~\ref{tab:esm} reports results on the target-unseen split.
-
-\begin{table}[t]
-\centering
-\caption{ESM-2 integration results (target-unseen AUROC). Naive integration fails, but careful tuning enables ESM-2 to contribute to peak performance.}
-\label{tab:esm}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}lc@{}}
-\toprule
-\textbf{Model} & \textbf{Target-unseen AUROC} \\
-\midrule
-\multicolumn{2}{@{}l}{\textit{Naive integration (LR=$10^{-3}$, dropout=0.1):}} \\
-\quad ESM-2 only (1,280-dim) & 0.534 \\
-\quad Structure only (28-dim) & 0.331 \\
-\quad ESM-2 + Structure combined & 0.407 \\
-\quad \ours{} baseline (28-dim, task-specific) & 0.657 \\
-\midrule
-\multicolumn{2}{@{}l}{\textit{Tuned integration (LR=$5\times10^{-4}$, dropout=0.05):}} \\
-\quad \ours{} improved (1,285-dim, avg) & 0.646\spm{0.124} \\
-\quad \ours{} improved (1,285-dim, best seed) & \textbf{0.7449} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Naive integration fails.}
-ESM-2 alone achieves only 0.534 AUROC---marginally above random.
-Strikingly, combining ESM-2 with structure features \emph{decreases} performance (0.534$\to$0.407), suggesting destructive interference between the two feature spaces under default hyperparameters.
-
-\paragraph{Careful integration succeeds.}
-However, when ESM-2 embeddings are combined with known ubiquitination site annotations and E3 one-hot encoding, and trained with tuned hyperparameters (LR=$5\times10^{-4}$, dropout=0.05, batch size=8, early stopping with patience=5), the improved model achieves a best-seed AUROC of 0.7449---the highest single-run result across all configurations and a 23\% improvement over the gradient boosting baseline.
-The key requirements are: (1)~lower learning rate to prevent overfitting on the high-dimensional ESM-2 features, (2)~reduced dropout to preserve useful signal in the data-limited regime, and (3)~smaller batch size to accommodate variable-sized protein graphs with large feature vectors.
-
-\paragraph{Initialization sensitivity.}
-The improved model exhibits high variance across random seeds (0.506 to 0.7449, std=0.124), substantially higher than the baseline model or GNN baselines.
-This suggests that the optimization landscape with 1,285-dimensional features is more complex, with multiple local optima of varying quality.
-We analyze this variance further in Section~\ref{sec:multiseed}.
-
-\paragraph{Broader implications.}
-These results refine the narrative around protein language models for artificially-induced processes: evolutionary features \emph{alone} are insufficient (0.534 AUROC), but they provide complementary signal when carefully integrated with task-specific architecture and domain knowledge features.
-The key lesson is that high-dimensional pre-trained representations require correspondingly careful regularization to avoid overwhelming task-specific signals.
-
-\subsection{Multi-Seed Validation}
+\subsection{Variance Analysis}
 \label{sec:multiseed}
 
-To assess the reliability of the improved model, we conduct multi-seed validation with 3 random seeds (42, 123, 456) on the target-unseen split.
-Table~\ref{tab:multiseed_main} reports per-seed results.
+Multi-seed validation (seeds 42, 123, 456) yields 0.646\,\spm{0.124} AUROC, with individual seeds ranging from 0.506 to 0.745.
+This variance, consistent with EGNN baselines (0.518\,\spm{0.11}), reflects optimization challenges in the low-data regime.
+Per-E3 analysis reveals asymmetric performance: CRBN targets achieve 0.758 AUROC ($n{=}273$) while VHL targets yield only 0.396 ($n{=}187$), likely reflecting both training distribution (CRBN: 62\%) and biological differences.
 
-\begin{table}[t]
-\centering
-\caption{Multi-seed validation of the improved model on target-unseen split. High variance reflects initialization sensitivity in the low-data regime with high-dimensional features.}
-\label{tab:multiseed_main}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-\textbf{Seed} & \textbf{Test AUROC} & \textbf{Best Val AUROC} & \textbf{Best Epoch} & \textbf{Stopped Epoch} \\
-\midrule
-42  & \textbf{0.7449} & 0.5618 & 3 & 8 \\
-123 & 0.6878 & 0.6966 & 8 & 10 \\
-456 & 0.5060 & 0.5951 & 1 & 6 \\
-\midrule
-\textbf{Mean\,\spm{Std}} & \textbf{0.646\,\spm{0.124}} & & \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The high variance (std=0.124) has several implications.
-First, seed 42 achieves the best test AUROC (0.7449) despite a \emph{low} validation AUROC (0.562), further demonstrating the validation--test discordance discussed below.
-Second, seed 456 early-stops at epoch 6 with poor test performance (0.506), suggesting premature convergence to a suboptimal region.
-Third, this variance is consistent with the EGNN baseline (0.518\,\spm{0.11}), suggesting a broader data-regime challenge rather than an architecture-specific deficiency.
-
-The small dataset (155 proteins, 473 target-unseen test samples) combined with 1,285-dimensional features creates a challenging optimization landscape.
-Ensemble methods, learning rate warmup, and gradient accumulation may reduce this variance while preserving peak performance.
-
-\subsection{Per-E3 Performance and Architecture Fixes}
+\paragraph{Architectural fixes.}
 \label{sec:fixes}
-
-Performance varies substantially across E3 ligases on the target-unseen split (Table~\ref{tab:per_e3}).
-CRBN-targeted proteins achieve strong generalization (0.758 AUROC, $n = 273$), while VHL performance is poor (0.396 AUROC, $n = 187$).
-
-\begin{table}[t]
-\centering
-\caption{Per-E3 target-unseen performance breakdown.}
-\label{tab:per_e3}
-\small
-\begin{tabular}{@{}lrrccc@{}}
-\toprule
-\textbf{E3} & $n$ & $n_+$ & \textbf{AUROC} & \textbf{AUPRC} & \textbf{F1} \\
-\midrule
-CRBN & 273 & 122 & \textbf{0.758} & 0.706 & 0.626 \\
-VHL & 187 & 75 & 0.396 & 0.370 & 0.481 \\
-cIAP1 & 8 & 2 & 0.417 & 0.250 & 0.000 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The CRBN--VHL asymmetry likely reflects both the training data distribution (CRBN dominates at 62\%) and genuine biological differences in surface compatibility requirements.
-
-\paragraph{Impact of architectural fixes.}
-During development, we identified and corrected two sources of data leakage that substantially impacted generalization.
-Table~\ref{tab:fixes} reports the impact.
-
-\begin{table}[t]
-\centering
-\caption{Impact of architectural fixes on target-unseen AUROC.}
-\label{tab:fixes}
-\small
-\begin{tabular}{@{}lcc@{}}
-\toprule
-\textbf{Issue} & \textbf{Before} & \textbf{After} \\
-\midrule
-Size normalization ($1/\sqrt{N}$) & \multirow{2}{*}{0.529} & \multirow{2}{*}{\textbf{0.657}} \\
-Per-protein lysine softmax & & \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-These fixes improved target-unseen AUROC by 24\% (0.529$\to$0.657) while leaving random-split performance essentially unchanged (0.772$\to$0.774), demonstrating that the leakage shortcuts were specifically exploited for protein memorization.
-
-We present additional analyses---a BRD4 case study (Appendix~\ref{app:case_study}) and cross-validation stability analysis (Appendix~\ref{app:cv})---that further characterize the model's behavior.
-The 5-fold CV results (Appendix~\ref{app:cv}) confirm high inter-fold variance (0.525--0.601 AUROC), indicating that protein composition has a larger effect on performance than random initialization.
+Size normalization ($1/\sqrt{N}$) and per-protein lysine softmax improved target-unseen AUROC from 0.529 to 0.657 (+24\%) while leaving random-split unchanged, confirming these addressed protein memorization shortcuts.
+Additional analyses (5-fold CV, case studies) are in the Appendix.
 
 
 % ================================================================
@@ -760,57 +637,18 @@ The 5-fold CV results (Appendix~\ref{app:cv}) confirm high inter-fold variance (
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{Honest assessment of the target-unseen ceiling.}
-The multi-seed target-unseen AUROC of 0.646\,\spm{0.124} (best: 0.7449) represents meaningful signal but reveals the limits of structure-based prediction.
-Degradation depends critically on the PROTAC molecule---warhead affinity, linker geometry, E3 ligand potency---none available to \ours{} by design.
-DegradeMaster~\cite{liu2025degrademaster}, using full PROTAC descriptors, achieves 0.856; the ${\sim}0.11$ gap from our best seed quantifies the value of PROTAC features.
-This gap is expected: \ours{} addresses a different use case where the PROTAC is unavailable.
-The paradigms are complementary---\ours{} screens targets; full-information methods optimize PROTAC design for selected targets.
+The multi-seed target-unseen AUROC of 0.646\,\spm{0.124} (best: 0.7449) represents meaningful signal but reveals limits of structure-based prediction.
+DegradeMaster~\cite{liu2025degrademaster}, using full PROTAC descriptors, achieves 0.856; the ${\sim}0.11$ gap quantifies PROTAC feature value.
+The paradigms are complementary---\ours{} screens targets before PROTAC synthesis; full-information methods optimize existing designs.
 
-\paragraph{E3 generalization: asymmetric transfer.}
-The strong E3-unseen performance (0.811 AUROC for CRBN$\to$VHL) demonstrates effective knowledge transfer between the two dominant E3 ligases.
-Leave-one-E3-out cross-validation (Appendix~\ref{app:extended}) confirms this: VHL held-out achieves 0.610 and CRBN held-out achieves 0.606 AUROC, indicating bidirectional transfer.
-However, cIAP1 held-out collapses to 0.271 AUROC with only 62 test samples (16 positive), indicating that generalization to rare E3 ligases requires substantially more data.
-This limitation mirrors the broader challenge in PROTAC development, where CRBN and VHL account for $>$95\% of clinical candidates.
-
-\paragraph{The lysine indicator paradox.}
-Feature ablation reveals a counterintuitive finding: removing the binary lysine indicator \emph{improves} test AUROC by +0.101 (Section~\ref{app:ablations}).
-We hypothesize that the explicit lysine marker causes the model to overfit to lysine count as a simple heuristic.
-The amino acid one-hot encoding (dimension 12 of 20) already implicitly encodes lysine identity, and the lysine-weighted pooling mechanism (Eq.~\ref{eq:lyspool}) provides a more architecturally nuanced way to leverage lysine information.
-This finding suggests a design principle: encode domain knowledge through \emph{architectural inductive biases} (pooling mechanisms, attention patterns) rather than \emph{input features}, as the former are harder for the model to shortcut.
-
-\paragraph{Validation--test discordance.}
-A recurring theme in our ablation studies (Appendix~\ref{app:ablations}) is that validation AUROC does not reliably predict test AUROC on the target-unseen split.
-For example, the default configuration achieves 0.584 validation but only 0.477 test AUROC, while LR=$5\times10^{-4}$ achieves 0.554 validation but 0.666 test.
-This discordance arises because the validation set, while containing different PROTAC--target pairs than the training set, may share protein targets with the training set (depending on the split).
-Validation performance thus conflates interpolation (same proteins, different PROTACs) with extrapolation (different proteins), making it unreliable for model selection.
-This observation motivates the development of nested target-unseen validation schemes in future work.
-
-\paragraph{Clinical applicability.}
-\ours{} is designed for one specific use case: pre-synthesis screening.
-Given a disease-relevant protein, the model estimates degradability across available E3 ligases before any PROTAC is designed.
-The E3 recommendation capability (MRR 0.641, Hit@3 74\%) provides actionable guidance for E3 selection, potentially saving months of medicinal chemistry effort.
-At Precision@20 of 0.70 on target-unseen evaluation, the model can prioritize targets with reasonable accuracy for experimental follow-up.
-Precision@100 of 0.69 indicates sustained predictive value across a larger candidate pool.
-
-\paragraph{Implications for protein representation learning.}
-The ESM-2 and equivariance results carry implications beyond PROTAC prediction.
-ESM-2 embeddings fail in isolation (0.534 AUROC) and degrade performance when naively combined with structure (0.407), yet careful regularization reveals complementary signal (best seed 0.7449).
-This suggests that for artificially-induced processes---susceptibility to engineered enzymes, synthetic biology circuits, or bispecific antibody effects---evolutionary representations require task-specific regularization rather than simple concatenation.
-The equivariance result reinforces growing evidence~\cite{zhang2023gearnet} that full geometric equivariance through intermediate layers is unnecessary when predicting scalar properties; SE(3)-invariant features capture the relevant geometric information at lower computational cost.
-
-\paragraph{Training instability.}
-The high multi-seed variance (std=0.124) reflects the combination of a small dataset (155 unique proteins) and high-dimensional features (1,285 dimensions).
-Even GNN baselines exhibit substantial seed sensitivity (EGNN: std=0.11), confirming this as a data-regime challenge rather than an architecture-specific deficiency.
-Ensemble methods and training stabilization techniques (learning rate warmup, stochastic weight averaging) represent clear avenues for improvement.
+The strong E3-unseen performance (0.811 AUROC for CRBN$\to$VHL) demonstrates effective cross-E3 transfer, though generalization to rare E3 ligases (cIAP1: 0.271 AUROC) requires more data.
+Feature ablation reveals that removing the lysine indicator \emph{improves} AUROC (+0.101), suggesting domain knowledge is better encoded through architectural biases (lysine-weighted pooling) than input features.
 
 \paragraph{Limitations.}
-Several limitations should be noted:
-(1)~The dataset is dominated by CRBN (62\%) and VHL (34\%), limiting generalization to underrepresented E3 ligases.
-(2)~We use single static AlphaFold structures, ignoring conformational dynamics that may influence ternary complex formation.
-(3)~No compatible external validation dataset exists---the PROTAC prediction field lacks a standardized benchmark with consistent input modalities.
-(4)~High variance across random seeds (std=0.124) means peak performance (0.7449) may require seed selection or ensembling to achieve reliably.
-(5)~The per-E3 performance gap (CRBN 0.758 vs.\ VHL 0.396) indicates that balanced E3 representation is needed for reliable predictions.
+(1)~Dataset dominated by CRBN/VHL (96\%), limiting rare-E3 generalization.
+(2)~Static AlphaFold structures ignore conformational dynamics.
+(3)~No compatible external validation dataset exists.
+(4)~High seed variance (std=0.124) may require ensembling for reliable peak performance.
 
 
 % ================================================================
@@ -821,22 +659,11 @@ Several limitations should be noted:
 \label{sec:conclusion}
 
 \ours{} predicts PROTAC-mediated protein degradability from protein structure and E3 ligase identity---the minimal information available before PROTAC synthesis.
-By encoding ubiquitin transfer biology through lysine-weighted pooling, modeling protein--E3 compatibility via cross-attention, and integrating ESM-2 embeddings with careful regularization, the model achieves 0.646\,\spm{0.124} AUROC (best seed: 0.7449) on unseen protein targets and 0.811 AUROC on E3-unseen transfer, while also functioning as an E3 ligase recommender (Hit@3: 74\%).
+The model achieves 0.646\,\spm{0.124} AUROC (best: 0.7449) on unseen targets, 0.811 on E3-unseen transfer, and 74\% Hit@3 for E3 recommendation.
+Two findings carry broader implications: invariant architectures outperform equivariant ones for scalar prediction, and ESM-2 embeddings require task-specific regularization.
 
-Our evaluation across three data splits, six baselines, and systematic ablations yields two findings of broader interest: invariant architectures outperform equivariant ones for scalar protein property prediction, and pre-trained protein language model features require task-specific regularization to contribute to artificially-induced process prediction.
-
-Future directions include training stabilization via ensembles, pre-training the SUG module on natural ubiquitination data from UbiBrowser~\cite{li2017ubibrowser}, incorporating conformational ensembles from molecular dynamics or AlphaFold sampling, expanding E3 ligase coverage as data for emerging E3 ligases become available, and developing nested target-unseen validation schemes.
-
-Code, pre-trained models, and reproducibility scripts are available at \url{https://github.com/anonymoussubmitter-167/DKO}.
-The PROTAC-8K dataset is available at \url{https://zenodo.org/records/14715718}.
-
-\paragraph{Reproducibility Statement.}
-To ensure reproducibility, we provide the complete source code, pre-trained model checkpoints, and all scripts necessary to reproduce our experiments at \url{https://github.com/anonymoussubmitter-167/DKO}.
-The repository includes: (1)~model architecture implementations in PyTorch; (2)~data preprocessing pipelines for AlphaFold structures, ESM-2 embeddings, and PhosphoSitePlus annotations; (3)~training scripts with exact hyperparameter configurations; (4)~evaluation scripts for all reported metrics; and (5)~a Dockerfile for environment reproduction.
-All experiments were conducted on NVIDIA RTX 2080 Ti GPUs (11\,GB).
-We report multi-seed validation results (seeds 42, 123, 456) with mean and standard deviation to characterize variance.
-The PROTAC-8K dataset is publicly available on Zenodo.
-Random seeds, data splits, and hyperparameters are fully documented in the supplementary materials.
+Code and models: \url{https://github.com/anonymoussubmitter-167/DKO}.
+Data: \url{https://zenodo.org/records/14715718}.
 
 
 % ================================================================
@@ -971,9 +798,9 @@ V.~Gligori\'{c}evi\'{c}, P.~D.~Renfrew, T.~Kosciolek, et~al.
 
 \end{thebibliography}
 
-
+\clearpage
 % ================================================================
-%  APPENDIX
+%  APPENDIX (Supplementary Material)
 % ================================================================
 
 \appendix
