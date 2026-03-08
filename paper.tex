@@ -822,8 +822,16 @@ Our evaluation across three data splits, six baselines, and systematic ablations
 
 Future directions include training stabilization via ensembles, pre-training the SUG module on natural ubiquitination data from UbiBrowser~\cite{li2017ubibrowser}, incorporating conformational ensembles from molecular dynamics or AlphaFold sampling, expanding E3 ligase coverage as data for emerging E3 ligases become available, and developing nested target-unseen validation schemes.
 
-Code, pre-trained models, and reproducibility scripts are available at \url{https://github.com/anonymous/degradomap}.
+Code, pre-trained models, and reproducibility scripts are available at \url{https://github.com/anonymoussubmitter-167/DKO}.
 The PROTAC-8K dataset is available at \url{https://zenodo.org/records/14715718}.
+
+\paragraph{Reproducibility Statement.}
+To ensure reproducibility, we provide the complete source code, pre-trained model checkpoints, and all scripts necessary to reproduce our experiments at \url{https://github.com/anonymoussubmitter-167/DKO}.
+The repository includes: (1)~model architecture implementations in PyTorch; (2)~data preprocessing pipelines for AlphaFold structures, ESM-2 embeddings, and PhosphoSitePlus annotations; (3)~training scripts with exact hyperparameter configurations; (4)~evaluation scripts for all reported metrics; and (5)~a Dockerfile for environment reproduction.
+All experiments were conducted on NVIDIA RTX 2080 Ti GPUs (11\,GB).
+We report multi-seed validation results (seeds 42, 123, 456) with mean and standard deviation to characterize variance.
+The PROTAC-8K dataset is publicly available on Zenodo.
+Random seeds, data splits, and hyperparameters are fully documented in the supplementary materials.
 
 
 % ================================================================
@@ -1584,7 +1592,7 @@ All data and code required for reproduction are publicly available:
     \item \textbf{PROTAC-8K dataset}: \url{https://zenodo.org/records/14715718}
     \item \textbf{AlphaFold structures}: \url{https://alphafold.ebi.ac.uk/} (v6 API, human proteome)
     \item \textbf{DepMap features}: \url{https://depmap.org/portal/} (24Q2 release)
-    \item \textbf{Code and pre-trained models}: \url{https://github.com/anonymous/degradomap}
+    \item \textbf{Code and pre-trained models}: \url{https://github.com/anonymoussubmitter-167/DKO}
 \end{itemize}
 
 The repository includes training scripts, evaluation pipelines, baseline implementations, and pre-trained model checkpoints for all three evaluation splits.
