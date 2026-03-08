@@ -24,7 +24,7 @@
 \setlist{topsep=2pt,itemsep=1pt,leftmargin=*}
 
 % Custom commands
-\newcommand{\ours}{\textsc{SUGNet}}
+\newcommand{\ours}{\textsc{DegradoMap}}
 \newcommand{\ci}[2]{{\small[#1, #2]}}
 \newcommand{\spm}[1]{{\scriptsize$\pm$#1}}
 
@@ -221,7 +221,7 @@ Figure~\ref{fig:architecture} illustrates the overall architecture.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/fig1_architecture.pdf}
-\Description{Block diagram showing SUGNet architecture with four modules: SUG encoder with lysine-weighted pooling, E3 compatibility cross-attention, cellular context encoder, and gated fusion producing binary and continuous predictions.}
+\Description{Block diagram showing DegradoMap architecture with four modules: SUG encoder with lysine-weighted pooling, E3 compatibility cross-attention, cellular context encoder, and gated fusion producing binary and continuous predictions.}
 \caption{Architecture of \ours{}. Module~A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module~B's cross-attention with E3 ligase embeddings. Module~C encodes cellular context from DepMap features. Module~D fuses all representations through learned gating and produces binary degradability ($\hat{y}_{\text{bin}}$) and continuous efficiency ($\hat{y}_{\text{cont}}$) predictions.}
 \label{fig:architecture}
 \end{figure*}
@@ -459,8 +459,8 @@ Figure~\ref{fig:main_results} visualizes the comparison across all models and sp
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig2_main_results.pdf}
-\Description{Grouped bar chart comparing AUROC across evaluation splits for SUGNet, SchNet, EGNN, Gradient Boosting, Random Forest, MLP, and Logistic Regression with error bars.}
-\caption{AUROC comparison across evaluation splits for all models. Error bars show 95\% bootstrap CIs (SUGNet) or multi-seed standard deviation (GNN baselines). Dashed line indicates random performance (0.5). \ours{} achieves the best target-unseen performance; tree-based methods dominate only on random splits.}
+\Description{Grouped bar chart comparing AUROC across evaluation splits for DegradoMap, SchNet, EGNN, Gradient Boosting, Random Forest, MLP, and Logistic Regression with error bars.}
+\caption{AUROC comparison across evaluation splits for all models. Error bars show 95\% bootstrap CIs (DegradoMap) or multi-seed standard deviation (GNN baselines). Dashed line indicates random performance (0.5). \ours{} achieves the best target-unseen performance; tree-based methods dominate only on random splits.}
 \label{fig:main_results}
 \end{figure}
 
