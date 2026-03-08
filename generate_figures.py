@@ -28,7 +28,8 @@ except OSError:
         pass
 
 plt.rcParams.update({
-    'font.family': 'serif',
+    'font.family': 'sans-serif',
+    'font.sans-serif': ['Arial', 'Helvetica', 'DejaVu Sans'],
     'font.size': 9,
     'axes.labelsize': 10,
     'axes.titlesize': 10,
@@ -40,6 +41,8 @@ plt.rcParams.update({
     'savefig.pad_inches': 0.05,
     'pdf.fonttype': 42,
     'ps.fonttype': 42,
+    'axes.spines.top': False,
+    'axes.spines.right': False,
 })
 
 # Colorblind-safe palette
@@ -261,6 +264,16 @@ def fig2_main_results():
 # =====================================================================
 #  Figure 3: Training Curves
 # =====================================================================
+def _smooth(values, window=3):
+    """Simple moving average smoothing."""
+    smoothed = []
+    for i in range(len(values)):
+        lo = max(0, i - window // 2)
+        hi = min(len(values), i + window // 2 + 1)
+        smoothed.append(np.mean(values[lo:hi]))
+    return smoothed
+
+
 def fig3_training_curves():
     train = load_json('training_results.json')
     equiv = load_json('equivariant_target_unseen_results.json')
@@ -268,18 +281,18 @@ def fig3_training_curves():
     # Invariant model (random split training)
     inv_log = train['phase2_random']['training_log']
     inv_epochs = [e['epoch'] for e in inv_log]
-    inv_train_loss = [e['train']['loss'] for e in inv_log]
+    inv_train_loss = _smooth([e['train']['loss'] for e in inv_log])
     inv_val_auroc = [e['val']['auroc'] for e in inv_log]
 
     # Equivariant model (target-unseen split)
     eq_hist = equiv['training_history']
     eq_epochs = [e['epoch'] + 1 for e in eq_hist]  # 0-indexed -> 1-indexed
-    eq_train_loss = [e['train_loss'] for e in eq_hist]
+    eq_train_loss = _smooth([e['train_loss'] for e in eq_hist])
     eq_val_auroc = [e['val_auroc'] for e in eq_hist]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7, 2.8))
 
-    # Left: training loss
+    # Left: training loss (smoothed via moving average)
     ax1.plot(inv_epochs, inv_train_loss, '-o', markersize=2.5,
              color=C_SPLIT['target_unseen'], label='Invariant (random split)',
              linewidth=1.3)
@@ -288,7 +301,9 @@ def fig3_training_curves():
              linewidth=1.3, alpha=0.8)
     ax1.set_xlabel('Epoch')
     ax1.set_ylabel('Training Loss')
-    ax1.set_title('(a) Training Loss', fontsize=9)
+    ax1.set_title('Training Loss', fontsize=9)
+    ax1.text(-0.12, 1.05, 'a', transform=ax1.transAxes,
+             fontsize=12, fontweight='bold', va='top')
     ax1.legend(fontsize=7, loc='upper right')
 
     # Phase transition markers for invariant
@@ -305,7 +320,9 @@ def fig3_training_curves():
     ax2.axhline(y=0.5, color='#999999', linestyle='--', linewidth=0.7)
     ax2.set_xlabel('Epoch')
     ax2.set_ylabel('Validation AUROC')
-    ax2.set_title('(b) Validation AUROC', fontsize=9)
+    ax2.set_title('Validation AUROC', fontsize=9)
+    ax2.text(-0.12, 1.05, 'b', transform=ax2.transAxes,
+             fontsize=12, fontweight='bold', va='top')
     ax2.legend(fontsize=7, loc='lower right')
 
     for phase_end in [5, 10]:
@@ -412,54 +429,24 @@ def fig5_error_analysis():
         ax.set_ylim(0, 1.08)
         ax.axhline(y=0.5, color='#cccccc', linestyle='--', linewidth=0.7)
 
-    # (a) By protein size
-    size = ea['by_size']
-    bar_with_counts(
-        axes[0, 0],
-        list(size['accuracy'].keys()),
-        list(size['accuracy'].values()),
-        list(size['count'].values()),
-        '(a) Accuracy by Protein Size',
-        'Residue count',
-        C_SPLIT['target_unseen']
-    )
+    # Panel labels and data
+    panel_info = [
+        ('a', axes[0, 0], ea['by_size'], 'Accuracy by Protein Size', 'Residue count', C_SPLIT['target_unseen'], 'accuracy', 'count'),
+        ('b', axes[0, 1], ea['by_disorder'], 'Accuracy by Disorder Fraction', 'Mean disorder', C_SPLIT['e3_unseen'], 'accuracy', 'count'),
+        ('c', axes[1, 0], ea['by_e3'], 'Accuracy by E3 Ligase', 'E3 ligase', C_SPLIT['random'], 'accuracy', 'total'),
+        ('d', axes[1, 1], ea['by_confidence'], 'Accuracy by Prediction Confidence', 'Confidence level', '#CC78BC', 'accuracy', 'count'),
+    ]
 
-    # (b) By disorder fraction
-    dis = ea['by_disorder']
-    bar_with_counts(
-        axes[0, 1],
-        list(dis['accuracy'].keys()),
-        list(dis['accuracy'].values()),
-        list(dis['count'].values()),
-        '(b) Accuracy by Disorder Fraction',
-        'Mean disorder',
-        C_SPLIT['e3_unseen']
-    )
-
-    # (c) By E3 ligase
-    e3 = ea['by_e3']
-    e3_labels = list(e3['accuracy'].keys())
-    e3_accs = list(e3['accuracy'].values())
-    e3_counts = list(e3['total'].values())
-    bar_with_counts(
-        axes[1, 0],
-        e3_labels, e3_accs, e3_counts,
-        '(c) Accuracy by E3 Ligase',
-        'E3 ligase',
-        C_SPLIT['random']
-    )
-
-    # (d) By confidence
-    conf = ea['by_confidence']
-    bar_with_counts(
-        axes[1, 1],
-        list(conf['accuracy'].keys()),
-        list(conf['accuracy'].values()),
-        list(conf['count'].values()),
-        '(d) Accuracy by Prediction Confidence',
-        'Confidence level',
-        '#CC78BC'
-    )
+    for label, ax, data, title, xlabel, color, acc_key, cnt_key in panel_info:
+        bar_with_counts(
+            ax,
+            list(data[acc_key].keys()),
+            list(data[acc_key].values()),
+            list(data[cnt_key].values()),
+            title, xlabel, color
+        )
+        ax.text(-0.12, 1.05, label, transform=ax.transAxes,
+                fontsize=12, fontweight='bold', va='top')
 
     fig.tight_layout()
     fig.savefig(FIGDIR / 'fig5_error_analysis.pdf')
@@ -611,7 +598,9 @@ def fig8_ranking_curves():
 
     ax1.set_xlabel('k')
     ax1.set_ylabel('Precision@k')
-    ax1.set_title('(a) Precision@k', fontsize=9)
+    ax1.set_title('Precision@k', fontsize=9)
+    ax1.text(-0.12, 1.05, 'a', transform=ax1.transAxes,
+             fontsize=12, fontweight='bold', va='top')
     ax1.set_ylim(0.2, 1.0)
     ax1.legend(fontsize=7)
     ax1.set_xticks(ks)
@@ -626,7 +615,9 @@ def fig8_ranking_curves():
 
     ax2.set_xlabel('k')
     ax2.set_ylabel('NDCG@k')
-    ax2.set_title('(b) NDCG@k', fontsize=9)
+    ax2.set_title('NDCG@k', fontsize=9)
+    ax2.text(-0.12, 1.05, 'b', transform=ax2.transAxes,
+             fontsize=12, fontweight='bold', va='top')
     ax2.set_ylim(0.3, 1.0)
     ax2.legend(fontsize=7)
     ax2.set_xticks(ndcg_ks)

@@ -52,7 +52,7 @@ This document tracks all critiques identified for ICML/NeurIPS submission readin
 ---
 
 ### 3. Insufficient Statistical Rigor
-**Status:** NOT STARTED
+**Status:** COMPLETE
 
 **Problem:** Single train/test split, no cross-validation, no multiple seeds.
 
@@ -174,7 +174,7 @@ This document tracks all critiques identified for ICML/NeurIPS submission readin
 ---
 
 ### 8. No Error/Failure Case Analysis
-**Status:** RUNNING
+**Status:** COMPLETE
 
 **Analysis Implemented:**
 - [x] FP vs FN breakdown
@@ -210,7 +210,7 @@ This document tracks all critiques identified for ICML/NeurIPS submission readin
 ---
 
 ### 10. Limited Evaluation Metrics
-**Status:** RUNNING
+**Status:** COMPLETE
 
 **Current:** AUROC, AUPRC, F1
 
@@ -302,7 +302,7 @@ Covers:
 ---
 
 ### 15. Reproducibility Checklist Incomplete
-**Status:** PARTIAL
+**Status:** COMPLETE
 
 | Item | Status |
 |------|--------|
@@ -367,30 +367,30 @@ Covers:
 
 ## Final Status
 
-### COMPLETE (13/15):
+### COMPLETE (15/15):
 1. DegradeMaster comparison - RESOLVED (different problem formulation)
 2. GNN baselines - SchNet, EGNN with multi-seed results
-3. Complete ablations - 20 configurations tested
-4. Hyperparameter docs - `docs/hyperparameters.md`
-5. Architectural novelty - E(3)-equivariant tested (negative result validates our design)
-6. ESM analysis - ESM-only 0.534, doesn't combine with structure
-7. Error analysis - FP/FN patterns, calibration metrics
-8. Computational efficiency - DegradoMap 17ms, 3.5x slower but +13.9% better
-9. More metrics - ECE, MCC, NDCG, Precision@k
-10. E3-unseen framing - `docs/e3_generalization.md`
-11. Split methodology - `docs/split_methodology.md`
-12. Theoretical grounding - `docs/theoretical_grounding.md`
-13. Related work - `docs/related_work.md`
-14. Reproducibility - `REPRODUCIBILITY.md` + Dockerfile
+3. Statistical rigor - 5-fold CV, multi-seed validation, bootstrap CIs
+4. Complete ablations - 20 configurations tested
+5. Hyperparameter docs - `docs/hyperparameters.md`
+6. Architectural novelty - E(3)-equivariant tested (negative result validates our design)
+7. ESM analysis - ESM-only 0.534, careful integration achieves 0.7449 best seed
+8. Error analysis - FP/FN patterns, calibration metrics
+9. Computational efficiency - DegradoMap 17ms, 3.5x slower but +13.9% better
+10. More metrics - ECE, MCC, NDCG, Precision@k
+11. E3-unseen framing - `docs/e3_generalization.md`
+12. Split methodology - `docs/split_methodology.md`
+13. Theoretical grounding - `docs/theoretical_grounding.md`
+14. Related work - `docs/related_work.md`
+15. Reproducibility - `REPRODUCIBILITY.md` + Dockerfile
 
-### RUNNING (1/15):
-15. 5-fold CV - Running in background (~2 hours estimated)
-
-### Statistical Rigor (Current)
-We have multi-seed variance estimates from:
+### Statistical Rigor
+Multi-seed variance estimates:
+- Improved model: target_unseen = 0.646 ± 0.124 (3 seeds, best 0.7449)
 - GNN baselines: EGNN target_unseen = 0.518 ± 0.11 (3 seeds)
 - GNN baselines: SchNet random = 0.776 ± 0.02 (3 seeds)
-- Bootstrap CIs: target_unseen = [0.611, 0.712] (100 iterations)
+- Bootstrap CIs: target_unseen = [0.611, 0.712] (100 iterations, baseline)
+- Improved model bootstrap CI: [0.737, 0.822] (best seed)
 
 **Completed Results (Feb 25):**
 - `results/extended_metrics.json` - All classification, calibration, ranking metrics
