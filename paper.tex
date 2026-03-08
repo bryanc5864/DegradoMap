@@ -220,7 +220,7 @@ Figure~\ref{fig:architecture} illustrates the overall architecture.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/fig1_architecture.pdf}
+\includegraphics[width=0.85\textwidth]{fig1_architecture.pdf}
 \Description{Block diagram showing DegradoMap architecture with four modules: SUG encoder with lysine-weighted pooling, E3 compatibility cross-attention, cellular context encoder, and gated fusion producing binary and continuous predictions.}
 \caption{Architecture of \ours{}. Module~A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module~B's cross-attention with E3 ligase embeddings. Module~C encodes cellular context from DepMap features. Module~D fuses all representations through learned gating and produces binary degradability ($\hat{y}_{\text{bin}}$) and continuous efficiency ($\hat{y}_{\text{cont}}$) predictions.}
 \label{fig:architecture}
@@ -418,7 +418,7 @@ This multi-split evaluation is essential because, as we demonstrate, random spli
     \item \textbf{Target-unseen split} (2,218 / 410 / 473): Samples are grouped by UniProt accession so that proteins in the test set are \emph{never} seen during training. This is the most stringent and practically relevant evaluation, as the intended use case involves assessing degradability of novel protein targets. The E3-stratified target selection ensures that E3 ligase distributions are approximately matched across splits.
     \item \textbf{E3-unseen split} (1,643 / 352 / 1,106): All 1,106 VHL samples are held out for testing, with the model training exclusively on CRBN-dominant data. This evaluates cross-E3 generalization: can structural features learned from CRBN-mediated degradation transfer to VHL-mediated degradation? This scenario is practically relevant as new E3 ligases (DCAF1, RNF114) enter the PROTAC pipeline.
 \end{enumerate}
-We report 95\% bootstrap confidence intervals (100 iterations) for all primary metrics to quantify statistical uncertainty.
+We report 95\% bootstrap confidence intervals (1,000 iterations) for all primary metrics to quantify statistical uncertainty.
 
 
 % ================================================================
@@ -458,7 +458,7 @@ Figure~\ref{fig:main_results} visualizes the comparison across all models and sp
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig2_main_results.pdf}
+\includegraphics[width=\columnwidth]{fig2_main_results.pdf}
 \Description{Grouped bar chart comparing AUROC across evaluation splits for DegradoMap, SchNet, EGNN, Gradient Boosting, Random Forest, MLP, and Logistic Regression with error bars.}
 \caption{AUROC comparison across evaluation splits for all models. Error bars show 95\% bootstrap CIs (DegradoMap) or multi-seed standard deviation (GNN baselines). Dashed line indicates random performance (0.5). \ours{} achieves the best target-unseen performance; tree-based methods dominate only on random splits.}
 \label{fig:main_results}
@@ -568,7 +568,7 @@ Figure~\ref{fig:ablation} presents the full ablation landscape, showing the effe
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig7_ablation_lollipop.pdf}
+\includegraphics[width=\columnwidth]{fig7_ablation_lollipop.pdf}
 \Description{Horizontal lollipop chart showing the effect of each ablation configuration on target-unseen AUROC, with stems connecting dots to the default baseline.}
 \caption{Ablation study: effect of each configuration on target-unseen AUROC. Dots show test AUROC; stems connect to the default baseline (dashed line). LR=$5\times10^{-4}$ yields the largest improvement (+0.189); removing the lysine indicator also improves performance (+0.101).}
 \label{fig:ablation}
@@ -615,7 +615,7 @@ Figure~\ref{fig:training} compares training dynamics of the invariant and equiva
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig3_training_curves.pdf}
+\includegraphics[width=\columnwidth]{fig3_training_curves.pdf}
 \Description{Two-panel plot showing training loss and validation AUROC across epochs for invariant and E(3)-equivariant architectures, with vertical dotted lines marking phase transitions.}
 \caption{Training dynamics comparison. (a)~Training loss and (b)~validation AUROC across epochs for the invariant model (random split, 20 epochs) and E(3)-equivariant variant (target-unseen split, 50 epochs). Vertical dotted lines mark phase transitions. The equivariant model converges slower and plateaus at a lower validation AUROC.}
 \label{fig:training}
@@ -678,13 +678,13 @@ Table~\ref{tab:multiseed_main} reports per-seed results.
 \caption{Multi-seed validation of the improved model on target-unseen split. High variance reflects initialization sensitivity in the low-data regime with high-dimensional features.}
 \label{tab:multiseed_main}
 \small
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-\textbf{Seed} & \textbf{Test AUROC} & \textbf{Best Val AUROC} & \textbf{Early Stop Epoch} \\
+\textbf{Seed} & \textbf{Test AUROC} & \textbf{Best Val AUROC} & \textbf{Best Epoch} & \textbf{Stopped Epoch} \\
 \midrule
-42  & \textbf{0.7449} & 0.562 & 8 \\
-123 & 0.688 & 0.697 & 10 (no stop) \\
-456 & 0.506 & 0.595 & 6 \\
+42  & \textbf{0.7449} & 0.5618 & 3 & 8 \\
+123 & 0.6878 & 0.6966 & 8 & 10 \\
+456 & 0.5060 & 0.5951 & 1 & 6 \\
 \midrule
 \textbf{Mean\,\spm{Std}} & \textbf{0.646\,\spm{0.124}} & & \\
 \bottomrule
@@ -822,7 +822,7 @@ Our evaluation across three data splits, six baselines, and systematic ablations
 
 Future directions include training stabilization via ensembles, pre-training the SUG module on natural ubiquitination data from UbiBrowser~\cite{li2017ubibrowser}, incorporating conformational ensembles from molecular dynamics or AlphaFold sampling, expanding E3 ligase coverage as data for emerging E3 ligases become available, and developing nested target-unseen validation schemes.
 
-Code, pre-trained models, and reproducibility scripts are available at \url{https://github.com/anonymous/sugnet}.
+Code, pre-trained models, and reproducibility scripts are available at \url{https://github.com/anonymous/degradomap}.
 The PROTAC-8K dataset is available at \url{https://zenodo.org/records/14715718}.
 
 
@@ -1006,7 +1006,7 @@ Figure~\ref{fig:cv_violin} visualizes the per-fold and overall AUROC distributio
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig4_cv_violin.pdf}
+\includegraphics[width=\columnwidth]{fig4_cv_violin.pdf}
 \Description{Strip plot showing 5-fold cross-validation AUROC distribution with individual seed data points, fold means as horizontal bars, and a shaded 95 percent confidence interval band.}
 \caption{5-fold cross-validation AUROC distribution. Each dot represents one seed; horizontal bars show fold means. The shaded band indicates the 95\% CI of the overall mean (0.565). High inter-fold variance reflects the influence of protein composition on measured performance.}
 \label{fig:cv_violin}
@@ -1141,7 +1141,7 @@ Figure~\ref{fig:error_analysis} provides a stratified error analysis across prot
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/fig5_error_analysis.pdf}
+\includegraphics[width=0.9\textwidth]{fig5_error_analysis.pdf}
 \Description{Four-panel bar chart showing classification accuracy stratified by protein size, disorder fraction, E3 ligase, and prediction confidence on the target-unseen split, with sample counts above each bar.}
 \caption{Stratified error analysis on the target-unseen split. (a)~Accuracy by protein size: large proteins (600--1000 residues) are hardest to classify. (b)~Accuracy by disorder fraction: highly disordered targets ($>$0.4) have lower accuracy. (c)~Accuracy by E3 ligase: CRBN outperforms VHL; rare E3s have too few samples for reliable estimates. (d)~Accuracy by prediction confidence: medium-confidence predictions are more accurate than low-confidence ones. Sample counts shown above each bar.}
 \label{fig:error_analysis}
@@ -1172,7 +1172,7 @@ Figure~\ref{fig:calibration} shows the calibration curve for the target-unseen s
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.75\columnwidth]{figures/fig6_calibration.pdf}
+\includegraphics[width=0.75\columnwidth]{fig6_calibration.pdf}
 \Description{Calibration curve plotting observed positive fraction versus mean predicted probability with a diagonal reference line representing perfect calibration, showing ECE and Brier score values.}
 \caption{Calibration curve for the target-unseen split. Points show observed positive fraction vs.\ mean predicted probability in each bin; the diagonal represents perfect calibration. The model is well-calibrated (ECE = 0.029), with predicted probabilities closely tracking observed degradation rates.}
 \label{fig:calibration}
@@ -1212,7 +1212,7 @@ Figure~\ref{fig:ranking} plots the Precision@$k$ and NDCG@$k$ trends.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig8_ranking_curves.pdf}
+\includegraphics[width=\columnwidth]{fig8_ranking_curves.pdf}
 \Description{Two-panel line plot showing Precision at k and NDCG at k trends across target-unseen, E3-unseen, and random evaluation splits for varying k values.}
 \caption{Ranking metrics across evaluation splits. (a)~Precision@$k$ remains above 0.60 for target-unseen and above 0.80 for E3-unseen across all~$k$. (b)~NDCG@$k$ shows consistent ranking quality, with E3-unseen and random splits achieving $>$0.85 at $k = 20$.}
 \label{fig:ranking}
@@ -1546,7 +1546,7 @@ The modest computational requirements (single consumer GPU, $<$80\,MB memory) ma
 
 All experiments use seed 42 unless otherwise noted.
 Cross-validation experiments (Section~\ref{app:cv}) use seeds \{42, 123, 456\} per fold to assess seed sensitivity.
-Bootstrap confidence intervals use 100 iterations with sequential numpy random seeds.
+Bootstrap confidence intervals use 1,000 iterations with sequential numpy random seeds.
 Multi-seed GNN baseline experiments use seeds \{42, 123, 456\}.
 
 \subsection{Software and Hardware}
@@ -1564,14 +1564,14 @@ Multi-seed GNN baseline experiments use seeds \{42, 123, 456\}.
 \quad GPU & NVIDIA GeForce RTX 2080 Ti (11\,GB) \\
 \quad CPU & Intel Core i9 \\
 \quad RAM & 32\,GB \\
-\quad OS & Windows 11 Pro \\
+\quad OS & Ubuntu Linux 5.15 \\
 \midrule
 \multicolumn{2}{@{}l}{\textit{Software}} \\
-\quad Python & 3.10 \\
-\quad PyTorch & 2.1 \\
+\quad Python & 3.13 \\
+\quad PyTorch & 2.5.1+cu118 \\
 \quad PyTorch Geometric & 2.4 \\
 \quad scikit-learn & 1.3 \\
-\quad NumPy & 1.24 \\
+\quad NumPy & 1.26 \\
 \quad Pandas & 2.0 \\
 \bottomrule
 \end{tabular}
@@ -1584,7 +1584,7 @@ All data and code required for reproduction are publicly available:
     \item \textbf{PROTAC-8K dataset}: \url{https://zenodo.org/records/14715718}
     \item \textbf{AlphaFold structures}: \url{https://alphafold.ebi.ac.uk/} (v6 API, human proteome)
     \item \textbf{DepMap features}: \url{https://depmap.org/portal/} (24Q2 release)
-    \item \textbf{Code and pre-trained models}: \url{https://github.com/anonymous/sugnet}
+    \item \textbf{Code and pre-trained models}: \url{https://github.com/anonymous/degradomap}
 \end{itemize}
 
 The repository includes training scripts, evaluation pipelines, baseline implementations, and pre-trained model checkpoints for all three evaluation splits.
