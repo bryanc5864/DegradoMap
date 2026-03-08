@@ -154,6 +154,7 @@ DegradeMaster~\cite{liu2025degrademaster} achieves 0.856 AUROC using full PROTAC
 \caption{Input modality comparison of PROTAC prediction methods. \ours{} requires only protein structure and E3 identity, enabling use before PROTAC synthesis.}
 \label{tab:positioning}
 \footnotesize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 \textbf{Method} & \textbf{Protein} & \textbf{PROTAC} & \textbf{E3} & \textbf{Use Case} \\
@@ -436,8 +437,9 @@ The improved model (1,285-dim features with ESM-2) reports multi-seed validated 
 \centering
 \caption{Test performance of \ours{}. Target-unseen: multi-seed results (seeds 42, 123, 456) for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs.}
 \label{tab:main}
-\footnotesize
-\begin{tabular}{@{}lccccc@{}}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
 \textbf{Split} & $n$ & \textbf{AUROC} & \textbf{Std / CI} & \textbf{Best Seed} \\
 \midrule
@@ -476,8 +478,8 @@ Results over three seeds report mean\,\spm{std}.
 \centering
 \caption{GNN baseline comparison (AUROC). Multi-seed results reported as mean\,\spm{std}. Best per-split in \textbf{bold}. All models use C$\alpha$ radius graphs.}
 \label{tab:gnn_baselines}
-\footnotesize
-\setlength{\tabcolsep}{3.5pt}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{@{}lrccc@{}}
 \toprule
 \textbf{Model} & \textbf{Params} & \textbf{Tgt-uns.} & \textbf{E3-uns.} & \textbf{Random} \\
@@ -545,7 +547,8 @@ To quantify each module's contribution, we evaluate configurations with subsets 
 \vspace{-2pt}
 \raggedright{\scriptsize $^\dagger$Main results (Table~\ref{tab:main}) use tuned LR=$5\times10^{-4}$, which improves target-unseen AUROC from 0.540 to 0.657 (see Table~\ref{tab:train_ablation}).}
 \label{tab:module_ablation}
-\small
+\footnotesize
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Configuration} & \textbf{Target-uns.} & \textbf{E3-uns.} & \textbf{Random} \\
@@ -632,7 +635,8 @@ Table~\ref{tab:esm} reports results on the target-unseen split.
 \centering
 \caption{ESM-2 integration results (target-unseen AUROC). Naive integration fails, but careful tuning enables ESM-2 to contribute to peak performance.}
 \label{tab:esm}
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lc@{}}
 \toprule
 \textbf{Model} & \textbf{Target-unseen AUROC} \\
@@ -677,7 +681,8 @@ Table~\ref{tab:multiseed_main} reports per-seed results.
 \centering
 \caption{Multi-seed validation of the improved model on target-unseen split. High variance reflects initialization sensitivity in the low-data regime with high-dimensional features.}
 \label{tab:multiseed_main}
-\small
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 \textbf{Seed} & \textbf{Test AUROC} & \textbf{Best Val AUROC} & \textbf{Best Epoch} & \textbf{Stopped Epoch} \\
@@ -987,7 +992,8 @@ Target proteins are grouped by fold such that no protein appears in both trainin
 \centering
 \caption{5-fold cross-validation results (target-unseen AUROC). Three seeds per fold; overall mean: 0.565\,\spm{0.052}, 95\% CI: \ci{0.490}{0.650}.}
 \label{tab:cv}
-\small
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{@{}lccccl@{}}
 \toprule
 \textbf{Fold} & $n_{\text{test}}$ & \textbf{Seed 42} & \textbf{Seed 123} & \textbf{Seed 456} & \textbf{Mean\,\spm{Std}} \\
@@ -1371,8 +1377,9 @@ These biases should be considered when interpreting model performance and planni
 \centering
 \caption{Complete 1,285-dimensional node feature breakdown for the improved model. Baseline uses AA one-hot (20-dim) instead of ESM-2, yielding 28 dimensions.}
 \label{tab:nodefeats_full}
-\footnotesize
-\begin{tabular}{@{}lr@{\;\;}l@{\;\;}l@{}}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}lr@{\;}l@{\;}l@{}}
 \toprule
 \textbf{Feature} & \textbf{Dim} & \textbf{Range} & \textbf{Description} \\
 \midrule
@@ -1607,7 +1614,8 @@ Table~\ref{tab:gnn_details} provides architecture specifications and complete mu
 \centering
 \caption{GNN baseline details. Upper: architecture specifications. Lower: multi-seed AUROC (3 seeds). High target-unseen variance indicates initialization sensitivity.}
 \label{tab:gnn_details}
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{@{}lrrll@{}}
 \toprule
 \textbf{Model} & \textbf{Params} & \textbf{Layers} & \textbf{Edge Feat.} & \textbf{Equivar.} \\
