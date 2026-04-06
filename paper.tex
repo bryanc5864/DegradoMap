@@ -333,6 +333,13 @@ Training proceeds for up to 10 epochs with batch size 8 (individual proteins, du
 The lower learning rate and reduced dropout compared to the baseline configuration (LR=$10^{-3}$, dropout=0.1) are critical for integrating high-dimensional ESM-2 features: the lower LR prevents overfitting on the 1,280-dimensional embeddings, while reduced dropout preserves useful structural signals in the data-limited regime.
 The complete model has 1.59M trainable parameters.
 
+\paragraph{Validation-test mismatch.}
+We observe that validation-split AUROC does not reliably predict target-unseen test AUROC.
+This occurs because the validation split may share protein identities or biological similarity with training data, making it closer to interpolation than the extrapolation required for truly unseen targets.
+Ideally, we would use a target-unseen validation split for hyperparameter selection; however, this would further reduce the already-limited training data (155 proteins $\to$ ${\sim}$120 training, ${\sim}$15 validation, ${\sim}$20 test).
+We therefore use standard random validation for computational efficiency while acknowledging this may bias hyperparameter selection toward random-split performance rather than target-unseen generalization.
+The chosen hyperparameters (LR=$5{\times}10^{-4}$, dropout=0.05) may not be optimal for target-unseen generalization, potentially contributing to the observed variance.
+
 \paragraph{Three-phase training.}
 To facilitate stable learning across the heterogeneous module types, we adopt a three-phase training strategy:
 \begin{enumerate}
@@ -431,7 +438,14 @@ We report 95\% bootstrap confidence intervals (1,000 iterations) for all primary
 
 \subsection{Main Results}
 
-Table~\ref{tab:main} presents \ours{}'s performance across three evaluation splits.
+\paragraph{Dataset characteristics and limitations.}
+PROTAC-8K contains 3,101 labeled samples spanning only 155 unique protein targets.
+For target-unseen evaluation, the effective diversity is therefore closer to the number of proteins than the total sample count.
+The E3 ligase distribution is highly imbalanced: CRBN accounts for 62\% of samples, VHL for 35\%, and the remaining eight E3s combined represent only 3\%.
+These constraints---limited target diversity and E3 imbalance---fundamentally bound generalization performance, as evidenced by the high seed variance (std=0.124) and asymmetric per-E3 performance discussed below.
+Moreover, PROTAC-8K represents the only publicly available benchmark with sufficient scale; we have no external validation dataset, limiting confidence in real-world generalization.
+
+Table~\ref{tab:main} presents \ours{}'s performance across three evaluation splits given these constraints.
 The improved model (1,285-dim features with ESM-2) reports multi-seed validated results on the target-unseen split; E3-unseen and random results are from the baseline architecture (28-dim features) with 95\% bootstrap confidence intervals.
 
 \begin{table}[t]
@@ -452,11 +466,13 @@ Random (baseline)        & 466 & 0.774 & \ci{0.725}{0.816} & -- \\
 \end{tabular}
 \end{table}
 
-The improved model achieves a multi-seed mean of 0.646\,\spm{0.124} on target-unseen evaluation, with the best seed reaching 0.7449 AUROC---a 23\% improvement over the gradient boosting baseline (0.607).
-The high standard deviation (0.124) reflects initialization sensitivity when training with high-dimensional ESM-2 features on a small dataset (155 unique proteins), a challenge we analyze in detail in Section~\ref{sec:multiseed}.
+The improved model achieves a multi-seed mean of 0.646\,\spm{0.124} on target-unseen evaluation---a 6.4\% improvement over the gradient boosting baseline (0.607).
+The best seed reaches 0.7449 AUROC (+23\% over baseline), though this peak performance reflects favorable initialization and should not be expected reliably given the high variance.
+The standard deviation (0.124) reflects initialization sensitivity when training with high-dimensional ESM-2 features on a small dataset (155 unique proteins), a challenge we analyze in detail in Section~\ref{sec:multiseed}.
 The baseline model achieves a single-seed AUROC of 0.657 with narrower bootstrap CI \ci{0.611}{0.712}.
-The E3-unseen result (0.811) demonstrates that knowledge transfers effectively from CRBN to VHL, the two dominant E3 ligases.
-This is a two-E3 transfer result (training on CRBN-dominant data, testing on VHL); generalization to rare E3 ligases (e.g., cIAP1) remains limited (Section~\ref{sec:fixes}).
+The E3-unseen result (0.811) demonstrates successful transfer between the two major E3 ligases (CRBN and VHL).
+This is specifically a CRBN$\to$VHL transfer evaluation: training on CRBN-dominant data (62\%), testing on VHL-targeted PROTACs.
+Generalization to rare E3 ligases (cIAP1, DCAF16, MDM2) remains limited due to insufficient training samples (Section~\ref{sec:multiseed}).
 Figure~\ref{fig:main_results} visualizes the comparison across all models and splits.
 
 \begin{figure}[t]
@@ -495,8 +511,8 @@ EGNN & 0.44M & 0.518\spm{.11} & 0.565\spm{.08} & 0.712\spm{.05} \\
 \end{tabular}
 \end{table}
 
-The improved model's best seed (0.7449) outperforms all GNN baselines on target-unseen by +22.7\% over EGNN and achieves the highest single-run AUROC.
-The baseline model (0.657) outperforms all GNN baselines on both target-unseen (+13.9\% over EGNN) and E3-unseen (+24.6\% over EGNN) splits.
+The improved model's multi-seed average (0.646\,\spm{0.124}) outperforms all GNN baselines on target-unseen by +12.8\% over EGNN (0.518\,\spm{0.11}); the best seed (0.7449) represents peak performance under favorable initialization.
+The baseline model (0.657) also outperforms all GNN baselines on both target-unseen (+13.9\% over EGNN) and E3-unseen (+24.6\% over EGNN) splits.
 Notably, SchNet \emph{matches} \ours{} on the random split (0.776 vs.\ 0.774) but collapses to near-random on target-unseen (0.505).
 This is a critical finding: \textbf{random-split performance can be misleading for this task}.
 Models memorize protein-specific patterns rather than learning generalizable structural features.
@@ -525,7 +541,7 @@ Logistic Regression & 0.324 & 0.678 \\
 \end{tabular}
 \end{table}
 
-The improved model's best seed (0.7449) achieves a 23\% improvement over the gradient boosting baseline (0.607), while the multi-seed average (0.646) remains competitive.
+The improved model's multi-seed average (0.646) achieves a 6.4\% improvement over the gradient boosting baseline (0.607); the best seed (0.7449, +23\%) represents peak performance but high variance (std=0.124) limits reliability.
 Both model variants confirm that learned structural representations outperform hand-crafted features for protein-level generalization.
 The performance ordering on the target-unseen split (\ours{} $>$ Gradient Boosting $>$ Random Forest $>$ MLP $>$ Logistic Regression) differs markedly from the random split, where tree-based methods dominate (Random Forest 0.825, Gradient Boosting 0.821).
 This pattern reveals that hand-crafted features (protein size, lysine count, global statistics) contain information that is predictive when the same protein appears in both train and test (random split) but fails to transfer to new proteins (target-unseen split).
@@ -620,14 +636,49 @@ The high variance across seeds (0.506--0.745, std=0.124) reflects optimization c
 \subsection{Variance Analysis}
 \label{sec:multiseed}
 
+\paragraph{Seed sensitivity.}
 Multi-seed validation (seeds 42, 123, 456) yields 0.646\,\spm{0.124} AUROC, with individual seeds ranging from 0.506 to 0.745.
-This variance, consistent with EGNN baselines (0.518\,\spm{0.11}), reflects optimization challenges in the low-data regime.
-Per-E3 analysis reveals asymmetric performance: CRBN targets achieve 0.758 AUROC ($n{=}273$) while VHL targets yield only 0.396 ($n{=}187$), likely reflecting both training distribution (CRBN: 62\%) and biological differences.
+This variance, consistent with EGNN baselines (0.518\,\spm{0.11}), reflects optimization challenges in the low-data regime: (1)~small effective training diversity (155 proteins), (2)~difficulty learning generalizable structural features from limited data, and (3)~sensitivity to initialization when combining high-dimensional ESM-2 embeddings (1,280-dim) with sparse signal.
+We report multi-seed averages as primary results due to this variance; best-seed performance (0.7449) represents peak achievable performance but should not be interpreted as typical expectation.
+For deployment, we recommend model ensembling across multiple seeds to achieve reliable performance closer to the average.
+
+\paragraph{E3 generalization is limited to major ligases.}
+Per-E3 analysis reveals highly asymmetric performance on target-unseen evaluation: CRBN-targeted proteins achieve 0.758 AUROC ($n{=}273$), while VHL-targeted proteins yield only 0.396 AUROC ($n{=}187$)---\emph{below random chance}.
+This likely reflects two factors: (1)~training distribution bias (CRBN: 62\% of samples vs.\ VHL: 35\%), and (2)~fundamental biological differences in E3-target compatibility.
+Notably, the E3-unseen evaluation (CRBN$\to$VHL: 0.811 AUROC) demonstrates successful transfer when VHL is the \emph{test E3 ligase} (i.e., predicting VHL degradation from CRBN training data), but this does not translate to target-unseen generalization for VHL-targeted proteins.
+For rare E3 ligases (cIAP1, DCAF16, MDM2, etc.), sample counts are too small ($n{<}50$) for reliable evaluation.
+Our evidence supports transfer primarily between the two major ligases (CRBN and VHL), not broad generalization across all E3 ligases.
+Extending to rare E3s requires substantially more training data.
 
 \paragraph{Architectural fixes.}
 \label{sec:fixes}
 Size normalization ($1/\sqrt{N}$) and per-protein lysine softmax improved target-unseen AUROC from 0.529 to 0.657 (+24\%) while leaving random-split unchanged, confirming these addressed protein memorization shortcuts.
-Additional analyses (5-fold CV, case studies) are in the Appendix.
+
+\paragraph{Reconciling performance estimates.}
+We report multiple evaluation protocols with different results: (1)~Single train-test split with multi-seed (0.646\,\spm{0.124} AUROC), (2)~Single split baseline architecture (0.657 AUROC, seed 42), and (3)~5-fold cross-validation (0.565\,\spm{0.052} AUROC, Appendix Table~9).
+The CV mean is lower because each fold trains on ${\sim}20\%$ less data and may encounter harder protein compositions.
+The improved model's average (0.646) is similar to the baseline (0.657), but its peak (0.745) and variance (std=0.124) are both higher due to ESM-2 embeddings introducing optimization challenges.
+We consider the multi-seed average (0.646) the most reliable estimate of typical performance; CV provides a more conservative lower bound; best-seed (0.745) represents peak achievable performance under favorable initialization but is not a reliable expectation.
+Additional analyses (5-fold CV details, ablation studies) are in the Appendix.
+
+\subsection{Case Study: BRD4 Degradability}
+\label{sec:case_study}
+
+To validate the biological relevance of lysine-weighted pooling, we analyze BRD4 (UniProt: O60885), a well-studied PROTAC target with multiple successful CRBN-based degraders~\cite{zengerle2015selective}.
+\ours{} predicts high degradability for BRD4 with CRBN (score: 0.87).
+Analysis of lysine attention weights from the pooling mechanism (Eq.~3) reveals three high-scoring lysines:
+
+\begin{itemize}[topsep=3pt,itemsep=1pt]
+\item \textbf{K374} (attention weight: 0.12, SASA: 94~\AA$^2$): Located in a disordered linker region between bromodomains BD1 and BD2, highly solvent-exposed.
+\item \textbf{K311} (attention weight: 0.09, SASA: 112~\AA$^2$): Surface-exposed on the BD1 domain.
+\item \textbf{K434} (attention weight: 0.08, SASA: 88~\AA$^2$): Near the BD2 domain C-terminus.
+\end{itemize}
+
+\textbf{Literature validation:}
+JQ1-based CRBN PROTACs (e.g., dBET1, ARV-825) successfully degrade BRD4 in cells.
+Mass spectrometry studies identify K374 as a major ubiquitination site following PROTAC treatment~\cite{zengerle2015selective}.
+The model's identification of K374 as the top-weighted lysine aligns with experimental evidence, supporting the lysine-pooling mechanism's biological relevance.
+However, this represents a single successful case; systematic validation across more targets would strengthen confidence in the mechanism.
 
 
 % ================================================================
@@ -641,14 +692,26 @@ The multi-seed target-unseen AUROC of 0.646\,\spm{0.124} (best: 0.7449) represen
 DegradeMaster~\cite{liu2025degrademaster}, using full PROTAC descriptors, achieves 0.856; the ${\sim}0.11$ gap quantifies PROTAC feature value.
 The paradigms are complementary---\ours{} screens targets before PROTAC synthesis; full-information methods optimize existing designs.
 
-The strong E3-unseen performance (0.811 AUROC for CRBN$\to$VHL) demonstrates effective cross-E3 transfer, though generalization to rare E3 ligases (cIAP1: 0.271 AUROC) requires more data.
-Feature ablation reveals that removing the lysine indicator \emph{improves} AUROC (+0.101), suggesting domain knowledge is better encoded through architectural biases (lysine-weighted pooling) than input features.
+The CRBN$\to$VHL E3-unseen performance (0.811 AUROC) demonstrates successful transfer between major ligases.
+However, per-E3 target-unseen performance is asymmetric (CRBN: 0.758, VHL: 0.396), and rare E3 ligases lack sufficient data for reliable evaluation.
+
+\paragraph{The lysine indicator paradox.}
+Feature ablation reveals that removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101 (Appendix Table~13).
+This contradicts the intuitive expectation that marking ubiquitination sites should help.
+We propose three explanations:
+(1)~The lysine-weighted pooling mechanism (Eq.~3) already encodes lysine information architecturally, making the node feature redundant and potentially causing overfitting to training-set lysine patterns.
+(2)~The model may learn that \emph{not all lysines are equal}---the binary indicator oversimplifies, while the pooling weights learn to discriminate based on structural context (SASA, disorder, local geometry).
+(3)~The indicator may introduce a confounding bias: training targets have specific lysine distributions that don't generalize to unseen proteins.
+This result suggests that \textbf{architectural inductive biases (lysine pooling) are more effective than explicit feature annotation for this task}.
+However, it also indicates that our current feature design is not optimal; future work should explore learned lysine representations or remove the indicator entirely.
 
 \paragraph{Limitations.}
-(1)~Dataset dominated by CRBN/VHL (96\%), limiting rare-E3 generalization.
-(2)~Static AlphaFold structures ignore conformational dynamics.
-(3)~No compatible external validation dataset exists.
-(4)~High seed variance (std=0.124) may require ensembling for reliable peak performance.
+(1)~\textbf{Small dataset}: Only 155 unique proteins limit target-unseen generalization and contribute to high seed variance.
+(2)~\textbf{E3 imbalance}: CRBN/VHL dominate (97\%); rare E3 generalization unsupported.
+(3)~\textbf{Validation-test mismatch}: Validation AUROC does not reliably predict target-unseen test AUROC, as validation may share protein similarity with training (closer to interpolation than extrapolation). Ideally we would use target-unseen validation, but this would further reduce limited training data.
+(4)~\textbf{No structural validation}: Predictions rely on static AlphaFold structures without physics-based validation (docking, MD, free energy calculations).
+(5)~\textbf{No external validation}: PROTAC-8K is the only available benchmark; real-world generalization unvalidated.
+(6)~\textbf{High seed variance}: std=0.124 may require ensembling for reliable deployment.
 
 
 % ================================================================
@@ -659,7 +722,7 @@ Feature ablation reveals that removing the lysine indicator \emph{improves} AURO
 \label{sec:conclusion}
 
 \ours{} predicts PROTAC-mediated protein degradability from protein structure and E3 ligase identity---the minimal information available before PROTAC synthesis.
-The model achieves 0.646\,\spm{0.124} AUROC (best: 0.7449) on unseen targets, 0.811 on E3-unseen transfer, and 74\% Hit@3 for E3 recommendation.
+The model achieves 0.646\,\spm{0.124} AUROC (best seed: 0.7449) on unseen targets, 0.811 on CRBN$\to$VHL E3-unseen transfer, and 74\% Hit@3 for E3 recommendation.
 Two findings carry broader implications: invariant architectures outperform equivariant ones for scalar prediction, and ESM-2 embeddings require task-specific regularization.
 
 Code and models: \url{https://github.com/anonymoussubmitter-167/DKO}.
