@@ -1,0 +1,66 @@
+INFO:DegradoMap-Train:Loaded PROTAC-8K: 9384 total entries
+INFO:DegradoMap-Train:Labeled entries: 3260 (pos=1222, neg=2038)
+INFO:DegradoMap-Train:Available protein structures: 171
+INFO:DegradoMap-Train:Built 3101 samples (skipped: 80 no structure, 79 no uniprot)
+INFO:DegradoMap-Train:  Positives: 1183
+INFO:DegradoMap-Train:  Negatives: 1918
+INFO:DegradoMap-Train:  Unique targets: 155
+INFO:DegradoMap-Train:  Unique E3 ligases: 10
+INFO:DegradoMap-Train:  E3 distribution - Train: CRBN=59.9%, VHL=35.3%
+INFO:DegradoMap-Train:  E3 distribution - Test: CRBN=57.7%, VHL=39.5%
+INFO:DegradoMap-Train:Split (target_unseen): train=2218, val=410, test=473
+INFO:DegradoMap-Train:  Train positives: 886
+INFO:DegradoMap-Train:  Val positives: 98
+INFO:DegradoMap-Train:  Test positives: 199
+/home/bcheng/degrado/scripts/error_analysis.py:111: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  size_analysis = df.groupby(size_bins).agg({
+/home/bcheng/degrado/scripts/error_analysis.py:120: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  disorder_analysis = df.groupby(disorder_bins).agg({
+/home/bcheng/degrado/scripts/error_analysis.py:138: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+  conf_analysis = df.groupby(conf_bins).agg({
+Using device: cuda:0
+Loading data...
+Analyzing 473 test samples...
+Got predictions for 473 samples
+
+============================================================
+ERROR ANALYSIS SUMMARY
+============================================================
+
+Total samples: 473
+Accuracy: 0.5412
+
+Error counts:
+  correct: 256
+  false_positive: 162
+  false_negative: 55
+
+Calibration:
+  Brier score: 0.2404
+  ECE: 0.0950
+  MCE: 0.1348
+
+Accuracy by E3:
+  CRBN: 0.5678
+  MDM2: 1.0000
+  UBR: 1.0000
+  VHL: 0.4813
+  cIAP1: 0.7500
+
+Top False Positives (confident wrong predictions):
+  Q09472 (Q09472): pred=0.586, size=2414
+  Q09472 (Q09472): pred=0.586, size=2414
+  Q09472 (Q09472): pred=0.586, size=2414
+  Q09472 (Q09472): pred=0.586, size=2414
+  Q09472 (Q09472): pred=0.586, size=2414
+
+Top False Negatives:
+  P07195 (P07195): pred=0.271, size=334
+  O15264 (O15264): pred=0.274, size=365
+  O15264 (O15264): pred=0.274, size=365
+  O15264 (O15264): pred=0.274, size=365
+  P11802 (P11802): pred=0.278, size=303
+
+Results saved to results/error_analysis.json
+Saved calibration plot to results/figures/calibration.png
+Saved error analysis plot to results/figures/error_analysis.png

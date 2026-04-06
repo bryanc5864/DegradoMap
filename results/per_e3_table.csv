@@ -1,0 +1,4 @@
+E3 Ligase,n,n_pos,AUROC,AUPRC,F1,Accuracy,Note
+CRBN,273,122,0.758,0.706,0.627,0.568,
+VHL,187,75,0.396,0.370,0.481,0.481,Below random
+cIAP1,8,2,0.417,0.250,0.000,0.750,Below random

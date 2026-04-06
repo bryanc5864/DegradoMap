@@ -1,0 +1,15 @@
+INFO:DegradoMap-Fixed:Using device: cuda, seed: 1213
+INFO:DegradoMap-Fixed:Loaded 3101 samples
+INFO:DegradoMap-Fixed:Split: train=2006, val=605, test=490
+INFO:DegradoMap-Fixed:Model params: 1,590,597
+INFO:src.data.dataset:Using ESM-2 embeddings from data/processed/esm_embeddings
+/home/bcheng/degrado/src/data/dataset.py:316: DtypeWarning: Columns (5,7) have mixed types. Specify dtype option on import or set low_memory=False.
+  df = pd.read_csv(filepath)
+INFO:src.data.dataset:Using known Ub sites for 12600 proteins
+INFO:src.data.dataset:Using ESM-2 embeddings from data/processed/esm_embeddings
+INFO:src.data.dataset:Using known Ub sites for 12600 proteins
+INFO:src.data.dataset:Using ESM-2 embeddings from data/processed/esm_embeddings
+INFO:src.data.dataset:Using known Ub sites for 12600 proteins
+Training:   0%|          | 0/251 [00:00<?, ?it/s]/home/bcheng/miniconda3/lib/python3.13/site-packages/torch_geometric/utils/_scatter.py:91: UserWarning: The usage of `scatter(reduce='max')` can be accelerated via the 'torch-scatter' package, but it was not found
+  warnings.warn(
+Training:   0%|          | 1/251 [00:08<36:13,  8.69s/it]Training:   1%|          | 2/251 [00:16<34:09,  8.23s/it]Training:   1%|          | 3/251 [00:26<36:19,  8.79s/it]Training:   2%|▏         | 4/251 [00:32<32:49,  7.97s/it]Training:   2%|▏         | 5/251 [00:41<33:14,  8.11s/it]Training:   2%|▏         | 6/251 [00:48<32:46,  8.03s/it]Training:   3%|▎         | 7/251 [00:56<32:08,  7.91s/it]Training:   3%|▎         | 8/251 [01:03<31:13,  7.71s/it]Training:   4%|▎         | 9/251 [01:11<31:12,  7.74s/it]Training:   4%|▍         | 10/251 [01:19<30:41,  7.64s/it]Training:   4%|▍         | 11/251 [01:26<30:24,  7.60s/it]Training:   5%|▍         | 12/251 [01:35<31:30,  7.91s/it]Training:   5%|▌         | 13/251 [01:44<32:43,  8.25s/it]Training:   6%|▌         | 14/251 [01:53<33:44,  8.54s/it]Training:   6%|▌         | 15/251 [02:01<33:01,  8.40s/it]Training:   6%|▋         | 16/251 [02:09<31:51,  8.14s/it]Training:   7%|▋         | 17/251 [02:17<31:47,  8.15s/it]Training:   7%|▋         | 18/251 [02:26<33:26,  8.61s/it]Training:   8%|▊         | 19/251 [02:36<33:45,  8.73s/it]Training:   8%|▊         | 20/251 [02:46<35:51,  9.31s/it]Training:   8%|▊         | 21/251 [02:55<35:09,  9.17s/it]Training:   9%|▉         | 22/251 [03:02<32:54,  8.62s/it]Training:   9%|▉         | 23/251 [03:10<32:04,  8.44s/it]Training:  10%|▉         | 24/251 [03:19<31:57,  8.45s/it]Training:  10%|▉         | 25/251 [03:28<32:19,  8.58s/it]Training:  10%|█         | 26/251 [03:36<31:52,  8.50s/it]Training:  11%|█         | 27/251 [03:42<29:25,  7.88s/it]Training:  11%|█         | 28/251 [03:50<29:06,  7.83s/it]Training:  12%|█▏        | 29/251 [03:58<28:32,  7.72s/it]Training:  12%|█▏        | 30/251 [04:07<29:48,  8.10s/it]Training:  12%|█▏        | 31/251 [04:15<29:42,  8.10s/it]Training:  13%|█▎        | 32/251 [04:23<30:04,  8.24s/it]Training:  13%|█▎        | 33/251 [04:32<29:57,  8.25s/it]

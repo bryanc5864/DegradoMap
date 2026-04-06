@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Calibration metrics across evaluation splits. ECE $<$ 0.05 indicates excellent calibration; MCE shows worst-case bin error.}
+\label{tab:calibration}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Split} & \textbf{$n$} & \textbf{ECE} & \textbf{MCE} & \textbf{Brier} & \textbf{Log Loss} \\
+\midrule
+target-unseen & 473 & 0.029 & 0.135 & 0.240 & 0.674 \\
+e3-unseen & 1106 & 0.123 & 0.203 & 0.189 & 0.566 \\
+random & 466 & 0.165 & 0.379 & 0.219 & 0.628 \\
+\bottomrule
+\end{tabular}
+\end{table}

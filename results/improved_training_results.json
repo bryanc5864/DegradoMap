@@ -1,7 +1,7 @@
 {
   "mode": "single",
-  "auroc": 0.7409125921578696,
-  "auprc": 0.6342236189006198,
+  "auroc": 0.6878010878010878,
+  "auprc": 0.5663753029563756,
   "config": {
     "use_esm": true,
     "use_ub_sites": true,

@@ -1,0 +1,104 @@
+INFO:DegradoMap-Train:Loaded PROTAC-8K: 9384 total entries
+INFO:DegradoMap-Train:Labeled entries: 3260 (pos=1222, neg=2038)
+INFO:DegradoMap-Train:Available protein structures: 171
+INFO:DegradoMap-Train:Built 3101 samples (skipped: 80 no structure, 79 no uniprot)
+INFO:DegradoMap-Train:  Positives: 1183
+INFO:DegradoMap-Train:  Negatives: 1918
+INFO:DegradoMap-Train:  Unique targets: 155
+INFO:DegradoMap-Train:  Unique E3 ligases: 10
+INFO:DegradoMap-Train:  E3 distribution - Train: CRBN=59.9%, VHL=35.3%
+INFO:DegradoMap-Train:  E3 distribution - Test: CRBN=57.7%, VHL=39.5%
+INFO:DegradoMap-Train:Split (target_unseen): train=2218, val=410, test=473
+INFO:DegradoMap-Train:  Train positives: 886
+INFO:DegradoMap-Train:  Val positives: 98
+INFO:DegradoMap-Train:  Test positives: 199
+INFO:DegradoMap-Train:E3-unseen split: held out VHL
+INFO:DegradoMap-Train:Split (e3_unseen): train=1643, val=352, test=1106
+INFO:DegradoMap-Train:  Train positives: 643
+INFO:DegradoMap-Train:  Val positives: 129
+INFO:DegradoMap-Train:  Test positives: 411
+INFO:DegradoMap-Train:Split (random): train=2170, val=465, test=466
+INFO:DegradoMap-Train:  Train positives: 844
+INFO:DegradoMap-Train:  Val positives: 166
+INFO:DegradoMap-Train:  Test positives: 173
+Using device: cuda:0
+Loading data...
+
+============================================================
+Evaluating: target_unseen
+============================================================
+Getting predictions for 473 test samples...
+Computing metrics for 473 predictions...
+
+Results for target_unseen:
+  AUROC: 0.6569
+  AUPRC: 0.5920
+  F1: 0.5703
+  MCC: 0.1367
+  Balanced Accuracy: 0.5662
+  ECE: 0.0291
+  Brier Score: 0.2404
+  Precision@10: 0.6000
+  Recall@10: 0.0302
+
+  Per-E3 AUROC:
+    CRBN: 0.7584 (n=273)
+    cIAP1: 0.4167 (n=8)
+    VHL: 0.3960 (n=187)
+
+============================================================
+Evaluating: e3_unseen
+============================================================
+Getting predictions for 1106 test samples...
+Computing metrics for 1106 predictions...
+
+Results for e3_unseen:
+  AUROC: 0.8106
+  AUPRC: 0.7105
+  F1: 0.6450
+  MCC: 0.4597
+  Balanced Accuracy: 0.7226
+  ECE: 0.1233
+  Brier Score: 0.1889
+  Precision@10: 0.8000
+  Recall@10: 0.0195
+
+  Per-E3 AUROC:
+    VHL: 0.8106 (n=1106)
+
+============================================================
+Evaluating: random
+============================================================
+Getting predictions for 466 test samples...
+Computing metrics for 466 predictions...
+
+Results for random:
+  AUROC: 0.7746
+  AUPRC: 0.6927
+  F1: 0.6337
+  MCC: 0.3606
+  Balanced Accuracy: 0.6840
+  ECE: 0.1650
+  Brier Score: 0.2192
+  Precision@10: 0.9000
+  Recall@10: 0.0520
+
+  Per-E3 AUROC:
+    DCAF1: 1.0000 (n=2)
+    XIAP: 1.0000 (n=3)
+    cIAP1: 0.8333 (n=7)
+    CRBN: 0.7890 (n=264)
+    VHL: 0.7787 (n=182)
+    KEAP1: 0.2500 (n=3)
+
+================================================================================
+EXTENDED METRICS SUMMARY
+================================================================================
+
+Split           AUROC    AUPRC    F1       MCC      Bal.Acc  ECE      Brier   
+---------------------------------------------------------------------------
+target_unseen   0.6569   0.5920   0.5703   0.1367   0.5662   0.0291   0.2404  
+e3_unseen       0.8106   0.7105   0.6450   0.4597   0.7226   0.1233   0.1889  
+random          0.7746   0.6927   0.6337   0.3606   0.6840   0.1650   0.2192  
+
+Results saved to results/extended_metrics.json

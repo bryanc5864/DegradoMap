@@ -293,10 +293,22 @@ def run_training(args):
     struct_results = process_data()
 
     # Step 2: Build model
-    # ESM-2 embeddings: 1280 + 4 structural = 1284 dim
-    # Handcrafted features: 28 dim
-    node_input_dim = 1284 if getattr(args, 'use_esm', False) else 28
+    # ESM-2 embeddings: 1280 + 4 structural + 1 ub_mask = 1285 dim
+    # Handcrafted features: 28 (or 29 with ub_mask)
+    use_esm = getattr(args, 'use_esm', False)
+    use_ub_sites = getattr(args, 'use_ub_sites', False)
+    use_e3_onehot = getattr(args, 'use_e3_onehot', False)
+    use_global_stats = getattr(args, 'use_global_stats', False)
+
+    if use_esm:
+        node_input_dim = 1285  # 1280 ESM + 4 structural + 1 ub_mask
+    elif use_ub_sites:
+        node_input_dim = 29  # 28 handcrafted + 1 ub_mask
+    else:
+        node_input_dim = 28
+
     logger.info(f"Step 2: Building DegradoMap model (node_input_dim={node_input_dim})...")
+    logger.info(f"  Features: ESM={use_esm}, Ub_sites={use_ub_sites}, E3_onehot={use_e3_onehot}, GlobalStats={use_global_stats}")
 
     model = DegradoMap(
         node_input_dim=node_input_dim,
@@ -312,7 +324,9 @@ def run_training(args):
         context_output_dim=64,
         fusion_hidden_dim=128,
         pred_hidden_dim=64,
-        dropout=0.1,
+        dropout=args.dropout,
+        use_e3_onehot=use_e3_onehot,
+        use_global_stats=use_global_stats,
     )
 
     n_params = sum(p.numel() for p in model.parameters())
@@ -430,24 +444,26 @@ def run_training(args):
                 else:
                     logger.warning("No positive samples in training data, skipping class weights")
 
-            use_esm = getattr(args, 'use_esm', False)
             train_dataset = DegradationDataset(
                 train_data,
                 structure_dir="data/processed/structures",
                 esm_dir="data/processed/esm_embeddings",
                 use_esm=use_esm,
+                use_ub_sites=use_ub_sites,
             )
             val_dataset = DegradationDataset(
                 val_data,
                 structure_dir="data/processed/structures",
                 esm_dir="data/processed/esm_embeddings",
                 use_esm=use_esm,
+                use_ub_sites=use_ub_sites,
             )
             test_dataset = DegradationDataset(
                 test_data,
                 structure_dir="data/processed/structures",
                 esm_dir="data/processed/esm_embeddings",
                 use_esm=use_esm,
+                use_ub_sites=use_ub_sites,
             )
 
             train_loader = DataLoader(train_dataset, batch_size=args.batch_size,
@@ -525,6 +541,14 @@ def main():
                         help="Random seed")
     parser.add_argument("--use-esm", action="store_true",
                         help="Use ESM-2 embeddings as node features (1284-dim instead of 28-dim)")
+    parser.add_argument("--use-ub-sites", action="store_true",
+                        help="Use known ubiquitination sites as features")
+    parser.add_argument("--use-e3-onehot", action="store_true",
+                        help="Add E3 ligase one-hot encoding to fusion")
+    parser.add_argument("--use-global-stats", action="store_true",
+                        help="Add global protein statistics (pLDDT/SASA aggregates)")
+    parser.add_argument("--dropout", type=float, default=0.1,
+                        help="Dropout rate")
     parser.add_argument("--class-weights", action="store_true",
                         help="Use inverse class frequency weights for training")
 

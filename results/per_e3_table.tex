@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Per-E3 ligase performance on target-unseen split. VHL performance is below random chance (0.5), revealing a fundamental limitation in cross-E3 generalization.}
+\label{tab:per_e3_breakdown}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{E3} & \textbf{$n$} & \textbf{$n_{\text{pos}}$} & \textbf{AUROC} & \textbf{AUPRC} & \textbf{F1} & \textbf{Acc} & \textbf{Note} \\
+\midrule
+CRBN & 273 & 122 & 0.758 & 0.706 & 0.627 & 0.568 &  \\
+VHL & 187 & 75 & 0.396 & 0.370 & 0.481 & 0.481 & \textcolor{red}{$\downarrow$} \\
+cIAP1 & 8 & 2 & 0.417 & 0.250 & 0.000 & 0.750 & \textcolor{red}{$\downarrow$} \\
+\bottomrule
+\end{tabular}
+\end{table}

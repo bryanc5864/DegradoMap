@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Lysine indicator ablation reveals overfitting. The indicator improves validation performance but hurts test generalization, suggesting it encodes training-specific patterns.}
+\label{tab:lysine_paradox}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Configuration} & \textbf{Val AUROC} & \textbf{Test AUROC} & \textbf{Gap} \\
+\midrule
+With lysine indicator & 0.584 & 0.477 & -0.106 \\
+Without lysine indicator & 0.541 & 0.578 & 0.038 \\
+\midrule
+Δ (no lysine - full) & -0.043 & +0.101 & +0.144 \\
+\bottomrule
+\end{tabular}
+\end{table}

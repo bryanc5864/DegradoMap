@@ -3,7 +3,7 @@
 Fast 5-Fold CV - Pre-cache graphs, run on GPU.
 """
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '9'
 
 import sys
 from pathlib import Path
@@ -135,7 +135,7 @@ def main():
                 fusion_hidden_dim=128, pred_hidden_dim=64, dropout=0.1
             ).to(device)
 
-            optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-5)
+            optimizer = torch.optim.AdamW(model.parameters(), lr=5e-4, weight_decay=1e-5)
 
             best_val = 0
             best_state = None
