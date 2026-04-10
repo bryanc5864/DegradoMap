@@ -1,0 +1,14 @@
+{
+  "seed": 789,
+  "auroc": 0.6570913461538461,
+  "auprc": 0.48985326303409527,
+  "f1": 0.03428571428571429,
+  "config": {
+    "use_esm": true,
+    "use_ub_sites": true,
+    "use_e3_onehot": true,
+    "use_global_stats": true,
+    "lr": 0.0005,
+    "dropout": 0.05
+  }
+}
