@@ -1,0 +1,141 @@
+% Rebuttal to Reviewer 9v2E
+% ACM-BCB 2026 Submission: Structure-Aware Prediction of PROTAC-Mediated
+% Protein Degradability via Graph Neural Networks
+%
+% Compile: pdflatex rebuttal_9v2E.tex && pdflatex rebuttal_9v2E.tex
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{amsmath}
+
+% Styling
+\definecolor{revblue}{RGB}{0,70,170}
+\newcommand{\reviewerbox}[2]{%
+  \noindent\fcolorbox{black}{gray!10}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+    \textbf{#1}: #2}}%
+  \vspace{4pt}%
+}
+\newcommand{\resp}{\noindent\textbf{Response:}~}
+\newcommand{\change}[1]{\textcolor{revblue}{[Paper reference: #1]}}
+
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Response to Reviewer 9v2E}\\[6pt]
+{\large Structure-Aware Prediction of PROTAC-Mediated Protein Degradability\\via Graph Neural Networks}\\[6pt]
+ACM-BCB 2026 Submission\\[4pt]
+\textit{Rating: 4 --- Borderline Accept}
+\end{center}
+
+\bigskip
+
+We thank Reviewer 9v2E for the constructive feedback. We have substantially revised the manuscript; all changes are \textcolor{revblue}{highlighted in blue} in the revised paper. Line numbers below refer to the revised \texttt{paper.tex}.
+
+\bigskip
+\hrule
+\bigskip
+
+%% ====================================================================
+%%  C1
+%% ====================================================================
+
+\reviewerbox{C1}{The dataset is relatively small (3,101 samples, 155 unique proteins, 10 E3 ligases). The target-unseen effective diversity is much closer to the number of unique proteins, contributing to seed sensitivity.}
+
+\resp We fully agree. We have added a prominent ``Dataset characteristics and limitations'' paragraph \emph{before} any results are presented:
+
+\begin{quote}\itshape
+``PROTAC-8K contains 3,101 labeled samples spanning only 155 unique protein targets\ldots\ The E3 ligase distribution is highly imbalanced: CRBN accounts for 62\% of samples, VHL for 35\%, and the remaining eight E3s combined represent only 3\%.\ These constraints fundamentally bound generalization performance\ldots''
+\end{quote}
+
+We also note that PROTAC-8K is the only publicly available benchmark of this scale, and we have no external validation dataset---both stated as explicit limitations.
+
+\change{Lines 431--436 (new ``Dataset characteristics and limitations'' paragraph, \S4 Results, before any performance numbers); Limitation item~1 at line 766 (small dataset); Limitation item~2 at line 767 (E3 imbalance); Limitation item~6 at line 771 (no external validation).}
+
+\bigskip
+
+%% ====================================================================
+%%  C2
+%% ====================================================================
+
+\reviewerbox{C2}{Structural validation is limited. Predictions are not supported by docking, ternary-complex modeling, MD, or free energy calculations.}
+
+\resp We agree this is a limitation. It is now discussed explicitly in the Limitations paragraph:
+
+\begin{quote}\itshape
+``Predictions rely on static AlphaFold structures without physics-based validation (docking, MD, free energy calculations). The BRD4 case study (K374) provides one anecdotal positive control.''
+\end{quote}
+
+We note an inherent tension: ternary-complex modeling requires knowing the PROTAC linker geometry, which is unavailable in our pre-synthesis setting. Post-hoc structural validation against experimentally determined ternary complexes (where available) is an important future direction.
+
+\change{Limitation item~5 at line 770 (``No structural validation''); BRD4 case study (\S4.5, lines 686--703) provides partial structural validation via lysine attention weight analysis on a known target.}
+
+\bigskip
+
+%% ====================================================================
+%%  C3
+%% ====================================================================
+
+\reviewerbox{C3}{No compelling biological case study showing why a specific protein is predicted degradable, which lysines drive the prediction, or how predictions align with literature.}
+
+\resp We have added a new subsection ``Case Study: BRD4 Degradability'' (\S4.5) that provides exactly this analysis:
+
+\begin{itemize}[topsep=2pt,itemsep=1pt]
+  \item BRD4 (O60885) is predicted highly degradable with CRBN (score: 0.87). \change{Line 690.}
+  \item Lysine attention weights identify \textbf{K374} (attention: 0.12, SASA: 94\,\AA$^2$) as the top residue---located in a disordered, solvent-exposed linker between bromodomains. \change{Lines 691--697.}
+  \item \textbf{Literature validation}: mass spectrometry studies by Zengerle et al.\ (2015) confirm K374 as a major ubiquitination site following JQ1-based PROTAC treatment. \change{Lines 699--702.}
+  \item We acknowledge this is a single successful case and that systematic validation across more targets would strengthen confidence. \change{Line 703.}
+\end{itemize}
+
+\change{New \S4.5 ``Case Study: BRD4 Degradability'' at lines 686--703.}
+
+\bigskip
+
+%% ====================================================================
+%%  Additional concerns (implicit in review)
+%% ====================================================================
+
+\reviewerbox{Additional}{The key target-unseen result is unstable; the paper emphasizes the best seed over the multi-seed result; some biological and E3 generalization claims are only partly supported.}
+
+\resp All three points are now addressed:
+
+\begin{enumerate}[topsep=2pt,itemsep=1pt]
+  \item \textbf{Instability addressed with 6-seed validation}: We trained 3 additional seeds (789, 1011, 1213), yielding a 6-seed mean of 0.603$\pm$0.097---marginally below the gradient boosting baseline (0.607, bootstrap $p=0.556$). We explicitly recommend ensembling across $\geq$6 seeds for deployment.
+  \change{Lines 619--625 (``Six-seed extended validation'' paragraph); Figure~4 at line 632; Table~1 at lines 441--458 (both 3-seed and 6-seed rows).}
+
+  \item \textbf{Best seed de-emphasized}: The multi-seed average is now the primary result throughout; best seed (0.7449) is consistently marked as secondary and parenthetical.
+  \change{Abstract line 65 (``0.646$\pm$0.124 AUROC\ldots (best seed: 0.7449)''); Introduction line 135 (``3-seed mean of 0.646\ldots and 6-seed mean of 0.603''); Table~1 line 444 (``Best Seed'' as separate column); Results line 460--462 (``multi-seed averages as primary results\ldots best-seed performance should not be interpreted as typical expectation''); Conclusion line 783 (leads with average).}
+
+  \item \textbf{E3 claims narrowed}: Changed throughout from ``E3 generalization'' to ``CRBN$\to$VHL transfer.'' VHL failure (0.396 AUROC) and root cause analysis now prominently discussed. Rare E3 generalization explicitly stated as unsupported.
+  \change{Abstract line 65 (``CRBN$\to$VHL E3-unseen transfer''); Section heading line 635 (``E3 generalization is limited to major ligases''); Root cause analysis lines 640--648; Per-E3 Table~5 at line 654; Per-E3 Figure~5 at line 668; Conclusion line 783 (``CRBN$\to$VHL transfer (0.811 AUROC)'').}
+\end{enumerate}
+
+\bigskip
+\hrule
+\bigskip
+
+\section*{Summary of Changes Relevant to Reviewer 9v2E}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{3.5cm}p{8cm}@{}}
+\toprule
+\textbf{Concern} & \textbf{Revision (lines in \texttt{paper.tex})} \\
+\midrule
+Small dataset (C1) & \S4 L431--436 (dataset limitations paragraph); Limitations L766, L767, L771 \\
+No structural validation (C2) & Limitation~5 L770; \S4.5 L686--703 (BRD4 partial validation) \\
+No case study (C3) & New \S4.5 L686--703 (BRD4 with K374 literature validation) \\
+Seed instability & \S4.3 L619--625 (6-seed validation); Table~1 L441--458; Figure~4 L632 \\
+Best seed emphasis & Abstract L65; Introduction L135; Table~1 L444; \S4.2 L460--462; Conclusion L783 \\
+E3 claims too broad & Abstract L65; \S4.3 L635--648; Table~5 L654; Figure~5 L668; Conclusion L783 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}

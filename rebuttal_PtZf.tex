@@ -1,0 +1,202 @@
+% Rebuttal to Reviewer PtZf
+% ACM-BCB 2026 Submission: Structure-Aware Prediction of PROTAC-Mediated
+% Protein Degradability via Graph Neural Networks
+%
+% Compile: pdflatex rebuttal_PtZf.tex && pdflatex rebuttal_PtZf.tex
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{amsmath}
+
+% Styling
+\definecolor{revblue}{RGB}{0,70,170}
+\newcommand{\reviewerbox}[2]{%
+  \noindent\fcolorbox{black}{gray!10}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+    \textbf{#1}: #2}}%
+  \vspace{4pt}%
+}
+\newcommand{\resp}{\noindent\textbf{Response:}~}
+\newcommand{\change}[1]{\textcolor{revblue}{[Paper reference: #1]}}
+
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Response to Reviewer PtZf}\\[6pt]
+{\large Structure-Aware Prediction of PROTAC-Mediated Protein Degradability\\via Graph Neural Networks}\\[6pt]
+ACM-BCB 2026 Submission\\[4pt]
+\textit{Rating: 3 --- Borderline Reject}
+\end{center}
+
+\bigskip
+
+We thank Reviewer PtZf for the detailed feedback. We have addressed all concerns and believe the revised manuscript substantially strengthens the empirical evaluation. All changes are \textcolor{revblue}{highlighted in blue} in the revised paper. Line numbers below refer to the revised \texttt{paper.tex}.
+
+\bigskip
+\hrule
+\bigskip
+
+%% ====================================================================
+%%  W1
+%% ====================================================================
+
+\reviewerbox{W1}{Performance is inconsistent across the paper: abstract reports 0.78 AUROC (95\% CI 0.74--0.82), main results section reports 0.646$\pm$0.124, appendix reports 5-fold CV mean 0.565.}
+
+\resp We believe the ``0.78'' figure may refer to a prior draft; the current abstract (line 65) reports 0.646$\pm$0.124 (multi-seed average). To prevent any confusion, we have added a ``Reconciling performance estimates'' paragraph that explicitly maps each reported number to its evaluation protocol:
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Number} & \textbf{Protocol} & \textbf{Role} & \textbf{Line} \\
+\midrule
+0.603 $\pm$ 0.097 & 6-seed, single split & Most conservative & L621 \\
+0.646 $\pm$ 0.124 & 3-seed, single split & Primary result & L460 \\
+0.7449 & Best seed (seed 42) & Peak (secondary) & L462 \\
+0.657 & Baseline (seed 42) & Single-seed reference & L453 \\
+0.565 $\pm$ 0.052 & 5-fold CV & Conservative lower bound & L681 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The 6-seed mean (0.603) is recommended for citation as the most conservative estimate. The differences between protocols are now explicitly reconciled:
+
+\begin{quote}\itshape
+``We report three evaluation protocols: multi-seed single split (0.646$\pm$0.124), baseline single seed (0.657), and 5-fold CV (0.565$\pm$0.052, Appendix Table~9). The 6-seed mean (0.603) is the most conservative and recommended estimate.''
+\end{quote}
+
+\change{Lines 680--684 (``Reconciling performance estimates'' paragraph in \S4.3); Abstract line 65 (primary number clearly stated); Table~1 lines 441--458 (all protocols in one table).}
+
+\bigskip
+
+%% ====================================================================
+%%  W2
+%% ====================================================================
+
+\reviewerbox{W2}{Robustness is limited. Target-unseen has high seed sensitivity, and 5-fold CV mean is substantially lower than the headline single-split number.}
+
+\resp We agree and have substantially expanded the variance analysis:
+
+\begin{enumerate}[topsep=2pt,itemsep=1pt]
+  \item \textbf{Extended to 6 seeds} (789, 1011, 1213 added), yielding 0.603$\pm$0.097---marginally below gradient boosting (0.607).
+  \change{Lines 619--625 (``Six-seed extended validation'' paragraph in \S4.3).}
+
+  \item \textbf{Stated explicitly that the improvement is not statistically significant}: ``bootstrap p = 0.259'' for 3-seed (line 529) and ``p = 0.556'' for 6-seed (line 621). Previously the $p$-value appeared only in a figure caption; it is now in the main text.
+  \change{Lines 461 (``not statistically significant at $\alpha{=}0.05$''), 529 (``bootstrap p = 0.259''), 621 (``bootstrap p = 0.556'').}
+
+  \item \textbf{Recommended ensembling} across $\geq$6 seeds for reliable deployment, noting individual seeds span a 0.25-AUROC range (0.502--0.745).
+  \change{Line 624 (``model ensembling across $\geq$6 seeds is strongly recommended'').}
+
+  \item \textbf{Reported both 3-seed and 6-seed} results in Table~1 to show how the estimate changes with more seeds.
+  \change{Table~1 lines 441--458 (rows for 3-seed and 6-seed).}
+
+  \item \textbf{Figure~4} (line 632) now visualizes all 6 seeds, distinguishing original (solid) vs.\ additional (hatched).
+  \change{Figure~4 at line 632.}
+
+  \item \textbf{Honest performance assessment} in Discussion: ``We emphasize that the 6-seed mean (0.603) is not statistically superior to gradient boosting (0.607, p = 0.556).''
+  \change{Lines 744--748 (``Honest performance assessment'' paragraph in \S5).}
+\end{enumerate}
+
+\bigskip
+
+%% ====================================================================
+%%  W3
+%% ====================================================================
+
+\reviewerbox{W3}{Validation and model-selection protocol appears weak for the main use case. Validation AUROC does not reliably predict target-unseen test AUROC.}
+
+\resp Acknowledged as a methodological limitation. We now discuss this explicitly in the Training Procedure section:
+
+\begin{quote}\itshape
+``We observe that validation-split AUROC does not reliably predict target-unseen test AUROC. Ideally, we would use a target-unseen validation split for hyperparameter selection; however, this would further reduce the already-limited training data (155 proteins $\to$ ${\sim}$120 training, ${\sim}$15 validation, ${\sim}$20 test). We therefore use standard random validation\ldots while acknowledging this may bias hyperparameter selection toward random-split performance.''
+\end{quote}
+
+We also state the implication: the chosen hyperparameters (LR=$5\times10^{-4}$, dropout=0.05, noted at line 323) may not be optimal for target-unseen generalization, contributing to variance.
+
+\change{Lines 326--330 (``Validation-test mismatch'' paragraph in \S3.5 Training Procedure); Line 323 (hyperparameter values); Limitation item~4 at line 769 (``Validation-test mismatch: Validation AUROC does not reliably predict target-unseen test AUROC'').}
+
+\bigskip
+
+%% ====================================================================
+%%  W4
+%% ====================================================================
+
+\reviewerbox{W4}{Generalization across E3 ligases remains limited. VHL performance is poor; rare ligases have too few samples.}
+
+\resp Fully addressed. E3 claims are narrowed to CRBN$\leftrightarrow$VHL transfer throughout. Key additions:
+
+\begin{itemize}[topsep=2pt,itemsep=1pt]
+  \item \textbf{Per-E3 Table~5} (lines 651--666): Quantitative breakdown---CRBN 0.758 ($n{=}273$), VHL 0.396 ($n{=}187$), cIAP1 0.417 ($n{=}8$).
+  \change{Table~5 at line 654.}
+
+  \item \textbf{Per-E3 Figure~5} (lines 668--674): Visual bar chart with random-chance reference line.
+  \change{Figure~5 at line 673.}
+
+  \item \textbf{VHL root cause analysis} (lines 640--648): Ruled out class imbalance (VHL 36.9\% positive vs CRBN 38.4\%) and dataset size (91 vs 125 unique proteins). Identified structural heterogeneity---VHL-targeted proteins span diverse protein families with varying surface topology.
+  \change{Lines 640--648.}
+
+  \item \textbf{Explicit practitioner warning} (line 647): ``practitioners should expect substantially lower performance than the overall 0.646 mean when deploying on VHL-targeted proteins, and near-random performance for rare E3s.''
+  \change{Line 647.}
+
+  \item \textbf{E3-unseen vs target-unseen paradox explained} (lines 636--638): VHL can succeed at E3-level transfer (0.811) while failing at protein-level generalization (0.396)---different generalization axes.
+  \change{Lines 636--638.}
+
+  \item \textbf{Narrowed throughout}: Abstract line 65 (``CRBN$\to$VHL''), section heading line 635 (``limited to major ligases''), conclusion line 783.
+  \change{Lines 65, 635, 783.}
+\end{itemize}
+
+\bigskip
+
+%% ====================================================================
+%%  W5
+%% ====================================================================
+
+\reviewerbox{W5}{No external validation reduces confidence in real-world generalization.}
+
+\resp Stated as Limitation item~6:
+
+\begin{quote}\itshape
+``No external validation: PROTAC-8K is the only publicly available benchmark with sufficient scale; generalization to data from other assay platforms or research groups is unvalidated.''
+\end{quote}
+
+We also caution against deployment without prospective validation on independently collected data (Discussion lines 744--748, Conclusion lines 783--784).
+
+\change{Limitation item~6 at line 771; Discussion ``Honest performance assessment'' lines 744--748; Conclusion lines 783--784 (``neither is statistically superior to gradient boosting'').}
+
+\bigskip
+\hrule
+\bigskip
+
+\section*{Summary of All Changes Relevant to Reviewer PtZf}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{3.8cm}p{7.7cm}@{}}
+\toprule
+\textbf{Concern} & \textbf{Revision (lines in \texttt{paper.tex})} \\
+\midrule
+Inconsistent reporting (W1) & \S4.3 L680--684 (reconciliation); Abstract L65; Table~1 L441--458 \\
+Limited robustness (W2) & \S4.3 L619--625 (6-seed); Table~1 L452; Figure~4 L632; $p$-values L461, L529, L621; L624 (ensembling); \S5 L744--748 \\
+Weak validation protocol (W3) & \S3.5 L326--330; L323; Limitation~4 L769 \\
+Limited E3 generalization (W4) & Table~5 L654; Figure~5 L673; Root cause L640--648; Warning L647; Paradox L636--638; Abstract L65; Heading L635; Conclusion L783 \\
+No external validation (W5) & Limitation~6 L771; \S5 L744--748; Conclusion L783--784 \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{New analyses added in revision:}} \\
+\midrule
+6-seed extended validation & Table~1 L452; \S4.3 L619--625; Figure~4 L632 \\
+Calibration analysis (ECE = 0.029) & \S4.6 L705--730; Table~6 L714 \\
+Per-E3 breakdown & Table~5 L654; Figure~5 L673 \\
+VHL root cause analysis & \S4.3 L640--648 \\
+BRD4 case study & \S4.5 L686--703 \\
+Lysine paradox discussion & \S5 L751--758; Figure~7 L762 \\
+Statistical non-significance & L461, L529, L621 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
