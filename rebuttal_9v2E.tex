@@ -56,7 +56,7 @@ We thank Reviewer 9v2E for the constructive feedback. We have substantially revi
 
 We also note that PROTAC-8K is the only publicly available benchmark of this scale, and we have no external validation dataset---both stated as explicit limitations.
 
-\change{Lines 431--436 (new ``Dataset characteristics and limitations'' paragraph, \S4 Results, before any performance numbers); Limitation item~1 at line 766 (small dataset); Limitation item~2 at line 767 (E3 imbalance); Limitation item~6 at line 771 (no external validation).}
+\change{Lines 412--417 (new ``Dataset characteristics and limitations'' paragraph, \S4 Results, before any performance numbers); Limitation item~1 at line 732 (small dataset); Limitation item~2 at line 733 (E3 imbalance); Limitation item~6 at line 737 (no external validation).}
 
 \bigskip
 
@@ -74,7 +74,7 @@ We also note that PROTAC-8K is the only publicly available benchmark of this sca
 
 We note an inherent tension: ternary-complex modeling requires knowing the PROTAC linker geometry, which is unavailable in our pre-synthesis setting. Post-hoc structural validation against experimentally determined ternary complexes (where available) is an important future direction.
 
-\change{Limitation item~5 at line 770 (``No structural validation''); BRD4 case study (\S4.5, lines 686--703) provides partial structural validation via lysine attention weight analysis on a known target.}
+\change{Limitation item~5 at line 736 (``No structural validation''); BRD4 case study (\S4.5, lines 655--672) provides partial structural validation via lysine attention weight analysis on a known target.}
 
 \bigskip
 
@@ -87,13 +87,13 @@ We note an inherent tension: ternary-complex modeling requires knowing the PROTA
 \resp We have added a new subsection ``Case Study: BRD4 Degradability'' (\S4.5) that provides exactly this analysis:
 
 \begin{itemize}[topsep=2pt,itemsep=1pt]
-  \item BRD4 (O60885) is predicted highly degradable with CRBN (score: 0.87). \change{Line 690.}
-  \item Lysine attention weights identify \textbf{K374} (attention: 0.12, SASA: 94\,\AA$^2$) as the top residue---located in a disordered, solvent-exposed linker between bromodomains. \change{Lines 691--697.}
-  \item \textbf{Literature validation}: mass spectrometry studies by Zengerle et al.\ (2015) confirm K374 as a major ubiquitination site following JQ1-based PROTAC treatment. \change{Lines 699--702.}
-  \item We acknowledge this is a single successful case and that systematic validation across more targets would strengthen confidence. \change{Line 703.}
+  \item BRD4 (O60885) is predicted highly degradable with CRBN (score: 0.87). \change{Line 659.}
+  \item Lysine attention weights identify \textbf{K374} (attention: 0.12, SASA: 94\,\AA$^2$) as the top residue---located in a disordered, solvent-exposed linker between bromodomains. \change{Lines 660--666.}
+  \item \textbf{Literature validation}: mass spectrometry studies by Zengerle et al.\ (2015) confirm K374 as a major ubiquitination site following JQ1-based PROTAC treatment. \change{Lines 668--671.}
+  \item We acknowledge this is a single successful case and that systematic validation across more targets would strengthen confidence. \change{Line 672.}
 \end{itemize}
 
-\change{New \S4.5 ``Case Study: BRD4 Degradability'' at lines 686--703.}
+\change{New \S4.5 ``Case Study: BRD4 Degradability'' at lines 655--672.}
 
 \bigskip
 
@@ -107,13 +107,13 @@ We note an inherent tension: ternary-complex modeling requires knowing the PROTA
 
 \begin{enumerate}[topsep=2pt,itemsep=1pt]
   \item \textbf{Instability addressed with 6-seed validation}: We trained 3 additional seeds (789, 1011, 1213), yielding a 6-seed mean of 0.603$\pm$0.097---marginally below the gradient boosting baseline (0.607, bootstrap $p=0.556$). We explicitly recommend ensembling across $\geq$6 seeds for deployment.
-  \change{Lines 619--625 (``Six-seed extended validation'' paragraph); Figure~4 at line 632; Table~1 at lines 441--458 (both 3-seed and 6-seed rows).}
+  \change{Lines 593--599 (``Six-seed extended validation'' paragraph); Figure~4 at line 605; Table~1 at lines 421--438 (both 3-seed and 6-seed rows).}
 
   \item \textbf{Best seed de-emphasized}: The multi-seed average is now the primary result throughout; best seed (0.7449) is consistently marked as secondary and parenthetical.
-  \change{Abstract line 65 (``0.646$\pm$0.124 AUROC\ldots (best seed: 0.7449)''); Introduction line 135 (``3-seed mean of 0.646\ldots and 6-seed mean of 0.603''); Table~1 line 444 (``Best Seed'' as separate column); Results line 460--462 (``multi-seed averages as primary results\ldots best-seed performance should not be interpreted as typical expectation''); Conclusion line 783 (leads with average).}
+  \change{Abstract line 65 (``0.646$\pm$0.124 AUROC\ldots (best seed: 0.7449)''); Introduction line 132 (``3-seed mean of 0.646\ldots and 6-seed mean of 0.603''); Table~1 line 424 (``Best Seed'' as separate column); Results line 440--442 (``multi-seed averages as primary results\ldots best-seed performance should not be interpreted as typical expectation''); Conclusion line 749 (leads with average).}
 
   \item \textbf{E3 claims narrowed}: Changed throughout from ``E3 generalization'' to ``CRBN$\to$VHL transfer.'' VHL failure (0.396 AUROC) and root cause analysis now prominently discussed. Rare E3 generalization explicitly stated as unsupported.
-  \change{Abstract line 65 (``CRBN$\to$VHL E3-unseen transfer''); Section heading line 635 (``E3 generalization is limited to major ligases''); Root cause analysis lines 640--648; Per-E3 Table~5 at line 654; Per-E3 Figure~5 at line 668; Conclusion line 783 (``CRBN$\to$VHL transfer (0.811 AUROC)'').}
+  \change{Abstract line 65 (``CRBN$\to$VHL E3-unseen transfer''); Section heading line 608 (``E3 generalization is limited to major ligases''); Root cause analysis lines 612--620; Per-E3 Table~5 at line 625; Per-E3 Figure~5 at line 639; Conclusion line 749 (``CRBN$\to$VHL transfer (0.811 AUROC)'').}
 \end{enumerate}
 
 \bigskip
@@ -128,12 +128,12 @@ We note an inherent tension: ternary-complex modeling requires knowing the PROTA
 \toprule
 \textbf{Concern} & \textbf{Revision (lines in \texttt{paper.tex})} \\
 \midrule
-Small dataset (C1) & \S4 L431--436 (dataset limitations paragraph); Limitations L766, L767, L771 \\
-No structural validation (C2) & Limitation~5 L770; \S4.5 L686--703 (BRD4 partial validation) \\
-No case study (C3) & New \S4.5 L686--703 (BRD4 with K374 literature validation) \\
-Seed instability & \S4.3 L619--625 (6-seed validation); Table~1 L441--458; Figure~4 L632 \\
-Best seed emphasis & Abstract L65; Introduction L135; Table~1 L444; \S4.2 L460--462; Conclusion L783 \\
-E3 claims too broad & Abstract L65; \S4.3 L635--648; Table~5 L654; Figure~5 L668; Conclusion L783 \\
+Small dataset (C1) & \S4 L412--417 (dataset limitations paragraph); Limitations L732, L733, L737 \\
+No structural validation (C2) & Limitation~5 L736; \S4.5 L655--672 (BRD4 partial validation) \\
+No case study (C3) & New \S4.5 L655--672 (BRD4 with K374 literature validation) \\
+Seed instability & \S4.3 L593--599 (6-seed validation); Table~1 L421--438; Figure~4 L605 \\
+Best seed emphasis & Abstract L65; Introduction L132; Table~1 L424; \S4.2 L440--442; Conclusion L749 \\
+E3 claims too broad & Abstract L65; \S4.3 L608--620; Table~5 L625; Figure~5 L639; Conclusion L749 \\
 \bottomrule
 \end{tabular}
 \end{center}

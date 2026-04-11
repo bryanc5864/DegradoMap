@@ -112,7 +112,6 @@ Is a given disease-relevant protein amenable to PROTAC-mediated degradation?
 Answering this currently requires synthesizing candidate PROTACs and conducting cell-based degradation assays---an expensive process with high failure rates.
 Computational prediction of degradability \emph{before} PROTAC synthesis would dramatically accelerate the pipeline.
 
-\paragraph{Limitations of existing methods.}
 Existing computational approaches all require the PROTAC molecular structure as input.
 DeepPROTACs~\cite{li2022deepprotacs} operates on voxelized binding pockets requiring complete PROTAC, target, and E3 coordinates.
 Ribes et~al.~\cite{ribes2024protac} combine protein embeddings with PROTAC SMILES fingerprints.
@@ -120,7 +119,6 @@ DegradeMaster~\cite{liu2025degrademaster} achieves 0.856 AUROC using full PROTAC
 While valuable for optimizing existing PROTACs, these methods cannot serve target selection because the PROTAC is unavailable at that stage.
 MAPD~\cite{zhang2022mapd} addresses target assessment from protein-intrinsic features but does not leverage AlphaFold structural information~\cite{jumper2021alphafold}.
 
-\paragraph{Our approach.}
 We introduce \ours{}, a graph neural network that predicts protein degradability from \emph{minimal inputs}: a protein structure (from AlphaFold, requiring only a UniProt ID) and E3 ligase identity (e.g., ``CRBN'' or ``VHL'').
 The design reflects the biophysics of ubiquitin transfer, which requires (1)~surface-accessible lysine residues, (2)~geometric compatibility between target and E3 ligase for ternary complex formation, and (3)~sufficient cellular E3 expression and proteasome capacity.
 \ours{} addresses these requirements through three modules and a gated fusion mechanism:
@@ -131,7 +129,6 @@ The design reflects the biophysics of ubiquitin transfer, which requires (1)~sur
     \item \textbf{Gated fusion}: Learned gating that dynamically weights module outputs for multi-task prediction of binary degradability and continuous efficiency.
 \end{enumerate}
 
-\paragraph{Evaluation and contributions.}
 On the PROTAC-8K benchmark~\cite{liu2025degrademaster} (3,101 samples, 155 targets, 10 E3 ligases), \ours{} achieves a \rev{3-seed mean of 0.646\,\spm{0.124} and 6-seed mean of 0.603\,\spm{0.097}} AUROC on target-unseen evaluation (best seed: 0.7449), 0.811 AUROC \ci{0.785}{0.836} on CRBN$\to$VHL E3-unseen transfer, and 74\% Hit@3 for E3 recommendation.
 \rev{We note the 6-seed improvement over gradient boosting baseline (0.607) is not statistically significant (p = 0.556), and VHL-targeted proteins fail below random (0.396 AUROC)---both limitations prominently acknowledged.}
 Two architectural findings carry implications beyond PROTAC prediction: E(3)-equivariant architectures underperform the invariant design for scalar property prediction, and ESM-2 embeddings require task-specific regularization to improve performance.
@@ -144,7 +141,6 @@ Our principal contributions include a structure-based pre-synthesis degradabilit
 
 \section{Related Work}
 
-\paragraph{PROTAC prediction methods.}
 Computational approaches to PROTAC modeling vary significantly in their input requirements and intended use cases, as summarized in Table~\ref{tab:positioning}.
 DeepPROTACs~\cite{li2022deepprotacs} uses 3D CNNs on binding pocket voxelizations, requiring the complete PROTAC molecule plus target and E3 binding pockets in mol2 format---information available only after PROTAC synthesis and structural characterization.
 Ribes et~al.~\cite{ribes2024protac} combine pretrained protein embeddings with molecular fingerprints, requiring target sequence and PROTAC SMILES, which presupposes PROTAC design.
@@ -171,19 +167,16 @@ DegradeMaster & Features & Descriptors & Features & Optimization \\
 \end{tabular}
 \end{table}
 
-\paragraph{Geometric deep learning for proteins.}
 GNNs operating on protein structures have achieved strong results across function prediction, binding site identification, and property estimation.
 Representative architectures include GVP-GNN~\cite{jing2021gvp} (SO(3)-equivariant geometric vector perceptrons), GearNet~\cite{zhang2023gearnet} (relational graph convolutions with multiple edge types), SchNet~\cite{schutt2017schnet} (continuous-filter convolutions), and EGNN~\cite{satorras2021egnn} (E($n$)-equivariant coordinate updates).
 We evaluate SchNet and EGNN as structural baselines and find that while they perform competitively on random splits, they fail to generalize to unseen targets---suggesting that task-specific inductive biases are more important than architectural sophistication for degradability prediction.
 
-\paragraph{Protein language models and structure-based prediction.}
 Pre-trained protein language models such as ESM-2~\cite{lin2023esm2} and ProtTrans~\cite{elnaggar2022prottrans} learn rich representations from millions of sequences.
 ESM-IF~\cite{hsu2022esmif} extends this by conditioning on structure; DeepFRI~\cite{gligorijevic2021deepfri} predicts function from contact maps via graph convolutions.
 AlphaFold~\cite{jumper2021alphafold} has made structural predictions universally available, enabling structure-based ML at scale.
 We find that PROTAC-mediated degradation---an artificial, drug-induced process---is not directly predicted by evolutionary features alone (ESM-2: 0.534 AUROC in isolation; Section~\ref{sec:esm_integration}), but careful integration with task-specific architecture yields improved peak performance (0.7449 AUROC best seed).
 Degradability prediction also differs from function prediction in that it involves an \emph{intermolecular} interaction (protein--PROTAC--E3 ternary complex) rather than intrinsic molecular properties.
 
-\paragraph{Ubiquitin system modeling.}
 UbiBrowser~\cite{li2017ubibrowser} and DeepUbi~\cite{fu2019deepubi} predict natural ubiquitination sites and E3--substrate interactions based on endogenous recognition motifs (degrons).
 PROTAC-induced degradation fundamentally differs: the PROTAC artificially bridges target and E3, bypassing natural substrate recognition, so \emph{surface lysine accessibility}---not natural E3 specificity---determines degradability.
 This motivates our structure-first approach with E3 identity as a separate input.
@@ -224,7 +217,6 @@ The SUG module is the core component of \ours{}, processing the protein structur
 We design this module around three biophysical principles: (1)~local structural context determines surface accessibility, (2)~lysine residues are the exclusive sites of ubiquitin attachment, and (3)~protein size should not bias predictions.
 Node features can optionally include ESM-2 protein language model embeddings (1,280-dim per residue), which provide rich evolutionary and contextual representations when available (Section~\ref{sec:esm_integration}).
 
-\paragraph{Message passing.}
 At each layer $l \in \{1, \ldots, L\}$, node representations are updated via:
 \begin{equation}
     \mathbf{m}_{ij}^{(l)} = \phi_{\text{msg}}\!\left(\mathbf{h}_i^{(l)} \| \mathbf{h}_j^{(l)} \| d_{ij}\right)
@@ -238,7 +230,6 @@ where $\|$ denotes concatenation, $d_{ij} = \|\mathbf{c}_i - \mathbf{c}_j\|_2$ i
 By using the scalar distance $d_{ij}$ rather than the coordinate difference vector $\mathbf{c}_j - \mathbf{c}_i$, the message function is inherently invariant to rotation and translation---a property we validate empirically in Section~\ref{sec:equivariant}.
 We use $L = 4$ message-passing layers with hidden dimension 128 and output dimension 64.
 
-\paragraph{Lysine-weighted pooling.}
 Ubiquitin is covalently conjugated to the $\varepsilon$-amino group of lysine side chains via an isopeptide bond.
 Therefore, degradation efficiency depends critically on the accessibility and spatial distribution of surface lysines relative to the E3 ligase binding interface.
 We incorporate this domain knowledge through a lysine-weighted global pooling mechanism:
@@ -254,7 +245,6 @@ Second, the $\mathbf{1/\sqrt{N}}$ \textbf{size normalization} ensures consistent
 Without this normalization, mean pooling produces representations whose magnitude scales with protein size, creating a trivial size-based shortcut.
 We document the impact of these fixes in Section~\ref{sec:fixes}: target-unseen AUROC improved from 0.529 to 0.657 after addressing size leakage and per-protein normalization.
 
-\paragraph{Design rationale: invariance over equivariance.}
 We deliberately chose an SE(3)-\emph{invariant} architecture over an equivariant one.
 Degradability is a scalar property that depends on geometric \emph{relationships}---distances between residues, surface topology, lysine accessibility---rather than absolute 3D orientations.
 By using pairwise distances as edge features (Eq.~\ref{eq:message}), the model is inherently invariant to rotation and translation without the overhead of maintaining equivariant vector representations.
@@ -309,7 +299,6 @@ The fused representation $\mathbf{h}_{\text{fused}} \in \mathbb{R}^{192}$ is pas
 \subsection{Training Procedure}
 \label{sec:training}
 
-\paragraph{Multi-task loss.}
 We optimize a weighted combination of three loss functions:
 \begin{equation}
     \mathcal{L} = \lambda_1 \mathcal{L}_{\text{BCE}} + \lambda_2 \mathcal{L}_{\text{Huber}} + \lambda_3 \mathcal{L}_{\text{focal}}
@@ -317,20 +306,17 @@ We optimize a weighted combination of three loss functions:
 where $\mathcal{L}_{\text{BCE}}$ is binary cross-entropy for the primary classification task, $\mathcal{L}_{\text{Huber}}$ is the Huber loss for continuous efficiency regression, and $\mathcal{L}_{\text{focal}} = -\alpha_t (1-p_t)^\gamma \log(p_t)$ with $\gamma = 2$ is focal loss~\cite{lin2017focal} to address class imbalance (39.4\% positive samples).
 Loss weights are set to $\lambda_1 = 1.0$, $\lambda_2 = 0.5$, $\lambda_3 = 0.3$.
 
-\paragraph{Optimization.}
 We train with AdamW~\cite{loshchilov2019adamw} ($\beta_1\!=\!0.9$, $\beta_2\!=\!0.999$, weight decay $10^{-2}$) using a cosine annealing learning rate schedule with initial rate $5 \times 10^{-4}$.
 Training proceeds for up to 10 epochs with batch size 8 (individual proteins, due to variable graph sizes with high-dimensional ESM-2 features), dropout 0.05, and early stopping with patience 5 based on validation AUROC.
 The lower learning rate and reduced dropout compared to the baseline configuration (LR=$10^{-3}$, dropout=0.1) are critical for integrating high-dimensional ESM-2 features: the lower LR prevents overfitting on the 1,280-dimensional embeddings, while reduced dropout preserves useful structural signals in the data-limited regime.
 The complete model has 1.59M trainable parameters.
 
-\paragraph{Validation-test mismatch.}
 \rev{We observe that validation-split AUROC does not reliably predict target-unseen test AUROC.
 This occurs because the validation split may share protein identities or biological similarity with training data, making it closer to interpolation than the extrapolation required for truly unseen targets.
 Ideally, we would use a target-unseen validation split for hyperparameter selection; however, this would further reduce the already-limited training data (155 proteins $\to$ ${\sim}$120 training, ${\sim}$15 validation, ${\sim}$20 test).
 We therefore use standard random validation for computational efficiency while acknowledging this may bias hyperparameter selection toward random-split performance rather than target-unseen generalization.
 The chosen hyperparameters (LR=$5{\times}10^{-4}$, dropout=0.05) may not be optimal for target-unseen generalization, potentially contributing to the observed variance.}
 
-\paragraph{Three-phase training.}
 To facilitate stable learning across the heterogeneous module types, we adopt a three-phase training strategy:
 \begin{enumerate}
     \item \textbf{Phase 1: SUG pre-training} (5 epochs). Only the SUG module and a temporary linear classifier are trained. This establishes a meaningful protein representation before introducing the E3 and context modules, preventing the fusion mechanism from collapsing to a trivial solution.
@@ -342,7 +328,6 @@ This phased approach empirically improves training stability compared to end-to-
 \subsection{Data}
 \label{sec:data}
 
-\paragraph{PROTAC-8K dataset.}
 We use the PROTAC-8K dataset~\cite{liu2025degrademaster}, curated from PROTAC-DB 3.0, the largest publicly available labeled dataset for PROTAC degradability prediction.
 Table~\ref{tab:dataset} summarizes the dataset statistics.
 Degradation labels are derived from experimental DC$_{50}$ and D$_{\text{max}}$ measurements: a sample is labeled positive if DC$_{50} < 1$\,$\mu$M and D$_{\text{max}} > 50\%$, and negative otherwise.
@@ -371,7 +356,6 @@ AlphaFold structures obtained & 152 / 155 \\
 \end{tabular}
 \end{table}
 
-\paragraph{Protein structures.}
 We obtained AlphaFold-predicted structures~\cite{jumper2021alphafold} (v6 API) for 152 of 155 unique targets.
 Three non-human proteins were unavailable: P03436 (Influenza A), P0DTD1 (SARS-CoV-2), and P36969.
 Each residue is represented by the 1,285-dimensional feature vector described in Table~\ref{tab:nodefeats_main} (or 28-dimensional when ESM-2 embeddings are unavailable, using amino acid one-hot encoding as a fallback).
@@ -400,16 +384,13 @@ Known Ub site mask & 1 & PhosphoSitePlus \\
 \end{tabular}
 \end{table}
 
-\paragraph{ESM-2 embeddings.}
 We extract per-residue embeddings from ESM-2-650M~\cite{lin2023esm2}, a protein language model pre-trained on 65 million sequences via masked language modeling.
 For each of the 152 proteins with AlphaFold structures, we extract 1,280-dimensional representations from the final layer, yielding a rich encoding of evolutionary conservation, secondary structure propensity, and local sequence context.
 Embeddings are pre-computed and stored, adding no inference-time cost.
 
-\paragraph{Known ubiquitination sites.}
 We integrate experimentally validated ubiquitination sites from PhosphoSitePlus (127,661 known sites across the human proteome) as a binary mask feature: each residue receives a value of 1 if it is a known ubiquitination site and 0 otherwise.
 This provides the model with direct supervision signal about which lysine residues have been experimentally confirmed as ubiquitin conjugation sites, complementing the structural features that capture \emph{potential} ubiquitination.
 
-\paragraph{Evaluation splits.}
 A key design choice in our evaluation is the use of three complementary data splits, each testing a different generalization scenario relevant to PROTAC development.
 This multi-split evaluation is essential because, as we demonstrate, random splits can be highly misleading for this task.
 \begin{enumerate}
@@ -428,7 +409,6 @@ We report 95\% bootstrap confidence intervals (1,000 iterations) for all primary
 
 \subsection{Main Results}
 
-\paragraph{Dataset characteristics and limitations.}
 \rev{PROTAC-8K contains 3,101 labeled samples spanning only 155 unique protein targets.
 For target-unseen evaluation, the effective diversity is therefore closer to the number of proteins than the total sample count.
 The E3 ligase distribution is highly imbalanced: CRBN accounts for 62\% of samples, VHL for 35\%, and the remaining eight E3s combined represent only 3\%.
@@ -475,7 +455,6 @@ Figure~\ref{fig:main_results} visualizes the comparison across all models and sp
 
 We compare against two categories of baselines: GNN architectures applied to protein structure graphs with identical graph construction, and traditional ML methods using hand-crafted protein features.
 
-\paragraph{GNN baselines.}
 Table~\ref{tab:gnn_baselines} compares \ours{} against SchNet~\cite{schutt2017schnet}, EGNN~\cite{satorras2021egnn}, and an E(3)-equivariant variant.
 Results over three seeds report mean\,\spm{std}.
 
@@ -502,7 +481,6 @@ EGNN & 0.44M & 0.518\spm{.11} & 0.565\spm{.08} & 0.712\spm{.05} \\
 The improved model's multi-seed average (0.646\,\spm{0.124}) outperforms all GNN baselines on target-unseen by +12.8\% over EGNN (0.518\,\spm{0.11}).
 Notably, SchNet \emph{matches} \ours{} on the random split (0.776 vs.\ 0.774) but collapses to near-random on target-unseen (0.505)---a critical finding: \textbf{random-split performance can be misleading for this task}, as models memorize protein-specific patterns rather than learning generalizable features.
 
-\paragraph{ML baselines.}
 We also compare against Gradient Boosting, Random Forest, MLP, and Logistic Regression using 18 hand-crafted protein features (size, lysine count/fraction, pLDDT/SASA/disorder statistics, radius of gyration) plus 11-dim E3 one-hot encoding (Table~\ref{tab:ml_baselines}).
 
 \begin{table}[t]
@@ -530,7 +508,6 @@ The improved model's multi-seed average (0.646) achieves a 6.4\% improvement ove
 The performance ordering on target-unseen (\ours{} $>$ Gradient Boosting $>$ Random Forest $>$ MLP $>$ Logistic Regression) differs markedly from the random split, where tree-based methods dominate (Random Forest 0.825, Gradient Boosting 0.821 vs.\ \ours{} 0.774).
 Hand-crafted features are predictive when the same protein appears in train and test but fail to transfer to new proteins; the GNN captures more transferable structural patterns, reinforcing the importance of target-unseen evaluation.
 
-\paragraph{VHL prediction remains challenging.}
 \rev{An important caveat is the per-E3 asymmetry: CRBN-targeted proteins achieve 0.758 AUROC ($n{=}273$), while VHL-targeted proteins yield only 0.396 ($n{=}187$) on the target-unseen split---\emph{below} random chance.
 VHL-mediated degradation appears harder to predict from structure alone, even with VHL samples in training.
 We discuss possible explanations in Section~\ref{sec:fixes}.}
@@ -599,11 +576,9 @@ The MRR of 0.641 (correct E3 ranked between positions 1--2 on average) substanti
 \subsection{Architectural Insights}
 \label{sec:equivariant}
 
-\paragraph{E(3)-equivariance underperforms.}
 An E(3)-equivariant SUG variant achieves only 0.626 AUROC vs.\ 0.657 for the invariant model.
 Since degradability is a scalar property, pairwise distance features suffice; equivariant vector representations add overhead without benefit~\cite{zhang2023gearnet}.
 
-\paragraph{ESM-2 requires careful integration.}
 \label{sec:esm_integration}
 ESM-2 embeddings alone achieve only 0.534 AUROC, and naive combination with structure \emph{decreases} performance to 0.407.
 However, with tuned hyperparameters (LR=$5\times10^{-4}$, dropout=0.05), the improved model achieves 0.7449 best-seed AUROC (+23\% over gradient boosting).
@@ -612,11 +587,9 @@ The high variance across seeds (0.506--0.745, std=0.124) reflects optimization c
 \subsection{Variance Analysis}
 \label{sec:multiseed}
 
-\paragraph{Seed sensitivity.}
 Multi-seed validation (seeds 42, 123, 456) yields 0.646\,\spm{0.124} AUROC, with individual seeds ranging from 0.506 to 0.745.
 This variance---consistent with EGNN baselines (0.518\,\spm{0.11})---reflects optimization challenges when combining high-dimensional ESM-2 embeddings (1,280-dim) with only 155 unique proteins.
 
-\paragraph{Six-seed extended validation.}
 \rev{To obtain a more robust variance estimate, we trained three additional seeds (789, 1011, 1213), which yielded AUROCs of 0.657, 0.520, and 0.502 respectively.
 The 6-seed mean is 0.603\,\spm{0.097} (95\% CI: [0.532, 0.682])---marginally below the gradient boosting baseline (0.607, bootstrap p = 0.556).
 This result is important to report honestly: the original 3-seed mean (0.646) was moderately favorable; the 6-seed analysis demonstrates that \ours{}'s advantage over hand-crafted feature baselines is not robust across all initializations.
@@ -632,12 +605,10 @@ These results should temper expectations: while the model provides useful signal
 \label{fig:multiseed_variance}
 \end{figure}
 
-\paragraph{E3 generalization is limited to major ligases.}
 \rev{Per-E3 analysis reveals highly asymmetric performance on target-unseen evaluation: CRBN-targeted proteins achieve 0.758 AUROC ($n{=}273$), while VHL-targeted proteins yield only 0.396 AUROC ($n{=}187$)---\emph{below random chance}.
 The E3-unseen evaluation (CRBN$\to$VHL: 0.811 AUROC) appears contradictory at first glance: the model transfers well from CRBN to VHL when VHL is the \emph{held-out E3 ligase}, yet fails on VHL-targeted proteins within the target-unseen split.
 These evaluate different generalization axes: E3-unseen tests whether structural features learned from CRBN data predict VHL degradation patterns; target-unseen tests whether VHL-specific patterns generalize to \emph{new, unseen target proteins}.}
 
-\paragraph{Root cause analysis: why does VHL fail?}
 \rev{To understand the VHL failure, we analyzed the PROTAC-8K dataset.
 VHL-targeted proteins have a similar positive rate (36.9\%) to CRBN proteins (38.4\%), ruling out class imbalance as the cause.
 The dataset contains 91 unique VHL-targeted proteins vs.\ 125 CRBN-targeted proteins---comparable diversity.
@@ -673,11 +644,9 @@ cIAP1 & 8 & 2 & 0.417 & 0.250 & 0.000 & 0.750 & \textcolor{red}{$\downarrow$} \\
 \label{fig:per_e3}
 \end{figure}
 
-\paragraph{Architectural fixes.}
 \label{sec:fixes}
 Size normalization ($1/\sqrt{N}$) and per-protein lysine softmax improved target-unseen AUROC from 0.529 to 0.657 (+24\%) while leaving random-split unchanged, confirming these addressed protein memorization shortcuts.
 
-\paragraph{Reconciling performance estimates.}
 \rev{We report three evaluation protocols: multi-seed single split (0.646\,\spm{0.124}), baseline single seed (0.657), and 5-fold CV (0.565\,\spm{0.052}, Appendix Table~9).
 The CV mean is lower because each fold trains on ${\sim}20\%$ less data.
 We consider the 6-seed average (0.603) the most conservative estimate; CV provides a lower bound; best-seed (0.745) represents peak performance under favorable initialization.
@@ -741,14 +710,12 @@ The random split shows poor calibration (ECE = 0.165), further supporting target
 DegradeMaster~\cite{liu2025degrademaster}, using full PROTAC molecular descriptors, achieves 0.856 AUROC; the ${\sim}0.24$ gap quantifies the information value of the PROTAC molecule itself---structural features of the target alone are insufficient to fully determine degradability.
 The paradigms are complementary and address different questions: \ours{} screens candidate targets \emph{before} PROTAC synthesis; full-information methods refine \emph{existing} PROTAC designs.
 
-\paragraph{Honest performance assessment.}
 \rev{We emphasize that the 6-seed mean (0.603) is not statistically superior to gradient boosting (0.607, p = 0.556).
 The original 3-seed estimate (0.646) was moderately favorable; additional seeds yielded lower performance (0.657, 0.520, 0.502).
 The model's primary contribution may not be raw AUROC but rather: (1)~structural \emph{interpretability} via lysine attention weights (Section~\ref{sec:case_study}), (2)~E3 recommendation capability (74\% Hit@3), and (3)~well-calibrated confidence scores enabling reliable thresholding.}
 
 \rev{E3 ligase transfer and target protein generalization are distinct challenges: VHL-targeted proteins fail on target-unseen (0.396) despite successful CRBN$\to$VHL transfer (0.811), as discussed in Section~\ref{sec:multiseed}.}
 
-\paragraph{The lysine indicator paradox.}
 \rev{Removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101 (Appendix Table~13, Figure~\ref{fig:lysine_paradox}).
 We attribute this to the lysine-weighted pooling mechanism (Eq.~3) already encoding lysine information architecturally, making the binary feature redundant and causing overfitting to training-set lysine distributions.
 Additionally, the binary indicator oversimplifies---the pooling weights learn to discriminate based on structural context (SASA, disorder, local geometry).
@@ -762,7 +729,6 @@ This suggests that \textbf{architectural inductive biases are more effective tha
 \label{fig:lysine_paradox}
 \end{figure}
 
-\paragraph{Limitations.}
 \rev{(1)~\textbf{Small dataset}: Only 155 unique proteins limit target-unseen generalization and directly cause the high seed variance (std = 0.097--0.124).
 (2)~\textbf{E3 imbalance}: CRBN/VHL dominate (97\%); rare E3 generalization is unsupported and VHL-specific failure (0.396 AUROC) is a fundamental limitation.}
 \rev{(3)~\textbf{No statistical advantage over baselines}: The 6-seed mean (0.603) does not significantly exceed gradient boosting (0.607, p = 0.556). Individual seeds range from 0.50 to 0.75, requiring ensembling for reliable deployment.}

@@ -57,17 +57,17 @@ We appreciate the reviewer's detailed and rigorous critique. We have addressed e
   \item \textbf{Abstract closing} (line 68): ``However, the high seed variance (std = 0.124) and limited E3 coverage require ensembling for reliable deployment.''
   \change{Line 68.}
 
-  \item \textbf{Introduction} (lines 135--136): Reports both 3-seed (0.646$\pm$0.124) and 6-seed (0.603$\pm$0.097) means as primary numbers; notes statistical non-significance ($p = 0.556$) and VHL failure (0.396) immediately.
-  \change{Lines 135--136.}
+  \item \textbf{Introduction} (lines 132--133): Reports both 3-seed (0.646$\pm$0.124) and 6-seed (0.603$\pm$0.097) means as primary numbers; notes statistical non-significance ($p = 0.556$) and VHL failure (0.396) immediately.
+  \change{Lines 132--133.}
 
-  \item \textbf{Table~1} (lines 441--458): Now contains both 3-seed and 6-seed rows, with ``Best Seed'' as a separate column rather than the headline number.
-  \change{Lines 441--458 (Table~1, \texttt{tab:main}).}
+  \item \textbf{Table~1} (lines 421--438): Now contains both 3-seed and 6-seed rows, with ``Best Seed'' as a separate column rather than the headline number.
+  \change{Lines 421--438 (Table~1, \texttt{tab:main}).}
 
-  \item \textbf{Results text} (lines 460--462): ``The improved model achieves a 3-seed mean of 0.646\ldots and a more conservative 6-seed mean of 0.603\ldots The gradient boosting baseline achieves 0.607; the 3-seed advantage (+6.4\%) is not statistically significant (p = 0.259)\ldots The best seed (0.7449, +23\% over baseline) reflects favorable initialization and should not be expected reliably.''
-  \change{Lines 460--462.}
+  \item \textbf{Results text} (lines 440--442): ``The improved model achieves a 3-seed mean of 0.646\ldots and a more conservative 6-seed mean of 0.603\ldots The gradient boosting baseline achieves 0.607; the 3-seed advantage (+6.4\%) is not statistically significant (p = 0.259)\ldots The best seed (0.7449, +23\% over baseline) reflects favorable initialization and should not be expected reliably.''
+  \change{Lines 440--442.}
 
-  \item \textbf{Conclusion} (line 783): ``On target-unseen evaluation, the 3-seed mean is 0.646$\pm$0.124 (best: 0.7449) and the 6-seed mean is 0.603$\pm$0.097; neither is statistically superior to gradient boosting (0.607)\ldots''
-  \change{Lines 783--784.}
+  \item \textbf{Conclusion} (line 749): ``On target-unseen evaluation, the 3-seed mean is 0.646$\pm$0.124 (best: 0.7449) and the 6-seed mean is 0.603$\pm$0.097; neither is statistically superior to gradient boosting (0.607)\ldots''
+  \change{Lines 749--750.}
 \end{itemize}
 
 \bigskip
@@ -98,9 +98,9 @@ The 6-seed mean (0.603) is marginally \emph{below} the gradient boosting baselin
 ``This result is important to report honestly: the original 3-seed mean (0.646) was moderately favorable; the 6-seed analysis demonstrates that DegradoMap's advantage over hand-crafted feature baselines is not robust across all initializations.''
 \end{quote}
 
-We explicitly recommend ensembling across $\geq$6 seeds for deployment (line 624) and note that individual seeds span a 0.25-AUROC range (0.502--0.745).
+We explicitly recommend ensembling across $\geq$6 seeds for deployment (line 598) and note that individual seeds span a 0.25-AUROC range (0.502--0.745).
 
-\change{Lines 619--625 (``Six-seed extended validation'' paragraph in \S4.3); Table~1 lines 441--458 (6-seed row added); Figure~4 at line 632 (all 6 seeds visualized); Seed sensitivity paragraph lines 615--617.}
+\change{Lines 593--599 (``Six-seed extended validation'' paragraph in \S4.3); Table~1 lines 421--438 (6-seed row added); Figure~4 at line 605 (all 6 seeds visualized); Seed sensitivity paragraph lines 590--592.}
 
 \bigskip
 
@@ -127,7 +127,7 @@ This is a classic overfitting pattern: the lysine indicator improves validation 
 
 We conclude: ``architectural inductive biases (lysine pooling) are more effective than explicit feature annotation for this task,'' and note that current feature design is suboptimal.
 
-\change{Lines 751--758 (``The lysine indicator paradox'' paragraph in \S5); Figure~7 at line 762 (lysine paradox visualization); Limitation item~7 at line 772 (``Lysine indicator counterproductive'').}
+\change{Lines 719--726 (``The lysine indicator paradox'' paragraph in \S5); Figure~7 at line 729 (lysine paradox visualization); Limitation item~7 at line 738 (``Lysine indicator counterproductive'').}
 
 \bigskip
 
@@ -143,26 +143,26 @@ We conclude: ``architectural inductive biases (lysine pooling) are more effectiv
   \item \textbf{Abstract} (line 65): Changed to ``CRBN$\to$VHL E3-unseen transfer.''
   \change{Line 65.}
 
-  \item \textbf{Introduction} (line 136): ``VHL-targeted proteins fail below random (0.396 AUROC)---both limitations prominently acknowledged.''
-  \change{Line 136.}
+  \item \textbf{Introduction} (line 133): ``VHL-targeted proteins fail below random (0.396 AUROC)---both limitations prominently acknowledged.''
+  \change{Line 133.}
 
-  \item \textbf{Section heading} (line 635): ``E3 generalization is limited to major ligases.''
-  \change{Line 635.}
+  \item \textbf{Section heading} (line 608): ``E3 generalization is limited to major ligases.''
+  \change{Line 608.}
 
-  \item \textbf{E3-unseen vs target-unseen paradox explained} (lines 636--638): CRBN$\to$VHL E3-unseen (0.811) succeeds because it tests E3-level transfer; VHL target-unseen (0.396) fails because it tests protein-level generalization---different axes.
-  \change{Lines 636--638.}
+  \item \textbf{E3-unseen vs target-unseen paradox explained} (lines 608--611): CRBN$\to$VHL E3-unseen (0.811) succeeds because it tests E3-level transfer; VHL target-unseen (0.396) fails because it tests protein-level generalization---different axes.
+  \change{Lines 608--611.}
 
-  \item \textbf{VHL root cause analysis} (lines 640--648): Ruled out class imbalance (36.9\% vs 38.4\%) and dataset size (91 vs 125 proteins); identified structural heterogeneity as the likely cause. Explicit warning: ``practitioners should expect substantially lower performance than the overall 0.646 mean when deploying on VHL-targeted proteins, and near-random performance for rare E3s.''
-  \change{Lines 640--648.}
+  \item \textbf{VHL root cause analysis} (lines 612--620): Ruled out class imbalance (36.9\% vs 38.4\%) and dataset size (91 vs 125 proteins); identified structural heterogeneity as the likely cause. Explicit warning: ``practitioners should expect substantially lower performance than the overall 0.646 mean when deploying on VHL-targeted proteins, and near-random performance for rare E3s.''
+  \change{Lines 612--620.}
 
-  \item \textbf{Per-E3 Table~5} (lines 651--666): Quantitative breakdown showing CRBN 0.758, VHL 0.396, cIAP1 0.417.
-  \change{Table~5 at line 654.}
+  \item \textbf{Per-E3 Table~5} (lines 622--637): Quantitative breakdown showing CRBN 0.758, VHL 0.396, cIAP1 0.417.
+  \change{Table~5 at line 625.}
 
-  \item \textbf{Per-E3 Figure~5} (lines 668--674): Visual comparison of per-E3 performance.
-  \change{Figure~5 at line 673.}
+  \item \textbf{Per-E3 Figure~5} (lines 639--645): Visual comparison of per-E3 performance.
+  \change{Figure~5 at line 644.}
 
-  \item \textbf{Conclusion} (line 783): ``CRBN$\to$VHL transfer (0.811 AUROC).''
-  \change{Line 783.}
+  \item \textbf{Conclusion} (line 749): ``CRBN$\to$VHL transfer (0.811 AUROC).''
+  \change{Line 749.}
 \end{itemize}
 
 \bigskip
@@ -181,7 +181,7 @@ We conclude: ``architectural inductive biases (lysine pooling) are more effectiv
 
 We state that the chosen hyperparameters (LR=$5\times10^{-4}$, dropout=0.05) may not be optimal for target-unseen generalization, and that this likely contributes to the observed variance.
 
-\change{Lines 326--330 (``Validation-test mismatch'' paragraph in \S3.5 Training); Line 323 (hyperparameter values noted); Limitation item~4 at line 769 (``Validation-test mismatch'').}
+\change{Lines 314--318 (``Validation-test mismatch'' paragraph in \S3.5 Training); Line 310 (hyperparameter values noted); Limitation item~4 at line 735 (``Validation-test mismatch'').}
 
 \bigskip
 
@@ -199,7 +199,7 @@ We state that the chosen hyperparameters (LR=$5\times10^{-4}$, dropout=0.05) may
   \item These constraints fundamentally bound generalization performance.
 \end{itemize}
 
-\change{Lines 431--436 (``Dataset characteristics and limitations'' paragraph); also Dataset statistics Table~2 at line 353 (``dominated by two E3 ligases, reflecting the current state of PROTAC research'').}
+\change{Lines 412--417 (``Dataset characteristics and limitations'' paragraph); also Dataset statistics Table~2 at line 353 (``dominated by two E3 ligases, reflecting the current state of PROTAC research'').}
 
 \bigskip
 
@@ -215,9 +215,9 @@ We state that the chosen hyperparameters (LR=$5\times10^{-4}$, dropout=0.05) may
 ``No external validation: PROTAC-8K is the only publicly available benchmark with sufficient scale; generalization to data from other assay platforms or research groups is unvalidated.''
 \end{quote}
 
-We also note in the introduction (line 136) that limitations are ``prominently acknowledged,'' and in the conclusion (lines 783--784) that results are ``not statistically superior to gradient boosting.''
+We also note in the introduction (line 133) that limitations are ``prominently acknowledged,'' and in the conclusion (lines 749--750) that results are ``not statistically superior to gradient boosting.''
 
-\change{Limitation item~6 at line 771 (``No external validation''); Introduction line 136; Conclusion lines 783--784.}
+\change{Limitation item~6 at line 737 (``No external validation''); Introduction line 133; Conclusion lines 749--750.}
 
 \bigskip
 \hrule
@@ -231,24 +231,24 @@ We also note in the introduction (line 136) that limitations are ``prominently a
 \toprule
 \textbf{Concern} & \textbf{Revision (lines in \texttt{paper.tex})} \\
 \midrule
-Best seed over-emphasized (M1) & Abstract L65; Introduction L135--136; Table~1 L441--458; \S4.2 L460--462; Conclusion L783--785 \\
-Target-unseen unstable (M2) & \S4.3 L615--625 (seed sensitivity + 6-seed); Table~1 L452; Figure~4 L632; $p$-values L461, L529, L621 \\
-Lysine claim unsupported (M3) & \S5 L751--758; Figure~7 L762; Limitation~7 L772 \\
-E3 claims too broad (M4) & Abstract L65; \S4.3 L635--648; Table~5 L654; Figure~5 L673; Conclusion L783 \\
-Validation misaligned (M5) & \S3.5 L326--330; L323; Limitation~4 L769 \\
-Dataset limits buried (M6) & \S4 L431--436; Table~2 L353 \\
-No external validation (M7) & Limitation~6 L771; Introduction L136; Conclusion L783--784 \\
+Best seed over-emphasized (M1) & Abstract L65; Introduction L132--133; Table~1 L421--438; \S4.2 L440--442; Conclusion L749--751 \\
+Target-unseen unstable (M2) & \S4.3 L590--599 (seed sensitivity + 6-seed); Table~1 L432; Figure~4 L605; $p$-values L441, L507, L595 \\
+Lysine claim unsupported (M3) & \S5 L719--726; Figure~7 L729; Limitation~7 L738 \\
+E3 claims too broad (M4) & Abstract L65; \S4.3 L608--620; Table~5 L625; Figure~5 L644; Conclusion L749 \\
+Validation misaligned (M5) & \S3.5 L314--318; L310; Limitation~4 L735 \\
+Dataset limits buried (M6) & \S4 L412--417; Table~2 L353 \\
+No external validation (M7) & Limitation~6 L737; Introduction L133; Conclusion L749--750 \\
 \midrule
 \multicolumn{2}{@{}l}{\textit{New analyses added in revision:}} \\
 \midrule
-6-seed extended validation & Table~1 L452; \S4.3 L619--625; Figure~4 L632 \\
-Calibration analysis & \S4.6 L705--730; Table~6 L714 \\
-Per-E3 breakdown & Table~5 L654; Figure~5 L673 \\
-VHL root cause analysis & \S4.3 L640--648 \\
-BRD4 case study & \S4.5 L686--703 \\
-Lysine paradox figure & Figure~7 L762 \\
-Statistical significance & L461, L529, L621 \\
-Honest performance assessment & \S5 L744--748 \\
+6-seed extended validation & Table~1 L432; \S4.3 L593--599; Figure~4 L605 \\
+Calibration analysis & \S4.6 L674--700; Table~6 L683 \\
+Per-E3 breakdown & Table~5 L625; Figure~5 L644 \\
+VHL root cause analysis & \S4.3 L612--620 \\
+BRD4 case study & \S4.5 L655--672 \\
+Lysine paradox figure & Figure~7 L729 \\
+Statistical significance & L441, L507, L595 \\
+Honest performance assessment & \S5 L713--717 \\
 \bottomrule
 \end{tabular}
 \end{center}
