@@ -1,19 +1,5 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
-\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
-\global\let\oldcontentsline\contentsline
-\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
-\global\let\oldnewlabel\newlabel
-\gdef\newlabel#1#2{\newlabelxx{#1}#2}
-\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
-\AtEndDocument{\ifx\hyper@anchor\@undefined
-\let\contentsline\oldcontentsline
-\let\newlabel\oldnewlabel
-\fi}
-\fi}
-\global\let\hyper@last\relax 
-\gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{bekes2022protac,sakamoto2001protacs,pettersson2019pbd}
@@ -26,11 +12,11 @@
 \citation{jumper2021alphafold}
 \citation{lin2023esm2}
 \citation{tsherniak2017depmap}
+\citation{liu2025degrademaster}
 \@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Limitations of existing methods.}{1}{section*.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Our approach.}{1}{section*.6}\protected@file@percent }
-\citation{liu2025degrademaster}
 \citation{li2022deepprotacs}
 \citation{ribes2024protac}
 \citation{zhang2022mapd}
@@ -44,85 +30,85 @@
 \citation{hsu2022esmif}
 \citation{gligorijevic2021deepfri}
 \citation{jumper2021alphafold}
+\citation{li2017ubibrowser}
+\citation{fu2019deepubi}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Input modality comparison of PROTAC prediction methods. \textsc  {DegradoMap}{} requires only protein structure and E3 identity, enabling use before PROTAC synthesis.}}{2}{table.caption.9}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:positioning}{{1}{2}{Input modality comparison of PROTAC prediction methods. \ours {} requires only protein structure and E3 identity, enabling use before PROTAC synthesis}{table.caption.9}{}}
 \@writefile{toc}{\contentsline {paragraph}{Evaluation and contributions.}{2}{section*.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{PROTAC prediction methods.}{2}{section*.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Geometric deep learning for proteins.}{2}{section*.10}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Input modality comparison of PROTAC prediction methods. \textsc  {DegradoMap}{} requires only protein structure and E3 identity, enabling use before PROTAC synthesis.\relax }}{2}{table.caption.9}\protected@file@percent }
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:positioning}{{1}{2}{Input modality comparison of PROTAC prediction methods. \ours {} requires only protein structure and E3 identity, enabling use before PROTAC synthesis.\relax }{table.caption.9}{}}
 \@writefile{toc}{\contentsline {paragraph}{Protein language models.}{2}{section*.11}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Structure-based protein function prediction.}{2}{section*.12}\protected@file@percent }
-\citation{li2017ubibrowser}
-\citation{fu2019deepubi}
-\@writefile{toc}{\contentsline {paragraph}{Ubiquitin system modeling.}{3}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Ubiquitin system modeling.}{2}{section*.13}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{3}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Problem Formulation}{3}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Module A: Structure--Ubiquitination Graph (SUG)}{3}{subsection.3.2}\protected@file@percent }
 \newlabel{sec:sug}{{3.2}{3}{Module A: Structure--Ubiquitination Graph (SUG)}{subsection.3.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Message passing.}{3}{section*.15}\protected@file@percent }
-\newlabel{eq:message}{{2}{3}{Message passing}{equation.3.2}{}}
-\newlabel{eq:update}{{3}{3}{Message passing}{equation.3.3}{}}
+\newlabel{eq:message}{{2}{3}{Message passing}{equation.2}{}}
+\newlabel{eq:update}{{3}{3}{Message passing}{equation.3}{}}
 \@writefile{toc}{\contentsline {paragraph}{Lysine-weighted pooling.}{3}{section*.16}\protected@file@percent }
-\newlabel{eq:lyspool}{{4}{3}{Lysine-weighted pooling}{equation.3.4}{}}
+\newlabel{eq:lyspool}{{4}{3}{Lysine-weighted pooling}{equation.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{Design rationale: invariance over equivariance.}{3}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Module B: E3 Compatibility}{3}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:e3compat}{{3.3}{3}{Module B: E3 Compatibility}{subsection.3.3}{}}
 \citation{tsherniak2017depmap}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Architecture of \textsc  {DegradoMap}{}. Module\nonbreakingspace A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module\nonbreakingspace B's cross-attention with E3 ligase embeddings. Module\nonbreakingspace C encodes cellular context from DepMap features. Module\nonbreakingspace D fuses all representations through learned gating and produces binary degradability ($\hat  {y}_{\text  {bin}}$) and continuous efficiency ($\hat  {y}_{\text  {cont}}$) predictions.\relax }}{4}{figure.caption.14}\protected@file@percent }
-\newlabel{fig:architecture}{{1}{4}{Architecture of \ours {}. Module~A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module~B's cross-attention with E3 ligase embeddings. Module~C encodes cellular context from DepMap features. Module~D fuses all representations through learned gating and produces binary degradability ($\hat {y}_{\text {bin}}$) and continuous efficiency ($\hat {y}_{\text {cont}}$) predictions.\relax }{figure.caption.14}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Module B: E3 Compatibility}{4}{subsection.3.3}\protected@file@percent }
-\newlabel{sec:e3compat}{{3.3}{4}{Module B: E3 Compatibility}{subsection.3.3}{}}
+\citation{lin2017focal}
+\citation{loshchilov2019adamw}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Architecture of \textsc  {DegradoMap}{}. Module\nonbreakingspace A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module\nonbreakingspace B's cross-attention with E3 ligase embeddings. Module\nonbreakingspace C encodes cellular context from DepMap features. Module\nonbreakingspace D fuses all representations through learned gating and produces binary degradability ($\hat  {y}_{\text  {bin}}$) and continuous efficiency ($\hat  {y}_{\text  {cont}}$) predictions.}}{4}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:architecture}{{1}{4}{Architecture of \ours {}. Module~A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module~B's cross-attention with E3 ligase embeddings. Module~C encodes cellular context from DepMap features. Module~D fuses all representations through learned gating and produces binary degradability ($\hat {y}_{\text {bin}}$) and continuous efficiency ($\hat {y}_{\text {cont}}$) predictions}{figure.caption.14}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Module C: Cellular Context Encoder}{4}{subsection.3.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Module D: Gated Fusion and Prediction}{4}{subsection.3.5}\protected@file@percent }
 \newlabel{sec:fusion}{{3.5}{4}{Module D: Gated Fusion and Prediction}{subsection.3.5}{}}
-\citation{lin2017focal}
-\citation{loshchilov2019adamw}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Training Procedure}{4}{subsection.3.6}\protected@file@percent }
+\newlabel{sec:training}{{3.6}{4}{Training Procedure}{subsection.3.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Multi-task loss.}{4}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Optimization.}{4}{section*.19}\protected@file@percent }
 \citation{liu2025degrademaster}
 \citation{jumper2021alphafold}
 \citation{lin2023esm2}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Training Procedure}{5}{subsection.3.6}\protected@file@percent }
-\newlabel{sec:training}{{3.6}{5}{Training Procedure}{subsection.3.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{Multi-task loss.}{5}{section*.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Optimization.}{5}{section*.19}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Validation-test mismatch.}{5}{section*.20}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Three-phase training.}{5}{section*.21}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces PROTAC-8K dataset statistics. The dataset is dominated by two E3 ligases (CRBN, VHL), reflecting the current state of PROTAC research.\relax }}{5}{table.caption.23}\protected@file@percent }
-\newlabel{tab:dataset}{{2}{5}{PROTAC-8K dataset statistics. The dataset is dominated by two E3 ligases (CRBN, VHL), reflecting the current state of PROTAC research.\relax }{table.caption.23}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Data}{5}{subsection.3.7}\protected@file@percent }
 \newlabel{sec:data}{{3.7}{5}{Data}{subsection.3.7}{}}
 \@writefile{toc}{\contentsline {paragraph}{PROTAC-8K dataset.}{5}{section*.22}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Protein structures.}{5}{section*.24}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{ESM-2 embeddings.}{5}{section*.26}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Node feature specification (1,285-dim). Without ESM-2, uses AA one-hot (28-dim).\relax }}{6}{table.caption.25}\protected@file@percent }
-\newlabel{tab:nodefeats_main}{{3}{6}{Node feature specification (1,285-dim). Without ESM-2, uses AA one-hot (28-dim).\relax }{table.caption.25}{}}
-\@writefile{toc}{\contentsline {paragraph}{Known ubiquitination sites.}{6}{section*.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Evaluation splits.}{6}{section*.28}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Test performance of \textsc  {DegradoMap}{}. Target-unseen: multi-seed results (seeds 42, 123, 456) for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs.\relax }}{6}{table.caption.30}\protected@file@percent }
-\newlabel{tab:main}{{4}{6}{Test performance of \ours {}. Target-unseen: multi-seed results (seeds 42, 123, 456) for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs.\relax }{table.caption.30}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces PROTAC-8K dataset statistics. The dataset is dominated by two E3 ligases (CRBN, VHL), reflecting the current state of PROTAC research.}}{5}{table.caption.23}\protected@file@percent }
+\newlabel{tab:dataset}{{2}{5}{PROTAC-8K dataset statistics. The dataset is dominated by two E3 ligases (CRBN, VHL), reflecting the current state of PROTAC research}{table.caption.23}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Node feature specification (1,285-dim). Without ESM-2, uses AA one-hot (28-dim).}}{5}{table.caption.25}\protected@file@percent }
+\newlabel{tab:nodefeats_main}{{3}{5}{Node feature specification (1,285-dim). Without ESM-2, uses AA one-hot (28-dim)}{table.caption.25}{}}
+\@writefile{toc}{\contentsline {paragraph}{Known ubiquitination sites.}{5}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Evaluation splits.}{5}{section*.28}\protected@file@percent }
+\citation{schutt2017schnet}
+\citation{satorras2021egnn}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Test performance of \textsc  {DegradoMap}{}. Target-unseen: 3-seed (42, 123, 456) and 6-seed (42--1213) results for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs. Both 3-seed and 6-seed means are reported to show variance in favorable vs.\ extended evaluation.}}{6}{table.caption.30}\protected@file@percent }
+\newlabel{tab:main}{{4}{6}{Test performance of \ours {}. Target-unseen: 3-seed (42, 123, 456) and 6-seed (42--1213) results for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs. Both 3-seed and 6-seed means are reported to show variance in favorable vs.\ extended evaluation}{table.caption.30}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Results}{6}{section.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Main Results}{6}{subsection.4.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Dataset characteristics and limitations.}{6}{section*.29}\protected@file@percent }
-\citation{schutt2017schnet}
-\citation{satorras2021egnn}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces AUROC comparison across evaluation splits for all models. Error bars show 95\% bootstrap CIs (DegradoMap) or multi-seed standard deviation (GNN baselines). Dashed line indicates random performance (0.5). \textsc  {DegradoMap}{} achieves the best target-unseen performance; tree-based methods dominate only on random splits.\relax }}{7}{figure.caption.31}\protected@file@percent }
-\newlabel{fig:main_results}{{2}{7}{AUROC comparison across evaluation splits for all models. Error bars show 95\% bootstrap CIs (DegradoMap) or multi-seed standard deviation (GNN baselines). Dashed line indicates random performance (0.5). \ours {} achieves the best target-unseen performance; tree-based methods dominate only on random splits.\relax }{figure.caption.31}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces GNN baseline comparison (AUROC). Multi-seed results reported as mean\tmspace  +\thinmuskip {.1667em}{\SMALL  $\pm $std}. Best per-split in \textbf  {bold}. All models use C$\alpha $ radius graphs.\relax }}{7}{table.caption.33}\protected@file@percent }
-\newlabel{tab:gnn_baselines}{{5}{7}{GNN baseline comparison (AUROC). Multi-seed results reported as mean\,\spm {std}. Best per-split in \textbf {bold}. All models use C$\alpha $ radius graphs.\relax }{table.caption.33}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Baseline Comparison}{7}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{GNN baselines.}{7}{section*.32}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces ML baseline comparison (AUROC). Baselines use 18 hand-crafted protein features + E3 one-hot encoding.\relax }}{7}{table.caption.35}\protected@file@percent }
-\newlabel{tab:ml_baselines}{{6}{7}{ML baseline comparison (AUROC). Baselines use 18 hand-crafted protein features + E3 one-hot encoding.\relax }{table.caption.35}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces AUROC comparison across evaluation splits for all models. Error bars show 95\% bootstrap CIs (DegradoMap) or multi-seed standard deviation (GNN baselines). Dashed line indicates random performance (0.5). \textsc  {DegradoMap}{} achieves the best target-unseen performance; tree-based methods dominate only on random splits.}}{6}{figure.caption.31}\protected@file@percent }
+\newlabel{fig:main_results}{{2}{6}{AUROC comparison across evaluation splits for all models. Error bars show 95\% bootstrap CIs (DegradoMap) or multi-seed standard deviation (GNN baselines). Dashed line indicates random performance (0.5). \ours {} achieves the best target-unseen performance; tree-based methods dominate only on random splits}{figure.caption.31}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces GNN baseline comparison (AUROC). Multi-seed results reported as mean\,{\SMALL  $\pm $std}. Best per-split in \textbf  {bold}. All models use C$\alpha $ radius graphs.}}{6}{table.caption.33}\protected@file@percent }
+\newlabel{tab:gnn_baselines}{{5}{6}{GNN baseline comparison (AUROC). Multi-seed results reported as mean\,\spm {std}. Best per-split in \textbf {bold}. All models use C$\alpha $ radius graphs}{table.caption.33}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Baseline Comparison}{6}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{GNN baselines.}{6}{section*.32}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces ML baseline comparison (AUROC). Baselines use 18 hand-crafted protein features + E3 one-hot encoding.}}{7}{table.caption.35}\protected@file@percent }
+\newlabel{tab:ml_baselines}{{6}{7}{ML baseline comparison (AUROC). Baselines use 18 hand-crafted protein features + E3 one-hot encoding}{table.caption.35}{}}
 \@writefile{toc}{\contentsline {paragraph}{ML baselines.}{7}{section*.34}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Module ablation (AUROC). All configurations use identical default hyperparameters (LR=$10^{-3}$) for fair comparison.$^\dagger $}}{7}{table.caption.37}\protected@file@percent }
+\newlabel{tab:module_ablation}{{7}{7}{Module ablation (AUROC). All configurations use identical default hyperparameters (LR=$10^{-3}$) for fair comparison.$^\dagger $}{table.caption.37}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces E3 ligase recommendation performance ($n = 50$ test proteins).}}{7}{table.caption.39}\protected@file@percent }
+\newlabel{tab:e3_rec}{{8}{7}{E3 ligase recommendation performance ($n = 50$ test proteins)}{table.caption.39}{}}
 \@writefile{toc}{\contentsline {paragraph}{VHL prediction remains challenging.}{7}{section*.36}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Module Ablation}{7}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}E3 Ligase Recommendation}{7}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:e3rec}{{4.4}{7}{E3 Ligase Recommendation}{subsection.4.4}{}}
 \citation{zhang2023gearnet}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Module ablation (AUROC). All configurations use identical default hyperparameters (LR=$10^{-3}$) for fair comparison.$^\dagger $\relax }}{8}{table.caption.37}\protected@file@percent }
-\newlabel{tab:module_ablation}{{7}{8}{Module ablation (AUROC). All configurations use identical default hyperparameters (LR=$10^{-3}$) for fair comparison.$^\dagger $\relax }{table.caption.37}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces E3 ligase recommendation performance ($n = 50$ test proteins).\relax }}{8}{table.caption.39}\protected@file@percent }
-\newlabel{tab:e3_rec}{{8}{8}{E3 ligase recommendation performance ($n = 50$ test proteins).\relax }{table.caption.39}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}E3 Ligase Recommendation}{8}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:e3rec}{{4.4}{8}{E3 Ligase Recommendation}{subsection.4.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Ablation study: effect of each configuration on target-unseen AUROC. Dots show test AUROC; stems connect to the default baseline (dashed line). LR=$5\times 10^{-4}$ yields the largest improvement (+0.189); removing the lysine indicator also improves performance (+0.101).\relax }}{8}{figure.caption.38}\protected@file@percent }
-\newlabel{fig:ablation}{{3}{8}{Ablation study: effect of each configuration on target-unseen AUROC. Dots show test AUROC; stems connect to the default baseline (dashed line). LR=$5\times 10^{-4}$ yields the largest improvement (+0.189); removing the lysine indicator also improves performance (+0.101).\relax }{figure.caption.38}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Ablation study: effect of each configuration on target-unseen AUROC. Dots show test AUROC; stems connect to the default baseline (dashed line). LR=$5\times 10^{-4}$ yields the largest improvement (+0.189); removing the lysine indicator also improves performance (+0.101).}}{8}{figure.caption.38}\protected@file@percent }
+\newlabel{fig:ablation}{{3}{8}{Ablation study: effect of each configuration on target-unseen AUROC. Dots show test AUROC; stems connect to the default baseline (dashed line). LR=$5\times 10^{-4}$ yields the largest improvement (+0.189); removing the lysine indicator also improves performance (+0.101)}{figure.caption.38}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Architectural Insights}{8}{subsection.4.5}\protected@file@percent }
 \newlabel{sec:equivariant}{{4.5}{8}{Architectural Insights}{subsection.4.5}{}}
 \@writefile{toc}{\contentsline {paragraph}{E(3)-equivariance underperforms.}{8}{section*.40}\protected@file@percent }
@@ -131,30 +117,34 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Variance Analysis}{8}{subsection.4.6}\protected@file@percent }
 \newlabel{sec:multiseed}{{4.6}{8}{Variance Analysis}{subsection.4.6}{}}
 \@writefile{toc}{\contentsline {paragraph}{Seed sensitivity.}{8}{section*.42}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Multi-seed validation reveals high variance (std=0.124). Individual seeds range from 0.506 to 0.745; mean (0.646) exceeds gradient boosting baseline (0.607) but not statistically significant (bootstrap p=0.259).\relax }}{9}{figure.caption.43}\protected@file@percent }
-\newlabel{fig:multiseed_variance}{{4}{9}{Multi-seed validation reveals high variance (std=0.124). Individual seeds range from 0.506 to 0.745; mean (0.646) exceeds gradient boosting baseline (0.607) but not statistically significant (bootstrap p=0.259).\relax }{figure.caption.43}{}}
-\@writefile{toc}{\contentsline {paragraph}{E3 generalization is limited to major ligases.}{9}{section*.44}\protected@file@percent }
-\newlabel{sec:fixes}{{4.6}{9}{Architectural fixes}{section*.47}{}}
-\@writefile{toc}{\contentsline {paragraph}{Architectural fixes.}{9}{section*.47}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Per-E3 ligase performance on target-unseen split. VHL performance is below random chance (0.5), revealing a fundamental limitation in cross-E3 generalization.\relax }}{9}{table.caption.45}\protected@file@percent }
-\newlabel{tab:per_e3_breakdown}{{9}{9}{Per-E3 ligase performance on target-unseen split. VHL performance is below random chance (0.5), revealing a fundamental limitation in cross-E3 generalization.\relax }{table.caption.45}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Per-E3 performance breakdown reveals VHL limitation. CRBN targets achieve good performance (0.758), but VHL targets fall below random chance (0.396), indicating E3-specific patterns that don't transfer across target proteins.\relax }}{9}{figure.caption.46}\protected@file@percent }
-\newlabel{fig:per_e3}{{5}{9}{Per-E3 performance breakdown reveals VHL limitation. CRBN targets achieve good performance (0.758), but VHL targets fall below random chance (0.396), indicating E3-specific patterns that don't transfer across target proteins.\relax }{figure.caption.46}{}}
-\@writefile{toc}{\contentsline {paragraph}{Reconciling performance estimates.}{9}{section*.48}\protected@file@percent }
-\citation{zengerle2015selective}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Multi-seed validation (6 seeds) reveals high variance. Original 3 seeds (solid, mean 0.646) vs.\ additional 3 seeds (hatched, mean 0.560). Six-seed mean 0.603\,{\SMALL  $\pm $0.097} is marginally below GB baseline (0.607), bootstrap p = 0.556 (not significant). Individual seeds span 0.50--0.75; ensembling across $\geq $6 seeds required for reliable deployment.}}{8}{figure.caption.44}\protected@file@percent }
+\newlabel{fig:multiseed_variance}{{4}{8}{Multi-seed validation (6 seeds) reveals high variance. Original 3 seeds (solid, mean 0.646) vs.\ additional 3 seeds (hatched, mean 0.560). Six-seed mean 0.603\,\spm {0.097} is marginally below GB baseline (0.607), bootstrap p = 0.556 (not significant). Individual seeds span 0.50--0.75; ensembling across $\geq $6 seeds required for reliable deployment}{figure.caption.44}{}}
+\@writefile{toc}{\contentsline {paragraph}{Six-seed extended validation.}{8}{section*.43}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{E3 generalization is limited to major ligases.}{8}{section*.45}\protected@file@percent }
 \citation{zengerle2015selective}
 \citation{guo2017calibration}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces \textcolor {blue}{Per-E3 ligase performance on target-unseen split. VHL performance is below random chance (0.5), revealing a fundamental limitation in cross-E3 generalization.}}}{9}{table.caption.47}\protected@file@percent }
+\newlabel{tab:per_e3_breakdown}{{9}{9}{\rev {Per-E3 ligase performance on target-unseen split. VHL performance is below random chance (0.5), revealing a fundamental limitation in cross-E3 generalization.}}{table.caption.47}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Per-E3 performance breakdown reveals VHL limitation. CRBN targets achieve good performance (0.758), but VHL targets fall below random chance (0.396), indicating E3-specific patterns that don't transfer across target proteins.}}{9}{figure.caption.48}\protected@file@percent }
+\newlabel{fig:per_e3}{{5}{9}{Per-E3 performance breakdown reveals VHL limitation. CRBN targets achieve good performance (0.758), but VHL targets fall below random chance (0.396), indicating E3-specific patterns that don't transfer across target proteins}{figure.caption.48}{}}
+\@writefile{toc}{\contentsline {paragraph}{Root cause analysis: why does VHL fail?}{9}{section*.46}\protected@file@percent }
+\newlabel{sec:fixes}{{4.6}{9}{Architectural fixes}{section*.49}{}}
+\@writefile{toc}{\contentsline {paragraph}{Architectural fixes.}{9}{section*.49}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Calibration metrics across evaluation splits. ECE $<$ 0.05 indicates excellent calibration; MCE shows worst-case bin error.}}{9}{table.caption.51}\protected@file@percent }
+\newlabel{tab:calibration}{{10}{9}{Calibration metrics across evaluation splits. ECE $<$ 0.05 indicates excellent calibration; MCE shows worst-case bin error}{table.caption.51}{}}
+\@writefile{toc}{\contentsline {paragraph}{Reconciling performance estimates.}{9}{section*.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Case Study: BRD4 Degradability}{9}{subsection.4.7}\protected@file@percent }
+\newlabel{sec:case_study}{{4.7}{9}{Case Study: BRD4 Degradability}{subsection.4.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Calibration and Reliability}{9}{subsection.4.8}\protected@file@percent }
+\newlabel{sec:calibration}{{4.8}{9}{Calibration and Reliability}{subsection.4.8}{}}
 \citation{liu2025degrademaster}
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Calibration metrics across evaluation splits. ECE $<$ 0.05 indicates excellent calibration; MCE shows worst-case bin error.\relax }}{10}{table.caption.49}\protected@file@percent }
-\newlabel{tab:calibration}{{10}{10}{Calibration metrics across evaluation splits. ECE $<$ 0.05 indicates excellent calibration; MCE shows worst-case bin error.\relax }{table.caption.49}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Case Study: BRD4 Degradability}{10}{subsection.4.7}\protected@file@percent }
-\newlabel{sec:case_study}{{4.7}{10}{Case Study: BRD4 Degradability}{subsection.4.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Calibration and Reliability}{10}{subsection.4.8}\protected@file@percent }
-\newlabel{sec:calibration}{{4.8}{10}{Calibration and Reliability}{subsection.4.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{10}{section.5}\protected@file@percent }
 \newlabel{sec:discussion}{{5}{10}{Discussion}{section.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{The lysine indicator paradox.}{10}{section*.50}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Limitations.}{10}{section*.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Honest performance assessment.}{10}{section*.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The lysine indicator paradox.}{10}{section*.53}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Lysine indicator paradox: removing the lysine indicator improves test performance (+0.101) despite hurting validation (-0.043), revealing a classic overfitting pattern (val-test gap: -0.106 vs +0.038).}}{10}{figure.caption.54}\protected@file@percent }
+\newlabel{fig:lysine_paradox}{{6}{10}{Lysine indicator paradox: removing the lysine indicator improves test performance (+0.101) despite hurting validation (-0.043), revealing a classic overfitting pattern (val-test gap: -0.106 vs +0.038)}{figure.caption.54}{}}
+\@writefile{toc}{\contentsline {paragraph}{Limitations.}{10}{section*.55}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{10}{section.6}\protected@file@percent }
 \newlabel{sec:conclusion}{{6}{10}{Conclusion}{section.6}{}}
 \bibcite{bekes2022protac}{{1}{}{{}}{{}}}
@@ -181,92 +171,94 @@
 \bibcite{lin2017focal}{{22}{}{{}}{{}}}
 \bibcite{loshchilov2019adamw}{{23}{}{{}}{{}}}
 \bibcite{gligorijevic2021deepfri}{{24}{}{{}}{{}}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Lysine indicator paradox: removing the lysine indicator improves test performance (+0.101) despite hurting validation (-0.043), revealing a classic overfitting pattern (val-test gap: -0.106 vs +0.038).\relax }}{11}{figure.caption.51}\protected@file@percent }
-\newlabel{fig:lysine_paradox}{{6}{11}{Lysine indicator paradox: removing the lysine indicator improves test performance (+0.101) despite hurting validation (-0.043), revealing a classic overfitting pattern (val-test gap: -0.106 vs +0.038).\relax }{figure.caption.51}{}}
-\@writefile{toc}{\contentsline {section}{References}{11}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{11}{section*.57}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces 5-fold cross-validation AUROC distribution. Each dot represents one seed; horizontal bars show fold means. The shaded band indicates the 95\% CI of the overall mean (0.565). High inter-fold variance reflects the influence of protein composition on measured performance.}}{12}{figure.caption.59}\protected@file@percent }
+\newlabel{fig:cv_violin}{{7}{12}{5-fold cross-validation AUROC distribution. Each dot represents one seed; horizontal bars show fold means. The shaded band indicates the 95\% CI of the overall mean (0.565). High inter-fold variance reflects the influence of protein composition on measured performance}{figure.caption.59}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {A}Extended Experimental Results}{12}{appendix.A}\protected@file@percent }
 \newlabel{app:extended}{{A}{12}{Extended Experimental Results}{appendix.A}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.1}5-Fold Cross-Validation}{12}{subsection.A.1}\protected@file@percent }
 \newlabel{app:cv}{{A.1}{12}{5-Fold Cross-Validation}{subsection.A.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces 5-fold cross-validation results (target-unseen AUROC). Three seeds per fold; overall mean: 0.565\tmspace  +\thinmuskip {.1667em}{\SMALL  $\pm $0.052}, 95\% CI: {\small  [0.490, 0.650]}.\relax }}{12}{table.caption.55}\protected@file@percent }
-\newlabel{tab:cv}{{11}{12}{5-fold cross-validation results (target-unseen AUROC). Three seeds per fold; overall mean: 0.565\,\spm {0.052}, 95\% CI: \ci {0.490}{0.650}.\relax }{table.caption.55}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces 5-fold cross-validation results (target-unseen AUROC). Three seeds per fold; overall mean: 0.565\,{\SMALL  $\pm $0.052}, 95\% CI: {\small  [0.490, 0.650]}.}}{12}{table.caption.58}\protected@file@percent }
+\newlabel{tab:cv}{{11}{12}{5-fold cross-validation results (target-unseen AUROC). Three seeds per fold; overall mean: 0.565\,\spm {0.052}, 95\% CI: \ci {0.490}{0.650}}{table.caption.58}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Feature Ablation}{12}{subsection.A.2}\protected@file@percent }
 \newlabel{app:ablations}{{A.2}{12}{Feature Ablation}{subsection.A.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Feature ablation on target-unseen split. Delta ($\Delta $) relative to full model baseline. Positive $\Delta $ indicates improvement from removing the feature.\relax }}{12}{table.caption.57}\protected@file@percent }
-\newlabel{tab:feat_ablation}{{12}{12}{Feature ablation on target-unseen split. Delta ($\Delta $) relative to full model baseline. Positive $\Delta $ indicates improvement from removing the feature.\relax }{table.caption.57}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces 5-fold cross-validation AUROC distribution. Each dot represents one seed; horizontal bars show fold means. The shaded band indicates the 95\% CI of the overall mean (0.565). High inter-fold variance reflects the influence of protein composition on measured performance.\relax }}{12}{figure.caption.56}\protected@file@percent }
-\newlabel{fig:cv_violin}{{7}{12}{5-fold cross-validation AUROC distribution. Each dot represents one seed; horizontal bars show fold means. The shaded band indicates the 95\% CI of the overall mean (0.565). High inter-fold variance reflects the influence of protein composition on measured performance.\relax }{figure.caption.56}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Feature ablation on target-unseen split. Delta ($\Delta $) relative to full model baseline. Positive $\Delta $ indicates improvement from removing the feature.}}{12}{table.caption.60}\protected@file@percent }
+\newlabel{tab:feat_ablation}{{12}{12}{Feature ablation on target-unseen split. Delta ($\Delta $) relative to full model baseline. Positive $\Delta $ indicates improvement from removing the feature}{table.caption.60}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Architecture Ablation}{12}{subsection.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Training Ablation}{12}{subsection.A.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Architecture ablation (target-unseen AUROC). Default values marked with $\dagger $.\relax }}{13}{table.caption.58}\protected@file@percent }
-\newlabel{tab:arch_ablation}{{13}{13}{Architecture ablation (target-unseen AUROC). Default values marked with $\dagger $.\relax }{table.caption.58}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Training ablation (target-unseen AUROC). Default values marked with $\dagger $.\relax }}{13}{table.caption.59}\protected@file@percent }
-\newlabel{tab:train_ablation}{{14}{13}{Training ablation (target-unseen AUROC). Default values marked with $\dagger $.\relax }{table.caption.59}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Architecture ablation (target-unseen AUROC). Default values marked with $\dagger $.}}{12}{table.caption.61}\protected@file@percent }
+\newlabel{tab:arch_ablation}{{13}{12}{Architecture ablation (target-unseen AUROC). Default values marked with $\dagger $}{table.caption.61}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Training Ablation}{13}{subsection.A.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Training ablation (target-unseen AUROC). Default values marked with $\dagger $.}}{13}{table.caption.62}\protected@file@percent }
+\newlabel{tab:train_ablation}{{14}{13}{Training ablation (target-unseen AUROC). Default values marked with $\dagger $}{table.caption.62}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.5}Extended Classification Metrics}{13}{subsection.A.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Detailed classification metrics. Upper: confusion matrices at optimal F1 threshold. Lower: extended metrics. TP/FP/TN/FN = true/false positive/negative.\relax }}{13}{table.caption.60}\protected@file@percent }
-\newlabel{tab:detailed_class}{{15}{13}{Detailed classification metrics. Upper: confusion matrices at optimal F1 threshold. Lower: extended metrics. TP/FP/TN/FN = true/false positive/negative.\relax }{table.caption.60}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Detailed classification metrics. Upper: confusion matrices at optimal F1 threshold. Lower: extended metrics. TP/FP/TN/FN = true/false positive/negative.}}{13}{table.caption.63}\protected@file@percent }
+\newlabel{tab:detailed_class}{{15}{13}{Detailed classification metrics. Upper: confusion matrices at optimal F1 threshold. Lower: extended metrics. TP/FP/TN/FN = true/false positive/negative}{table.caption.63}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Calibration Metrics}{13}{subsection.A.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Probability calibration metrics. ECE = Expected Calibration Error, MCE = Maximum Calibration Error.\relax }}{13}{table.caption.62}\protected@file@percent }
-\newlabel{tab:calibration}{{16}{13}{Probability calibration metrics. ECE = Expected Calibration Error, MCE = Maximum Calibration Error.\relax }{table.caption.62}{}}
+\newlabel{app:calibration}{{A.6}{13}{Calibration Metrics}{subsection.A.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Probability calibration metrics (extended). ECE = Expected Calibration Error, MCE = Maximum Calibration Error. ECE $<$ 0.05 = excellent; ECE $<$ 0.10 = good.}}{13}{table.caption.65}\protected@file@percent }
+\newlabel{tab:calibration_app}{{16}{13}{Probability calibration metrics (extended). ECE = Expected Calibration Error, MCE = Maximum Calibration Error. ECE $<$ 0.05 = excellent; ECE $<$ 0.10 = good}{table.caption.65}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Precision@$k$ and NDCG Ranking Metrics}{13}{subsection.A.7}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Precision@$k$, Recall@$k$, and NDCG@$k$ across evaluation splits.\relax }}{13}{table.caption.64}\protected@file@percent }
-\newlabel{tab:ranking}{{17}{13}{Precision@$k$, Recall@$k$, and NDCG@$k$ across evaluation splits.\relax }{table.caption.64}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Stratified error analysis on the target-unseen split. (a)\nonbreakingspace Accuracy by protein size: large proteins (600--1000 residues) are hardest to classify. (b)\nonbreakingspace Accuracy by disorder fraction: highly disordered targets ($>$0.4) have lower accuracy. (c)\nonbreakingspace Accuracy by E3 ligase: CRBN outperforms VHL; rare E3s have too few samples for reliable estimates. (d)\nonbreakingspace Accuracy by prediction confidence: medium-confidence predictions are more accurate than low-confidence ones. Sample counts shown above each bar.\relax }}{14}{figure.caption.61}\protected@file@percent }
-\newlabel{fig:error_analysis}{{8}{14}{Stratified error analysis on the target-unseen split. (a)~Accuracy by protein size: large proteins (600--1000 residues) are hardest to classify. (b)~Accuracy by disorder fraction: highly disordered targets ($>$0.4) have lower accuracy. (c)~Accuracy by E3 ligase: CRBN outperforms VHL; rare E3s have too few samples for reliable estimates. (d)~Accuracy by prediction confidence: medium-confidence predictions are more accurate than low-confidence ones. Sample counts shown above each bar.\relax }{figure.caption.61}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}BRD4 Case Study}{14}{subsection.A.8}\protected@file@percent }
-\newlabel{app:case_study}{{A.8}{14}{BRD4 Case Study}{subsection.A.8}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces BRD4 case study: predicted scores vs.\ empirical degradation rates across E3 ligases. Higher scores indicate predicted degradability.\relax }}{14}{table.caption.66}\protected@file@percent }
-\newlabel{tab:brd4}{{18}{14}{BRD4 case study: predicted scores vs.\ empirical degradation rates across E3 ligases. Higher scores indicate predicted degradability.\relax }{table.caption.66}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Precision@$k$, Recall@$k$, and NDCG@$k$ across evaluation splits.}}{13}{table.caption.67}\protected@file@percent }
+\newlabel{tab:ranking}{{17}{13}{Precision@$k$, Recall@$k$, and NDCG@$k$ across evaluation splits}{table.caption.67}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.8}BRD4 Case Study}{13}{subsection.A.8}\protected@file@percent }
+\newlabel{app:case_study}{{A.8}{13}{BRD4 Case Study}{subsection.A.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Stratified error analysis on the target-unseen split. (a)\nonbreakingspace Accuracy by protein size: large proteins (600--1000 residues) are hardest to classify. (b)\nonbreakingspace Accuracy by disorder fraction: highly disordered targets ($>$0.4) have lower accuracy. (c)\nonbreakingspace Accuracy by E3 ligase: CRBN outperforms VHL; rare E3s have too few samples for reliable estimates. (d)\nonbreakingspace Accuracy by prediction confidence: medium-confidence predictions are more accurate than low-confidence ones. Sample counts shown above each bar.}}{14}{figure.caption.64}\protected@file@percent }
+\newlabel{fig:error_analysis}{{8}{14}{Stratified error analysis on the target-unseen split. (a)~Accuracy by protein size: large proteins (600--1000 residues) are hardest to classify. (b)~Accuracy by disorder fraction: highly disordered targets ($>$0.4) have lower accuracy. (c)~Accuracy by E3 ligase: CRBN outperforms VHL; rare E3s have too few samples for reliable estimates. (d)~Accuracy by prediction confidence: medium-confidence predictions are more accurate than low-confidence ones. Sample counts shown above each bar}{figure.caption.64}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Calibration curve for the target-unseen split. Points show observed positive fraction vs.\ mean predicted probability in each bin; the diagonal represents perfect calibration. The model is well-calibrated (ECE = 0.029), with predicted probabilities closely tracking observed degradation rates.}}{14}{figure.caption.66}\protected@file@percent }
+\newlabel{fig:calibration}{{9}{14}{Calibration curve for the target-unseen split. Points show observed positive fraction vs.\ mean predicted probability in each bin; the diagonal represents perfect calibration. The model is well-calibrated (ECE = 0.029), with predicted probabilities closely tracking observed degradation rates}{figure.caption.66}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Ranking metrics across evaluation splits. (a)\nonbreakingspace Precision@$k$ remains above 0.60 for target-unseen and above 0.80 for E3-unseen across all\nonbreakingspace $k$. (b)\nonbreakingspace NDCG@$k$ shows consistent ranking quality, with E3-unseen and random splits achieving $>$0.85 at $k = 20$.}}{14}{figure.caption.68}\protected@file@percent }
+\newlabel{fig:ranking}{{10}{14}{Ranking metrics across evaluation splits. (a)~Precision@$k$ remains above 0.60 for target-unseen and above 0.80 for E3-unseen across all~$k$. (b)~NDCG@$k$ shows consistent ranking quality, with E3-unseen and random splits achieving $>$0.85 at $k = 20$}{figure.caption.68}{}}
 \citation{liu2025degrademaster}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Calibration curve for the target-unseen split. Points show observed positive fraction vs.\ mean predicted probability in each bin; the diagonal represents perfect calibration. The model is well-calibrated (ECE = 0.029), with predicted probabilities closely tracking observed degradation rates.\relax }}{15}{figure.caption.63}\protected@file@percent }
-\newlabel{fig:calibration}{{9}{15}{Calibration curve for the target-unseen split. Points show observed positive fraction vs.\ mean predicted probability in each bin; the diagonal represents perfect calibration. The model is well-calibrated (ECE = 0.029), with predicted probabilities closely tracking observed degradation rates.\relax }{figure.caption.63}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Ranking metrics across evaluation splits. (a)\nonbreakingspace Precision@$k$ remains above 0.60 for target-unseen and above 0.80 for E3-unseen across all\nonbreakingspace $k$. (b)\nonbreakingspace NDCG@$k$ shows consistent ranking quality, with E3-unseen and random splits achieving $>$0.85 at $k = 20$.\relax }}{15}{figure.caption.65}\protected@file@percent }
-\newlabel{fig:ranking}{{10}{15}{Ranking metrics across evaluation splits. (a)~Precision@$k$ remains above 0.60 for target-unseen and above 0.80 for E3-unseen across all~$k$. (b)~NDCG@$k$ shows consistent ranking quality, with E3-unseen and random splits achieving $>$0.85 at $k = 20$.\relax }{figure.caption.65}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces Leave-one-E3-out cross-validation results.\relax }}{15}{table.caption.67}\protected@file@percent }
-\newlabel{tab:leave_e3}{{19}{15}{Leave-one-E3-out cross-validation results.\relax }{table.caption.67}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces BRD4 case study: predicted scores vs.\ empirical degradation rates across E3 ligases. Higher scores indicate predicted degradability.}}{15}{table.caption.69}\protected@file@percent }
+\newlabel{tab:brd4}{{18}{15}{BRD4 case study: predicted scores vs.\ empirical degradation rates across E3 ligases. Higher scores indicate predicted degradability}{table.caption.69}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {A.9}Leave-One-E3-Out Cross-Validation}{15}{subsection.A.9}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces Leave-one-E3-out cross-validation results.}}{15}{table.caption.70}\protected@file@percent }
+\newlabel{tab:leave_e3}{{19}{15}{Leave-one-E3-out cross-validation results}{table.caption.70}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {B}Dataset Details}{15}{appendix.B}\protected@file@percent }
 \newlabel{app:dataset}{{B}{15}{Dataset Details}{appendix.B}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.1}E3 Ligase Distribution}{15}{subsection.B.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces E3 ligase distribution in PROTAC-8K dataset.\relax }}{15}{table.caption.68}\protected@file@percent }
-\newlabel{tab:e3_dist}{{20}{15}{E3 ligase distribution in PROTAC-8K dataset.\relax }{table.caption.68}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces E3 ligase distribution in PROTAC-8K dataset.}}{15}{table.caption.71}\protected@file@percent }
+\newlabel{tab:e3_dist}{{20}{15}{E3 ligase distribution in PROTAC-8K dataset}{table.caption.71}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Data Split Construction}{15}{subsection.B.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {21}{\ignorespaces Data split statistics.\relax }}{15}{table.caption.69}\protected@file@percent }
-\newlabel{tab:splits}{{21}{15}{Data split statistics.\relax }{table.caption.69}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {21}{\ignorespaces Data split statistics.}}{15}{table.caption.72}\protected@file@percent }
+\newlabel{tab:splits}{{21}{15}{Data split statistics}{table.caption.72}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.3}Label Construction}{15}{subsection.B.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {B.4}AlphaFold Structure Coverage}{15}{subsection.B.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.5}External Validation Datasets}{16}{subsection.B.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.6}Dataset Curation Considerations}{16}{subsection.B.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.5}External Validation Datasets}{15}{subsection.B.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.6}Dataset Curation Considerations}{15}{subsection.B.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {C}Model Architecture Details}{16}{appendix.C}\protected@file@percent }
 \newlabel{app:architecture}{{C}{16}{Model Architecture Details}{appendix.C}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Full Node Feature Specification}{16}{subsection.C.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {22}{\ignorespaces Complete 1,285-dimensional node feature breakdown for the improved model. Baseline uses AA one-hot (20-dim) instead of ESM-2, yielding 28 dimensions.\relax }}{16}{table.caption.70}\protected@file@percent }
-\newlabel{tab:nodefeats_full}{{22}{16}{Complete 1,285-dimensional node feature breakdown for the improved model. Baseline uses AA one-hot (20-dim) instead of ESM-2, yielding 28 dimensions.\relax }{table.caption.70}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {22}{\ignorespaces Complete 1,285-dimensional node feature breakdown for the improved model. Baseline uses AA one-hot (20-dim) instead of ESM-2, yielding 28 dimensions.}}{16}{table.caption.73}\protected@file@percent }
+\newlabel{tab:nodefeats_full}{{22}{16}{Complete 1,285-dimensional node feature breakdown for the improved model. Baseline uses AA one-hot (20-dim) instead of ESM-2, yielding 28 dimensions}{table.caption.73}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Context Encoder Feature Groups}{16}{subsection.C.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {23}{\ignorespaces Cellular context feature groups (59 total dimensions).\relax }}{16}{table.caption.71}\protected@file@percent }
-\newlabel{tab:context_feats}{{23}{16}{Cellular context feature groups (59 total dimensions).\relax }{table.caption.71}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {23}{\ignorespaces Cellular context feature groups (59 total dimensions).}}{16}{table.caption.74}\protected@file@percent }
+\newlabel{tab:context_feats}{{23}{16}{Cellular context feature groups (59 total dimensions)}{table.caption.74}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {C.3}Loss Function Details}{16}{subsection.C.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {D}Computational Efficiency}{16}{appendix.D}\protected@file@percent }
 \newlabel{app:efficiency}{{D}{16}{Computational Efficiency}{appendix.D}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Model Size and Speed Comparison}{16}{subsection.D.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {24}{\ignorespaces Computational efficiency comparison. Inference measured per protein (50 samples); training per epoch (100 samples). All on NVIDIA RTX 2080 Ti.\relax }}{16}{table.caption.72}\protected@file@percent }
-\newlabel{tab:efficiency}{{24}{16}{Computational efficiency comparison. Inference measured per protein (50 samples); training per epoch (100 samples). All on NVIDIA RTX 2080 Ti.\relax }{table.caption.72}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Inference Scaling by Protein Size}{17}{subsection.D.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {25}{\ignorespaces Inference time by protein size for \textsc  {DegradoMap}{}.\relax }}{17}{table.caption.73}\protected@file@percent }
-\newlabel{tab:scaling}{{25}{17}{Inference time by protein size for \ours {}.\relax }{table.caption.73}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {24}{\ignorespaces Computational efficiency comparison. Inference measured per protein (50 samples); training per epoch (100 samples). All on NVIDIA RTX 2080 Ti.}}{16}{table.caption.75}\protected@file@percent }
+\newlabel{tab:efficiency}{{24}{16}{Computational efficiency comparison. Inference measured per protein (50 samples); training per epoch (100 samples). All on NVIDIA RTX 2080 Ti}{table.caption.75}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Inference Scaling by Protein Size}{16}{subsection.D.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {25}{\ignorespaces Inference time by protein size for \textsc  {DegradoMap}{}.}}{16}{table.caption.76}\protected@file@percent }
+\newlabel{tab:scaling}{{25}{16}{Inference time by protein size for \ours {}}{table.caption.76}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {26}{\ignorespaces Full training pipeline resource requirements.}}{17}{table.caption.77}\protected@file@percent }
+\newlabel{tab:resources}{{26}{17}{Full training pipeline resource requirements}{table.caption.77}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Training Resource Requirements}{17}{subsection.D.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {26}{\ignorespaces Full training pipeline resource requirements.\relax }}{17}{table.caption.74}\protected@file@percent }
-\newlabel{tab:resources}{{26}{17}{Full training pipeline resource requirements.\relax }{table.caption.74}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {E}Reproducibility}{17}{appendix.E}\protected@file@percent }
 \newlabel{app:reproducibility}{{E}{17}{Reproducibility}{appendix.E}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Complete Hyperparameter Table}{17}{subsection.E.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {27}{\ignorespaces Complete hyperparameter specification for \textsc  {DegradoMap}{}. The improved model column shows tuned values; the baseline column shows original values where they differ.}}{17}{table.caption.78}\protected@file@percent }
+\newlabel{tab:hyperparams}{{27}{17}{Complete hyperparameter specification for \ours {}. The improved model column shows tuned values; the baseline column shows original values where they differ}{table.caption.78}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {E.2}Random Seeds}{17}{subsection.E.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {28}{\ignorespaces Software and hardware specifications.}}{17}{table.caption.79}\protected@file@percent }
+\newlabel{tab:software}{{28}{17}{Software and hardware specifications}{table.caption.79}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {E.3}Software and Hardware}{17}{subsection.E.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {E.4}Data and Code Availability}{17}{subsection.E.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {27}{\ignorespaces Complete hyperparameter specification for \textsc  {DegradoMap}{}. The improved model column shows tuned values; the baseline column shows original values where they differ.\relax }}{17}{table.caption.75}\protected@file@percent }
-\newlabel{tab:hyperparams}{{27}{17}{Complete hyperparameter specification for \ours {}. The improved model column shows tuned values; the baseline column shows original values where they differ.\relax }{table.caption.75}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {28}{\ignorespaces Software and hardware specifications.\relax }}{17}{table.caption.76}\protected@file@percent }
-\newlabel{tab:software}{{28}{17}{Software and hardware specifications.\relax }{table.caption.76}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.5}GNN Baseline Implementation Details}{17}{subsection.E.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {29}{\ignorespaces GNN baseline details. Upper: architecture specifications. Lower: multi-seed AUROC (3 seeds). High target-unseen variance indicates initialization sensitivity.}}{17}{table.caption.80}\protected@file@percent }
+\newlabel{tab:gnn_details}{{29}{17}{GNN baseline details. Upper: architecture specifications. Lower: multi-seed AUROC (3 seeds). High target-unseen variance indicates initialization sensitivity}{table.caption.80}{}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{7.06522pt}
@@ -275,7 +267,5 @@
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.5}GNN Baseline Implementation Details}{18}{subsection.E.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {29}{\ignorespaces GNN baseline details. Upper: architecture specifications. Lower: multi-seed AUROC (3 seeds). High target-unseen variance indicates initialization sensitivity.\relax }}{18}{table.caption.77}\protected@file@percent }
-\newlabel{tab:gnn_details}{{29}{18}{GNN baseline details. Upper: architecture specifications. Lower: multi-seed AUROC (3 seeds). High target-unseen variance indicates initialization sensitivity.\relax }{table.caption.77}{}}
 \newlabel{TotPages}{{18}{18}{}{page.18}{}}
+\gdef \@abspage@last{18}
