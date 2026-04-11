@@ -440,7 +440,7 @@ The improved model (1,285-dim features with ESM-2) reports multi-seed validated 
 
 \begin{table}[t]
 \centering
-\caption{Test performance of \ours{}. Target-unseen: 3-seed (42, 123, 456) and 6-seed (42--1213) results for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs. Both 3-seed and 6-seed means are reported to show variance in favorable vs.\ extended evaluation.}
+\caption{Test performance of \ours{}. Target-unseen: \rev{3-seed (42, 123, 456) and 6-seed (42--1213)} results for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs. \rev{Both 3-seed and 6-seed means are reported to show variance in favorable vs.\ extended evaluation.}}
 \label{tab:main}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -457,10 +457,10 @@ Random (baseline)        & 466 & 0.774 & \ci{0.725}{0.816} & -- \\
 \end{tabular}
 \end{table}
 
-The improved model achieves a 3-seed mean of 0.646\,\spm{0.124} and a more conservative 6-seed mean of 0.603\,\spm{0.097} on target-unseen evaluation (details in Section~\ref{sec:multiseed}).
+\rev{The improved model achieves a 3-seed mean of 0.646\,\spm{0.124} and a more conservative 6-seed mean of 0.603\,\spm{0.097} on target-unseen evaluation (details in Section~\ref{sec:multiseed}).
 The gradient boosting baseline achieves 0.607; the 3-seed advantage (+6.4\%) is not statistically significant (p = 0.259), and the 6-seed mean is marginally below baseline (p = 0.556).
 The best seed (0.7449, +23\% over baseline) reflects favorable initialization and should not be expected reliably.
-The E3-unseen result (0.811) demonstrates successful CRBN$\to$VHL transfer; generalization to rare E3 ligases remains limited (Section~\ref{sec:multiseed}).
+The E3-unseen result (0.811) demonstrates successful CRBN$\to$VHL transfer; generalization to rare E3 ligases remains limited (Section~\ref{sec:multiseed}).}
 Figure~\ref{fig:main_results} visualizes the comparison across all models and splits.
 
 \begin{figure}[t]
@@ -633,9 +633,9 @@ These results should temper expectations: while the model provides useful signal
 \end{figure}
 
 \paragraph{E3 generalization is limited to major ligases.}
-Per-E3 analysis reveals highly asymmetric performance on target-unseen evaluation: CRBN-targeted proteins achieve 0.758 AUROC ($n{=}273$), while VHL-targeted proteins yield only 0.396 AUROC ($n{=}187$)---\emph{below random chance}.
+\rev{Per-E3 analysis reveals highly asymmetric performance on target-unseen evaluation: CRBN-targeted proteins achieve 0.758 AUROC ($n{=}273$), while VHL-targeted proteins yield only 0.396 AUROC ($n{=}187$)---\emph{below random chance}.
 The E3-unseen evaluation (CRBN$\to$VHL: 0.811 AUROC) appears contradictory at first glance: the model transfers well from CRBN to VHL when VHL is the \emph{held-out E3 ligase}, yet fails on VHL-targeted proteins within the target-unseen split.
-These evaluate different generalization axes: E3-unseen tests whether structural features learned from CRBN data predict VHL degradation patterns; target-unseen tests whether VHL-specific patterns generalize to \emph{new, unseen target proteins}.
+These evaluate different generalization axes: E3-unseen tests whether structural features learned from CRBN data predict VHL degradation patterns; target-unseen tests whether VHL-specific patterns generalize to \emph{new, unseen target proteins}.}
 
 \paragraph{Root cause analysis: why does VHL fail?}
 \rev{To understand the VHL failure, we analyzed the PROTAC-8K dataset.
@@ -688,15 +688,15 @@ Additional analyses are in the Appendix.}
 
 \rev{To validate the biological relevance of lysine-weighted pooling, we analyze BRD4 (UniProt: O60885), a well-studied PROTAC target with multiple successful CRBN-based degraders~\cite{zengerle2015selective}.
 \ours{} predicts high degradability for BRD4 with CRBN (score: 0.87).
-Analysis of lysine attention weights from the pooling mechanism (Eq.~3) reveals three high-scoring lysines:
+Analysis of lysine attention weights from the pooling mechanism (Eq.~3) reveals three high-scoring lysines:}
 
 \begin{itemize}[topsep=3pt,itemsep=1pt]
-\item \textbf{K374} (attention weight: 0.12, SASA: 94~\AA$^2$): Located in a disordered linker region between bromodomains BD1 and BD2, highly solvent-exposed.
-\item \textbf{K311} (attention weight: 0.09, SASA: 112~\AA$^2$): Surface-exposed on the BD1 domain.
-\item \textbf{K434} (attention weight: 0.08, SASA: 88~\AA$^2$): Near the BD2 domain C-terminus.
+\item \rev{\textbf{K374} (attention weight: 0.12, SASA: 94~\AA$^2$): Located in a disordered linker region between bromodomains BD1 and BD2, highly solvent-exposed.}
+\item \rev{\textbf{K311} (attention weight: 0.09, SASA: 112~\AA$^2$): Surface-exposed on the BD1 domain.}
+\item \rev{\textbf{K434} (attention weight: 0.08, SASA: 88~\AA$^2$): Near the BD2 domain C-terminus.}
 \end{itemize}
 
-\textbf{Literature validation:}
+\rev{\textbf{Literature validation:}
 JQ1-based CRBN PROTACs (e.g., dBET1, ARV-825) successfully degrade BRD4 in cells.
 Mass spectrometry studies identify K374 as a major ubiquitination site following PROTAC treatment~\cite{zengerle2015selective}.
 The model's identification of K374 as the top-weighted lysine aligns with experimental evidence, supporting the lysine-pooling mechanism's biological relevance.
@@ -737,7 +737,7 @@ The random split shows poor calibration (ECE = 0.165), further supporting target
 \section{Discussion}
 \label{sec:discussion}
 
-The 3-seed target-unseen AUROC of 0.646\,\spm{0.124} and 6-seed mean of 0.603\,\spm{0.097} (best: 0.7449) reveal both promise and fundamental limits of structure-based PROTAC degradability prediction.
+\rev{The 3-seed target-unseen AUROC of 0.646\,\spm{0.124} and 6-seed mean of 0.603\,\spm{0.097} (best: 0.7449)} reveal both promise and fundamental limits of structure-based PROTAC degradability prediction.
 DegradeMaster~\cite{liu2025degrademaster}, using full PROTAC molecular descriptors, achieves 0.856 AUROC; the ${\sim}0.24$ gap quantifies the information value of the PROTAC molecule itself---structural features of the target alone are insufficient to fully determine degradability.
 The paradigms are complementary and address different questions: \ours{} screens candidate targets \emph{before} PROTAC synthesis; full-information methods refine \emph{existing} PROTAC designs.
 
@@ -746,13 +746,13 @@ The paradigms are complementary and address different questions: \ours{} screens
 The original 3-seed estimate (0.646) was moderately favorable; additional seeds yielded lower performance (0.657, 0.520, 0.502).
 The model's primary contribution may not be raw AUROC but rather: (1)~structural \emph{interpretability} via lysine attention weights (Section~\ref{sec:case_study}), (2)~E3 recommendation capability (74\% Hit@3), and (3)~well-calibrated confidence scores enabling reliable thresholding.}
 
-E3 ligase transfer and target protein generalization are distinct challenges: VHL-targeted proteins fail on target-unseen (0.396) despite successful CRBN$\to$VHL transfer (0.811), as discussed in Section~\ref{sec:multiseed}.
+\rev{E3 ligase transfer and target protein generalization are distinct challenges: VHL-targeted proteins fail on target-unseen (0.396) despite successful CRBN$\to$VHL transfer (0.811), as discussed in Section~\ref{sec:multiseed}.}
 
 \paragraph{The lysine indicator paradox.}
-Removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101 (Appendix Table~13, Figure~\ref{fig:lysine_paradox}).
+\rev{Removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101 (Appendix Table~13, Figure~\ref{fig:lysine_paradox}).
 We attribute this to the lysine-weighted pooling mechanism (Eq.~3) already encoding lysine information architecturally, making the binary feature redundant and causing overfitting to training-set lysine distributions.
 Additionally, the binary indicator oversimplifies---the pooling weights learn to discriminate based on structural context (SASA, disorder, local geometry).
-This suggests that \textbf{architectural inductive biases are more effective than explicit feature annotation}; future work should explore learned lysine representations or remove the indicator entirely.
+This suggests that \textbf{architectural inductive biases are more effective than explicit feature annotation}; future work should explore learned lysine representations or remove the indicator entirely.}
 
 \begin{figure}[t]
 \centering
@@ -763,12 +763,12 @@ This suggests that \textbf{architectural inductive biases are more effective tha
 \end{figure}
 
 \paragraph{Limitations.}
-(1)~\textbf{Small dataset}: Only 155 unique proteins limit target-unseen generalization and directly cause the high seed variance (std = 0.097--0.124).
-(2)~\textbf{E3 imbalance}: CRBN/VHL dominate (97\%); rare E3 generalization is unsupported and VHL-specific failure (0.396 AUROC) is a fundamental limitation.
+\rev{(1)~\textbf{Small dataset}: Only 155 unique proteins limit target-unseen generalization and directly cause the high seed variance (std = 0.097--0.124).
+(2)~\textbf{E3 imbalance}: CRBN/VHL dominate (97\%); rare E3 generalization is unsupported and VHL-specific failure (0.396 AUROC) is a fundamental limitation.}
 \rev{(3)~\textbf{No statistical advantage over baselines}: The 6-seed mean (0.603) does not significantly exceed gradient boosting (0.607, p = 0.556). Individual seeds range from 0.50 to 0.75, requiring ensembling for reliable deployment.}
-(4)~\textbf{Validation-test mismatch}: Validation AUROC does not reliably predict target-unseen test AUROC. This biases hyperparameter selection toward random-split performance and likely contributes to the variance.
+\rev{(4)~\textbf{Validation-test mismatch}: Validation AUROC does not reliably predict target-unseen test AUROC. This biases hyperparameter selection toward random-split performance and likely contributes to the variance.
 (5)~\textbf{No structural validation}: Predictions rely on static AlphaFold structures without physics-based validation (docking, MD, free energy calculations). The BRD4 case study (K374) provides one anecdotal positive control.
-(6)~\textbf{No external validation}: PROTAC-8K is the only publicly available benchmark with sufficient scale; generalization to data from other assay platforms or research groups is unvalidated.
+(6)~\textbf{No external validation}: PROTAC-8K is the only publicly available benchmark with sufficient scale; generalization to data from other assay platforms or research groups is unvalidated.}
 \rev{(7)~\textbf{Lysine indicator counterproductive}: Removing the lysine indicator improves test AUROC by +0.101, suggesting current feature engineering is suboptimal and architectural inductive biases dominate.}
 
 
