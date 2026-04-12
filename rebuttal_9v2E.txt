@@ -1,0 +1,14 @@
+Response to Reviewer 9v2E
+
+We thank the reviewer for the constructive feedback. All revisions are highlighted in blue in the revised paper.
+
+C1 (Small dataset): We added a "Dataset characteristics and limitations" paragraph before any results (L412-416), explicitly stating: 155 unique proteins, CRBN 62%/VHL 35%/other 3%, no external validation. Limitations 1,2,6 (L732-733,737).
+
+C2 (No structural validation): Acknowledged as Limitation 5 (L736). We note ternary-complex modeling requires PROTAC geometry unavailable in our pre-synthesis setting. The BRD4 case study (L655-672) provides partial validation.
+
+C3 (No biological case study): Added Section 4.5 "Case Study: BRD4 Degradability" (L655-672). DegradoMap predicts BRD4 highly degradable (score: 0.87) with CRBN. Lysine attention identifies K374 as top residue (L663); mass spectrometry confirms K374 as a major ubiquitination site (Zengerle et al. 2015, L670). Single case; systematic validation is future work (L672).
+
+Additional (instability, best-seed emphasis, E3 claims):
+- Instability: Trained 3 additional seeds; 6-seed mean 0.603+/-0.097, marginally below GB baseline 0.607 (p=0.556). Ensembling >=6 seeds recommended (L593-598). Table 1 updated (L421-438), Figure 4 (L605).
+- Best-seed de-emphasized: Multi-seed average is primary throughout. Abstract (L65), Introduction (L132), Results (L440-442: "should not be expected reliably"), Conclusion (L749).
+- E3 claims narrowed: Changed to "CRBN->VHL transfer" throughout (L65, L608, L749). VHL root cause analysis (L612-619): ruled out class imbalance (36.9% vs 38.4%), identified structural heterogeneity. Per-E3 Table 5 (L625), Figure 5 (L644). Explicit warning for practitioners (L618).

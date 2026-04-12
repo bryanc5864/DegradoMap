@@ -1,0 +1,17 @@
+Response to Reviewer Y2rf
+
+We thank the reviewer for the rigorous critique. All revisions are in blue in the revised paper.
+
+M1 (Best seed over-emphasized): Multi-seed average is now the primary result throughout. Abstract (L65): "0.646+/-0.124 AUROC (best seed: 0.7449)". Introduction (L132-133): both 3-seed and 6-seed means. Table 1 (L421-438): "Best Seed" is a separate column. Results (L440-442): "should not be expected reliably." Conclusion (L749): leads with average.
+
+M2 (Target-unseen unstable): Trained 3 additional seeds (789,1011,1213). 6-seed mean: 0.603+/-0.097, 95% CI [0.532,0.682]—marginally below GB 0.607 (p=0.556). Reported honestly (L593-598). p-values now in main text (L441,507,595). Ensembling >=6 seeds recommended (L597). Figure 4 (L605) shows all 6 seeds.
+
+M3 (Lysine claim unsupported): Discussed as "lysine indicator paradox" (L719-722). With indicator: val 0.584, test 0.477 (overfitting). Without: val 0.541, test 0.578 (generalizes). The pooling mechanism (Eq. 3) already encodes lysine information architecturally; the binary feature is redundant. Figure 7 (L729). Limitation 7 (L738).
+
+M4 (E3 claims too broad): Narrowed to "CRBN->VHL transfer" throughout (L65,L608,L749). VHL root cause analysis (L612-619): ruled out class imbalance (36.9% vs 38.4%) and dataset size (91 vs 125 proteins); structural heterogeneity is the likely cause. Per-E3 Table 5 (L625): CRBN 0.758, VHL 0.396, cIAP1 0.417. Explicit practitioner warning (L618).
+
+M5 (Validation misaligned): Acknowledged as limitation (L314-318). Target-unseen validation would reduce training to ~120 proteins. Current hyperparameters (L310) may not be optimal. Limitation 4 (L735).
+
+Minor 1 (Dataset limits buried): "Dataset characteristics and limitations" paragraph now before any results (L412-416).
+
+Minor 2 (No external validation): Limitation 6 (L737). Conclusion (L749-750) states results are "not statistically superior to gradient boosting."

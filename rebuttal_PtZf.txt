@@ -1,0 +1,13 @@
+Response to Reviewer PtZf
+
+We thank the reviewer for the detailed feedback. All revisions are in blue in the revised paper.
+
+W1 (Inconsistent performance reporting): The "0.78" may refer to a prior draft; the current abstract (L65) reports 0.646+/-0.124. We added a "Reconciling performance estimates" paragraph (L650-653) mapping each number to its protocol: 6-seed mean 0.603+/-0.097 (most conservative, L595), 3-seed mean 0.646+/-0.124 (primary, L440), best seed 0.7449 (secondary, L442), baseline 0.657 (L433), 5-fold CV 0.565+/-0.052 (lower bound, L651). The 6-seed mean is recommended for citation.
+
+W2 (Limited robustness): Extended to 6 seeds: 0.603+/-0.097, marginally below GB 0.607 (p=0.556). Six-seed paragraph (L593-598). p-values now in main text (L441,507,595)—previously only in figure caption. Ensembling >=6 seeds recommended (L597). Both 3-seed and 6-seed rows in Table 1 (L421-438). Figure 4 (L605) shows all 6 seeds. Honest assessment in Discussion (L713-715): "6-seed mean is not statistically superior to gradient boosting."
+
+W3 (Weak validation protocol): Acknowledged as limitation (L314-318). Target-unseen validation would reduce training to ~120 proteins—impractical. Current hyperparameters may not be optimal for target-unseen (L318). Limitation 4 (L735).
+
+W4 (Limited E3 generalization): Narrowed to "CRBN->VHL transfer" (L65,L608,L749). Per-E3 Table 5 (L625): CRBN 0.758, VHL 0.396, cIAP1 0.417. Figure 5 (L644). VHL root cause (L612-619): not class imbalance (36.9% vs 38.4%); structural heterogeneity. E3-unseen vs target-unseen paradox explained (L608-610). Practitioner warning (L618).
+
+W5 (No external validation): Limitation 6 (L737). Conclusion (L749-750) cautions against deployment without prospective validation.
