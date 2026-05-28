@@ -713,7 +713,7 @@ cIAP1 & 8 & 2 & 0.417 & 0.250 & 0.000 & 0.750 & \textcolor{red}{$\downarrow$} \\
 Size normalization ($1/\sqrt{N}$) and per-protein lysine softmax improved target-unseen AUROC from 0.529 to 0.657 (+24\%) while leaving random-split unchanged, confirming these addressed protein memorization shortcuts.
 
 \paragraph{Reconciling performance estimates.}
-We report multiple evaluation protocols with different results: (1)~Single train-test split with multi-seed (0.646\,\spm{0.124} AUROC), (2)~Single split baseline architecture (0.657 AUROC, seed 42), and (3)~5-fold cross-validation (0.565\,\spm{0.052} AUROC, Appendix Table~9).
+We report multiple evaluation protocols with different results: (1)~Single train-test split with multi-seed (0.646\,\spm{0.124} AUROC), (2)~Single split baseline architecture (0.657 AUROC, seed 42), and (3)~5-fold cross-validation (0.565\,\spm{0.052} AUROC, Table~\ref{tab:cv}).
 The CV mean is lower because each fold trains on ${\sim}20\%$ less data and may encounter harder protein compositions.
 The improved model's average (0.646) is similar to the baseline (0.657), but its peak (0.745) and variance (std=0.124) are both higher due to ESM-2 embeddings introducing optimization challenges.
 We consider the multi-seed average (0.646) the most reliable estimate of typical performance; CV provides a more conservative lower bound; best-seed (0.745) represents peak achievable performance under favorable initialization but is not a reliable expectation.
@@ -724,7 +724,7 @@ Additional analyses (5-fold CV details, ablation studies) are in the Appendix.
 
 To validate the biological relevance of lysine-weighted pooling, we analyze BRD4 (UniProt: O60885), a well-studied PROTAC target with multiple successful CRBN-based degraders~\cite{zengerle2015selective}.
 \ours{} predicts high degradability for BRD4 with CRBN (score: 0.87).
-Analysis of lysine attention weights from the pooling mechanism (Eq.~3) reveals three high-scoring lysines:
+Analysis of lysine attention weights from the pooling mechanism (Eq.~\ref{eq:lyspool}) reveals three high-scoring lysines:
 
 \begin{itemize}[topsep=3pt,itemsep=1pt]
 \item \textbf{K374} (attention weight: 0.12, SASA: 94~\AA$^2$): Located in a disordered linker region between bromodomains BD1 and BD2, highly solvent-exposed.
@@ -790,10 +790,10 @@ However, VHL-targeted proteins fail catastrophically on target-unseen evaluation
 Rare E3 ligases lack sufficient data for reliable evaluation.
 
 \paragraph{The lysine indicator paradox.}
-Feature ablation reveals that removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101 (Appendix Table~13, Figure~\ref{fig:lysine_paradox}).
+Feature ablation reveals that removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101 (Table~\ref{tab:feat_ablation}, Figure~\ref{fig:lysine_paradox}).
 This contradicts the intuitive expectation that marking ubiquitination sites should help.
 We propose three explanations:
-(1)~The lysine-weighted pooling mechanism (Eq.~3) already encodes lysine information architecturally, making the node feature redundant and potentially causing overfitting to training-set lysine patterns.
+(1)~The lysine-weighted pooling mechanism (Eq.~\ref{eq:lyspool}) already encodes lysine information architecturally, making the node feature redundant and potentially causing overfitting to training-set lysine patterns.
 (2)~The model may learn that \emph{not all lysines are equal}---the binary indicator oversimplifies, while the pooling weights learn to discriminate based on structural context (SASA, disorder, local geometry).
 (3)~The indicator may introduce a confounding bias: training targets have specific lysine distributions that don't generalize to unseen proteins.
 This result suggests that \textbf{architectural inductive biases (lysine pooling) are more effective than explicit feature annotation for this task}.
