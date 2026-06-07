@@ -33,3 +33,48 @@ wandb/
 *.swo
 
 notebooks/.ipynb_checkpoints/
+
+# Paper artifacts
+paper.tex
+paper.pdf
+paper.aux
+paper.fdb_latexmk
+paper.fls
+paper.out
+paper.bbl
+paper.blg
+*.tar.gz
+*.cls
+comment.cut
+acmart.cls
+
+# Figures and docs (paper-related)
+figures/
+docs/
+arxiv_submission/
+bibliography_audit/
+bibliography_verification/
+
+# External validation data
+data/external_validation/
+
+# Results non-JSON (figures, text outputs, tables)
+results/figures/
+results/*.md
+results/*.txt
+results/*.tex
+results/*.csv
+
+# Misc paper notes
+COMPREHENSIVE_RESPONSE_SUMMARY.md
+CRITIQUES.md
+REPRODUCIBILITY.md
+RESEARCH_PLAN.md
+reviewer_response.md
+reference_ledger.md
+verification_report.md
+generate_figures.py
+
+# Other PDFs
+*.pdf
+PROTAC_Degradability_Prediction.pdf

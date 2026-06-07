@@ -1,4 +1,0 @@
-Protein structures were obtained from the AlphaFold Protein Structure Database~\cite{jumper2021alphafold}.
-The PROTAC-8K dataset was obtained from Zenodo (doi:10.5281/zenodo.14715718).
-DepMap features were obtained from the Cancer Dependency Map portal.
-All computations were performed on a single NVIDIA GeForce RTX 2080 Ti GPU (11\,GB).
