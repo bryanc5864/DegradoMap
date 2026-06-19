@@ -2,7 +2,7 @@
 
 **Structure-Aware Prediction of PROTAC-Mediated Protein Degradability via Graph Neural Networks**
 
-Bryan Cheng · Austin Jin
+Bryan Cheng · Austin Jin · Jasper Zhang
 
 *Accepted at the 17th ACM Conference on Bioinformatics, Computational Biology, and Health Informatics (ACM BCB 2026)*
 
@@ -290,7 +290,7 @@ DegradoMap/
 ```bibtex
 @inproceedings{cheng2026degradomap,
   title     = {Structure-Aware Prediction of {PROTAC}-Mediated Protein Degradability via Graph Neural Networks},
-  author    = {Cheng, Bryan and Jin, Austin},
+  author    = {Cheng, Bryan and Jin, Austin and Zhang, Jasper},
   booktitle = {Proceedings of the 17th ACM Conference on Bioinformatics, Computational Biology, and Health Informatics},
   series    = {ACM BCB '26},
   year      = {2026},
@@ -303,7 +303,7 @@ DegradoMap/
 
 MIT License
 
-Copyright (c) 2026 Bryan Cheng, Austin Jin
+Copyright (c) 2026 Bryan Cheng, Austin Jin, Jasper Zhang
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
