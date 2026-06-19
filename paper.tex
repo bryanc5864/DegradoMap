@@ -19,6 +19,7 @@
 % \usepackage{algorithm}  % commented out - not used
 % \usepackage{algorithmic}
 \usepackage{balance}
+\usepackage{placeins}
 
 % Slightly relax list spacing to fill pages
 \setlist{topsep=2pt,itemsep=1pt,leftmargin=*}
@@ -161,7 +162,7 @@ MAPD~\cite{zhang2022mapd} predicts degradation tractability from protein-intrins
 DegradeMaster~\cite{liu2025degrademaster} achieves 0.856 AUROC using full PROTAC molecular descriptors alongside target features, representing the state-of-the-art for PROTAC optimization but addressing a fundamentally different problem than target selection.
 \ours{} uniquely combines structural awareness with minimal input requirements, filling the gap between sequence-only assessment (MAPD) and full-PROTAC optimization (DeepPROTACs, DegradeMaster).
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{Input modality comparison of PROTAC prediction methods. \ours{} requires only protein structure and E3 identity, enabling use before PROTAC synthesis.}
 \label{tab:positioning}
@@ -208,6 +209,14 @@ This motivates our structure-first approach; natural ubiquitination data could p
 %  3. METHODS
 % ================================================================
 
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig1_architecture.pdf}
+\Description{Block diagram showing DegradoMap architecture with four modules: SUG encoder with lysine-weighted pooling, E3 compatibility cross-attention, cellular context encoder, and gated fusion producing binary and continuous predictions.}
+\caption{Architecture of \ours{}. Module~A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module~B's cross-attention with E3 ligase embeddings. Module~C encodes cellular context from DepMap features. Module~D fuses all representations through learned gating and produces binary degradability ($\hat{y}_{\text{bin}}$) and continuous efficiency ($\hat{y}_{\text{cont}}$) predictions.}
+\label{fig:architecture}
+\end{figure*}
+
 \section{Methods}
 
 \subsection{Problem Formulation}
@@ -223,14 +232,6 @@ The protein graph is constructed as a radius graph with cutoff $r = 8$\,\AA{}: $
 This captures local tertiary structure contacts, surface accessibility patterns, and potential protein-protein interaction interfaces relevant to ternary complex formation.
 
 Figure~\ref{fig:architecture} illustrates the overall architecture.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.85\textwidth]{fig1_architecture.pdf}
-\Description{Block diagram showing DegradoMap architecture with four modules: SUG encoder with lysine-weighted pooling, E3 compatibility cross-attention, cellular context encoder, and gated fusion producing binary and continuous predictions.}
-\caption{Architecture of \ours{}. Module~A (SUG) encodes the protein structure graph with lysine-weighted pooling. Its output serves as the query for Module~B's cross-attention with E3 ligase embeddings. Module~C encodes cellular context from DepMap features. Module~D fuses all representations through learned gating and produces binary degradability ($\hat{y}_{\text{bin}}$) and continuous efficiency ($\hat{y}_{\text{cont}}$) predictions.}
-\label{fig:architecture}
-\end{figure*}
 
 \subsection{Module A: Structure--Ubiquitination Graph (SUG)}
 \label{sec:sug}
@@ -362,7 +363,7 @@ We use the PROTAC-8K dataset~\cite{liu2025degrademaster}, curated from PROTAC-DB
 Table~\ref{tab:dataset} summarizes the dataset statistics.
 Degradation labels are derived from experimental DC$_{50}$ and D$_{\text{max}}$ measurements: a sample is labeled positive if DC$_{50} < 1$\,$\mu$M and D$_{\text{max}} > 50\%$, and negative otherwise.
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{PROTAC-8K dataset statistics. The dataset is dominated by two E3 ligases (CRBN, VHL), reflecting the current state of PROTAC research.}
 \label{tab:dataset}
@@ -391,7 +392,7 @@ We obtained AlphaFold-predicted structures~\cite{jumper2021alphafold} (v6 API) f
 Three non-human proteins were unavailable: P03436 (Influenza A), P0DTD1 (SARS-CoV-2), and P36969.
 Each residue is represented by the 1,285-dimensional feature vector described in Table~\ref{tab:nodefeats_main} (or 28-dimensional when ESM-2 embeddings are unavailable, using amino acid one-hot encoding as a fallback).
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{Node feature specification (1,285-dim). Without ESM-2, uses AA one-hot (28-dim).}
 \label{tab:nodefeats_main}
@@ -439,6 +440,7 @@ We report 95\% bootstrap confidence intervals (1,000 iterations) for all primary
 %  4. RESULTS
 % ================================================================
 
+\FloatBarrier
 \section{Results}
 
 \subsection{Main Results}
@@ -451,7 +453,7 @@ These constraints---limited diversity and E3 imbalance---fundamentally bound gen
 Table~\ref{tab:main} presents \ours{}'s performance across three evaluation splits given these constraints.
 The improved model (1,285-dim features with ESM-2) reports multi-seed validated results on the target-unseen split; E3-unseen and random results are from the baseline architecture (28-dim features) with 95\% bootstrap confidence intervals.
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{Test performance of \ours{}. Target-unseen: 3-seed (42, 123, 456) and 6-seed (42--1213) results for the improved model; E3-unseen and random: baseline architecture with bootstrap CIs. Both 3-seed and 6-seed means are reported to show variance in favorable vs.\ extended evaluation.}
 \label{tab:main}
@@ -475,7 +477,7 @@ The best seed (0.7449, +23\% over GB) reflects favorable initialization and shou
 The baseline model achieves 0.657 \ci{0.611}{0.712}; E3-unseen (0.811) demonstrates CRBN$\to$VHL transfer.
 Figure~\ref{fig:main_results} compares all models; variance analysis and rare E3 performance are in Section~\ref{sec:multiseed}.
 
-\begin{figure}[t]
+\begin{figure}[!h]
 \centering
 \includegraphics[width=\columnwidth]{fig2_main_results.pdf}
 \Description{Grouped bar chart comparing AUROC across evaluation splits for DegradoMap, SchNet, EGNN, Gradient Boosting, Random Forest, MLP, and Logistic Regression with error bars.}
@@ -491,7 +493,7 @@ We compare against two categories of baselines: GNN architectures applied to pro
 Table~\ref{tab:gnn_baselines} compares \ours{} against SchNet~\cite{schutt2017schnet}, EGNN~\cite{satorras2021egnn}, and an E(3)-equivariant variant.
 Results over three seeds report mean\,\spm{std}.
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{GNN baseline comparison (AUROC). Multi-seed results reported as mean\,\spm{std}. Best per-split in \textbf{bold}. All models use C$\alpha$ radius graphs.}
 \label{tab:gnn_baselines}
@@ -521,7 +523,7 @@ The high variance of EGNN on target-unseen (0.518\,\spm{0.11}) further indicates
 \paragraph{ML baselines.}
 We also compare against Gradient Boosting, Random Forest, MLP, and Logistic Regression using 18 hand-crafted protein features (size, lysine count/fraction, pLDDT/SASA/disorder statistics, radius of gyration) plus 11-dim E3 one-hot encoding (Table~\ref{tab:ml_baselines}).
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{ML baseline comparison (AUROC). Baselines use 18 hand-crafted protein features + E3 one-hot encoding.}
 \label{tab:ml_baselines}
@@ -554,7 +556,7 @@ We discuss possible explanations in Section~\ref{sec:fixes}.
 
 To quantify each module's contribution, we evaluate configurations with subsets of modules active, using consistent hyperparameters (Table~\ref{tab:module_ablation}).
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{Module ablation (AUROC). All configurations use identical default hyperparameters (LR=$10^{-3}$) for fair comparison.$^\dagger$}
 \vspace{-2pt}
@@ -582,7 +584,7 @@ Key findings: (1)~The \textbf{SUG module is the primary driver} of prediction, a
 (4)~The cellular context module provides additional gains on the random (+0.033) and E3-unseen (+0.005) splits, with diminishing marginal returns.
 Figure~\ref{fig:ablation} presents the full ablation landscape, showing the effect of each configuration on target-unseen AUROC relative to the default baseline.
 
-\begin{figure}[t]
+\begin{figure}[!h]
 \centering
 \includegraphics[width=\columnwidth]{fig7_ablation_lollipop.pdf}
 \Description{Horizontal lollipop chart showing the effect of each ablation configuration on target-unseen AUROC, with stems connecting dots to the default baseline.}
@@ -596,7 +598,7 @@ Figure~\ref{fig:ablation} presents the full ablation landscape, showing the effe
 Beyond binary classification, we evaluate \ours{}'s ability to recommend which E3 ligase to use for a given target.
 For 50 test proteins with known E3 preferences, we rank all E3 ligases by predicted degradability and evaluate ranking quality (Table~\ref{tab:e3_rec}).
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{E3 ligase recommendation performance ($n = 50$ test proteins).}
 \label{tab:e3_rec}
@@ -644,7 +646,7 @@ The original 3-seed mean (0.646) was moderately favorable; additional seeds redu
 Figure~\ref{fig:multiseed_variance} visualizes all six seeds.
 \textbf{Ensembling across $\geq$6 seeds is required for reliable deployment}: individual seeds span 0.25 AUROC (0.502--0.745) and may underperform simple baselines.
 
-\begin{figure}[t]
+\begin{figure}[!h]
 \centering
 \includegraphics[width=\columnwidth]{multiseed_variance.pdf}
 \Description{Bar chart showing AUROC for three seeds (42, 123, 456) with mean line at 0.646 and GB baseline at 0.607.}
@@ -668,7 +670,7 @@ VHL-mediated degradation involves distinct steric constraints that may require d
 For rare E3 ligases (cIAP1, DCAF16, MDM2, etc.), sample counts are too small ($n{<}50$) for reliable evaluation.
 Table~\ref{tab:per_e3_breakdown} and Figure~\ref{fig:per_e3} detail the per-E3 performance breakdown.
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{Per-E3 ligase performance on target-unseen split. VHL performance is below random chance (0.5), revealing a fundamental limitation in cross-E3 generalization.}
 \label{tab:per_e3_breakdown}
@@ -685,7 +687,7 @@ cIAP1 & 8 & 2 & 0.417 & 0.250 & 0.000 & 0.750 & \textcolor{red}{$\downarrow$} \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]
+\begin{figure}[!h]
 \centering
 \includegraphics[width=\columnwidth]{per_e3_breakdown.pdf}
 \Description{Bar chart showing AUROC by E3 ligase. CRBN shows good performance (0.758), while VHL is below random chance (0.396).}
@@ -727,7 +729,7 @@ However, this represents a single successful case; systematic validation across 
 Beyond AUROC, we assess whether the model's confidence scores are reliable---a critical consideration for practical deployment.
 Table~\ref{tab:calibration} presents calibration metrics across evaluation splits.
 
-\begin{table}[t]
+\begin{table}[!ht]
 \centering
 \caption{Calibration metrics across evaluation splits. ECE $<$ 0.05 indicates excellent calibration; MCE shows worst-case bin error.}
 \label{tab:calibration}
@@ -753,6 +755,7 @@ Figure~\ref{fig:calibration} (Appendix) shows the reliability diagram.
 %  5. DISCUSSION
 % ================================================================
 
+\FloatBarrier
 \section{Discussion}
 \label{sec:discussion}
 
@@ -790,6 +793,7 @@ However, it also indicates that our current feature design is not optimal; futur
 %  6. CONCLUSION
 % ================================================================
 
+\FloatBarrier
 \section{Conclusion}
 \label{sec:conclusion}
 
