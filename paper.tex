@@ -554,7 +554,7 @@ To quantify each module's contribution, we evaluate configurations with subsets 
 \centering
 \caption{Module ablation (AUROC). All configurations use identical default hyperparameters (LR=$10^{-3}$) for fair comparison.$^\dagger$}
 \vspace{-2pt}
-\raggedright{\scriptsize $^\dagger$Main results (Table~\ref{tab:main}) use tuned LR=$5\times10^{-4}$, which improves target-unseen AUROC from 0.540 to 0.657 (see Table~\ref{tab:train_ablation}).}
+\raggedright{\scriptsize $^\dagger$Main results (Table~\ref{tab:main}) use tuned LR=$5\times10^{-4}$, which improves target-unseen AUROC from 0.540 to 0.657.}
 \label{tab:module_ablation}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -570,7 +570,7 @@ Full \ours{} (A+B+C+D) & 0.540 & \textbf{0.811} & \textbf{0.774} \\
 \end{tabular}
 \end{table}
 
-Note that the target-unseen AUROC of 0.540 in Table~\ref{tab:module_ablation} differs from the 0.657 reported in Table~\ref{tab:main} because ablations use default hyperparameters (LR=$10^{-3}$) for fair comparison; the main result uses tuned LR=$5\times10^{-4}$ (see Section~\ref{app:ablations}, Table~\ref{tab:train_ablation}).
+Note that the target-unseen AUROC of 0.540 in Table~\ref{tab:module_ablation} differs from the 0.657 reported in Table~\ref{tab:main} because ablations use default hyperparameters (LR=$10^{-3}$) for fair comparison; the main result uses tuned LR=$5\times10^{-4}$.
 
 Key findings: (1)~The \textbf{SUG module is the primary driver} of prediction, achieving 0.536 target-unseen AUROC alone---comparable to the full model (0.540) on this split.
 (2)~The E3-only model performs at chance ($\sim$0.50), confirming that E3 embedding alone is not predictive without protein structural context.
@@ -694,9 +694,9 @@ cIAP1 & 8 & 2 & 0.417 & 0.250 & 0.000 & 0.750 & \textcolor{red}{$\downarrow$} \\
 Size normalization ($1/\sqrt{N}$) and per-protein lysine softmax improved target-unseen AUROC from 0.529 to 0.657 (+24\%) while leaving random-split unchanged, confirming these addressed protein memorization shortcuts.
 
 \paragraph{Reconciling performance estimates.}
-We report three protocols: (1)~multi-seed single split (0.646\,\spm{0.124}), (2)~baseline single-seed (0.657), and (3)~5-fold CV (0.565\,\spm{0.052}, Table~\ref{tab:cv}).
+We report three protocols: (1)~multi-seed single split (0.646\,\spm{0.124}), (2)~baseline single-seed (0.657), and (3)~5-fold CV (0.565\,\spm{0.052}).
 CV is lower due to reduced per-fold training data; the 6-seed mean (0.603) is most conservative and recommended for citation.
-Additional analyses (5-fold CV details, ablation studies) are in the Appendix.
+Additional analyses including 5-fold CV and training ablation studies are available in the supplementary material.
 
 \subsection{Case Study: BRD4 Degradability}
 \label{sec:case_study}
@@ -742,7 +742,7 @@ random & 466 & 0.165 & 0.379 & 0.219 & 0.628 \\
 The target-unseen ECE of 0.029 indicates \textbf{excellent calibration}~\cite{guo2017calibration}: when the model predicts probability 0.7, ${\sim}70\%$ of predictions are true degraders, enabling principled threshold-based screening.
 This calibration quality means \ours{} provides \emph{reliable confidence estimates} even where discriminative performance is imperfect.
 In contrast, the random split shows poor calibration (ECE = 0.165), reinforcing the importance of target-unseen evaluation.
-Figure~\ref{fig:calibration} (Appendix) shows the reliability diagram.
+The reliability diagram confirms well-separated probability bins with minimal deviation from the diagonal.
 
 
 % ================================================================
@@ -766,7 +766,7 @@ However, VHL-targeted proteins fail catastrophically on target-unseen evaluation
 Rare E3 ligases lack sufficient data for reliable evaluation.
 
 \paragraph{The lysine indicator paradox.}
-Feature ablation reveals that removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101 (Table~\ref{tab:feat_ablation}; Figure~\ref{fig:lysine_paradox} in Appendix).
+Feature ablation reveals that removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101.
 This contradicts the intuitive expectation that marking ubiquitination sites should help.
 We propose three explanations:
 (1)~The lysine-weighted pooling mechanism (Eq.~\ref{eq:lyspool}) already encodes lysine information architecturally, making the node feature redundant and potentially causing overfitting to training-set lysine patterns.
@@ -941,11 +941,12 @@ V.~Gligorijevi\'{c}, P.~D.~Renfrew, T.~Kosciolek, et~al.
 
 \end{thebibliography}
 
-\clearpage
+\end{document}
 % ================================================================
-%  APPENDIX (Supplementary Material)
+%  APPENDIX (Supplementary Material) — removed for camera-ready
 % ================================================================
 
+\iffalse
 \appendix
 
 \section{Extended Experimental Results}
@@ -1625,4 +1626,5 @@ EGNN shows particularly high variance on target-unseen (0.453--0.641), with seed
 This instability suggests that EGNN's equivariant coordinate updates may be sensitive to initialization in the low-data regime.
 
 \balance
-\end{document}
+\fi
+% (end suppressed appendix)
