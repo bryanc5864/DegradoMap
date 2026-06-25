@@ -1,7 +1,7 @@
 % ACM BCB 2026 Submission
 % Compile: pdflatex paper.tex && pdflatex paper.tex (no bibtex needed; uses thebibliography)
 \documentclass[sigconf]{acmart}
-\graphicspath{{figures/}}
+\graphicspath{{figures/}{./}}
 
 % ---- Uncomment for double-blind review submission ----
 % \settopmatter{printacmref=false}
@@ -21,8 +21,15 @@
 \usepackage{balance}
 \usepackage{placeins}
 
-% Slightly relax list spacing to fill pages
-\setlist{topsep=2pt,itemsep=1pt,leftmargin=*}
+% Tighten list spacing for page limit
+\setlist{topsep=1pt,itemsep=0pt,leftmargin=*}
+
+% Tighten float/caption spacing for page limit
+\addtolength{\textfloatsep}{-8pt}
+\addtolength{\intextsep}{-6pt}
+\addtolength{\floatsep}{-6pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{-4pt}
 
 % Custom commands
 \newcommand{\ours}{\textsc{DegradoMap}}
@@ -642,7 +649,7 @@ Figure~\ref{fig:multiseed_variance} visualizes all six seeds.
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=\columnwidth]{multiseed_variance.pdf}
+\includegraphics[width=0.88\columnwidth]{multiseed_variance.pdf}
 \Description{Bar chart showing AUROC for three seeds (42, 123, 456) with mean line at 0.646 and GB baseline at 0.607.}
 \caption{Multi-seed validation (6 seeds) reveals high variance. Original 3 seeds (solid, mean 0.646) vs.\ additional 3 seeds (hatched, mean 0.560). Six-seed mean 0.603\,\spm{0.097} is marginally below GB baseline (0.607), bootstrap p = 0.556 (not significant). Individual seeds span 0.50--0.75; ensembling across $\geq$6 seeds required for reliable deployment.}
 \label{fig:multiseed_variance}
@@ -749,7 +756,6 @@ The reliability diagram confirms well-separated probability bins with minimal de
 %  5. DISCUSSION
 % ================================================================
 
-\FloatBarrier
 \section{Discussion}
 \label{sec:discussion}
 
@@ -757,37 +763,27 @@ The 6-seed mean of 0.603\,\spm{0.097} reveals fundamental limits of structure-ba
 The paradigms are complementary: \ours{} screens targets \emph{before} synthesis; full-information methods optimize \emph{existing} designs.
 
 \paragraph{Honest performance assessment.}
-We emphasize that the 6-seed mean (0.603) is not statistically superior to gradient boosting (0.607, p = 0.556).
-The original 3-seed estimate (0.646) was moderately favorable; additional seeds yielded lower performance (0.657, 0.520, 0.502).
-The model's primary contribution may not be raw AUROC but rather: (1)~structural \emph{interpretability} via lysine attention weights (Section~\ref{sec:case_study}), (2)~E3 recommendation capability (74\% Hit@3), and (3)~well-calibrated confidence scores enabling reliable thresholding.
-
-The CRBN$\to$VHL E3-unseen performance (0.811 AUROC) demonstrates successful cross-E3 transfer at the \emph{ligase level}.
-However, VHL-targeted proteins fail catastrophically on target-unseen evaluation (0.396 AUROC, below random), indicating that E3 ligase transfer and target protein generalization are distinct challenges.
-Rare E3 ligases lack sufficient data for reliable evaluation.
+The 6-seed mean (0.603, p = 0.556 vs.\ GB) is not statistically superior to gradient boosting; the 3-seed estimate (0.646) was moderately favorable but additional seeds reduced this.
+The model's value lies in complementary capabilities: structural \emph{interpretability} (lysine attention), E3 recommendation (74\% Hit@3), and calibrated confidence scores (ECE = 0.029).
+CRBN$\to$VHL E3-unseen transfer (0.811 AUROC) demonstrates cross-ligase generalization, but VHL-targeted proteins fail on target-unseen evaluation (0.396 AUROC), showing that ligase and target generalization are distinct challenges.
 
 \paragraph{The lysine indicator paradox.}
 Feature ablation reveals that removing the lysine indicator from node features \emph{improves} target-unseen AUROC by +0.101.
 This contradicts the intuitive expectation that marking ubiquitination sites should help.
-We propose three explanations:
-(1)~The lysine-weighted pooling mechanism (Eq.~\ref{eq:lyspool}) already encodes lysine information architecturally, making the node feature redundant and potentially causing overfitting to training-set lysine patterns.
-(2)~The model may learn that \emph{not all lysines are equal}---the binary indicator oversimplifies, while the pooling weights learn to discriminate based on structural context (SASA, disorder, local geometry).
-(3)~The indicator may introduce a confounding bias: training targets have specific lysine distributions that don't generalize to unseen proteins.
-This result suggests that \textbf{architectural inductive biases (lysine pooling) are more effective than explicit feature annotation for this task}.
-However, it also indicates that our current feature design is not optimal; future work should explore learned lysine representations or remove the indicator entirely.
+The lysine-weighted pooling (Eq.~\ref{eq:lyspool}) already encodes lysine information architecturally, making the node feature redundant and potentially causing overfitting to training-set lysine patterns.
+This suggests that \textbf{architectural inductive biases are more effective than explicit feature annotation for this task}; future work should explore learned lysine representations.
 
 \paragraph{Limitations.}
-(1)~\textbf{Small dataset}: 155 proteins limit generalization and cause high seed variance (std = 0.097--0.124).
-(2)~\textbf{E3 imbalance}: CRBN/VHL dominate (97\%); VHL-specific failure (0.396 AUROC) is fundamental.
+(1)~\textbf{Small dataset}: 155 proteins cause high seed variance (std = 0.097--0.124) and limit generalization.
+(2)~\textbf{E3 imbalance}: CRBN/VHL dominate (97\%); VHL failure (0.396 AUROC) is fundamental.
 (3)~\textbf{No statistical advantage}: 6-seed mean (0.603) does not exceed gradient boosting (0.607, p = 0.556); ensembling required.
-(4)~\textbf{Validation-test mismatch}: Validation AUROC does not predict target-unseen performance, biasing hyperparameter selection.
-(5)~\textbf{No structural or external validation}: Static AlphaFold structures only; PROTAC-8K is the sole benchmark.
+(4)~\textbf{Static structures only}: AlphaFold snapshots; PROTAC-8K is the sole benchmark.
 
 
 % ================================================================
 %  6. CONCLUSION
 % ================================================================
 
-\FloatBarrier
 \section{Conclusion}
 \label{sec:conclusion}
 
@@ -795,9 +791,6 @@ However, it also indicates that our current feature design is not optimal; futur
 On target-unseen evaluation, the 3-seed mean is 0.646\,\spm{0.124} (best: 0.7449) and the 6-seed mean is 0.603\,\spm{0.097}; neither is statistically superior to gradient boosting (0.607), though the model provides complementary value through E3 recommendation (74\% Hit@3), CRBN$\to$VHL transfer (0.811 AUROC), and well-calibrated confidence scores (ECE = 0.029).
 VHL-targeted proteins fail below random (0.396 AUROC) on target-unseen evaluation, a key limitation requiring further investigation.
 Two architectural findings carry broader implications: invariant architectures outperform equivariant ones for scalar prediction, and ESM-2 embeddings require task-specific regularization.
-
-Code and models: \url{https://github.com/bryanc5864/DegradoMap}.
-Data: \url{https://zenodo.org/records/14715718}.
 
 
 % ================================================================
@@ -809,6 +802,7 @@ Protein structures were obtained from the AlphaFold Protein Structure Database~\
 The PROTAC-8K dataset was obtained from Zenodo (doi:10.5281/zenodo.14715718).
 DepMap features were obtained from the Cancer Dependency Map portal.
 All computations were performed on a single NVIDIA GeForce RTX 2080 Ti GPU (11\,GB).
+Code and models: \url{https://github.com/bryanc5864/DegradoMap}.
 \end{acks}
 
 
@@ -817,7 +811,12 @@ All computations were performed on a single NVIDIA GeForce RTX 2080 Ti GPU (11\,
 % ================================================================
 
 % \bibliographystyle{ACM-Reference-Format} % unused with thebibliography
+\vspace{-4pt}
+{\footnotesize
 \begin{thebibliography}{27}
+\setlength{\itemsep}{-3pt}
+\setlength{\parsep}{0pt}
+\setlength{\topsep}{0pt}
 
 \bibitem{bekes2022protac}
 M.~B\'{e}k\'{e}s, D.~R.~Langley, and C.~M.~Crews.
@@ -940,6 +939,7 @@ V.~Gligorijevi\'{c}, P.~D.~Renfrew, T.~Kosciolek, et~al.
 \newblock {\em Nature Communications}, 12:3168, 2021.
 
 \end{thebibliography}
+} % end \small
 
 \end{document}
 % ================================================================
