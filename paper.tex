@@ -21,16 +21,6 @@
 \usepackage{balance}
 \usepackage{placeins}
 
-% Tighten list spacing for page limit
-\setlist{topsep=1pt,itemsep=0pt,leftmargin=*}
-
-% Tighten float/caption spacing for page limit
-\addtolength{\textfloatsep}{-8pt}
-\addtolength{\intextsep}{-6pt}
-\addtolength{\floatsep}{-6pt}
-\setlength{\abovecaptionskip}{4pt}
-\setlength{\belowcaptionskip}{-4pt}
-
 % Custom commands
 \newcommand{\ours}{\textsc{DegradoMap}}
 \newcommand{\ci}[2]{{\small[#1, #2]}}
@@ -661,15 +651,10 @@ The E3-unseen evaluation (CRBN$\to$VHL: 0.811 AUROC) appears contradictory at fi
 These evaluate different generalization axes: E3-unseen tests whether structural features learned from CRBN data predict VHL degradation patterns; target-unseen tests whether VHL-specific patterns generalize to \emph{new, unseen target proteins}.
 
 \paragraph{Root cause analysis: why does VHL fail?}
-To understand the VHL failure, we analyzed the PROTAC-8K dataset.
-VHL-targeted proteins have a similar positive rate (36.9\%) to CRBN proteins (38.4\%), ruling out class imbalance as the cause.
-The dataset contains 91 unique VHL-targeted proteins vs.\ 125 CRBN-targeted proteins---comparable diversity.
-Instead, the failure likely reflects structural heterogeneity: VHL-targeted proteins span diverse protein families (kinases, transcription factors, epigenetic regulators, nuclear receptors) with varying size and surface topology, making structural pattern transfer harder across unseen proteins.
-Additionally, CRBN's substrate recognition relies primarily on surface-exposed lysines adjacent to the recruited E3 binding interface---a geometric constraint that our lysine-weighted pooling explicitly encodes.
-VHL-mediated degradation involves distinct steric constraints that may require different structural features not currently captured.
-\textbf{This E3-specificity of structural predictors is a key limitation}: practitioners should expect substantially lower performance than the overall 0.646 mean when deploying on VHL-targeted proteins, and near-random performance for rare E3s.
-For rare E3 ligases (cIAP1, DCAF16, MDM2, etc.), sample counts are too small ($n{<}50$) for reliable evaluation.
-Table~\ref{tab:per_e3_breakdown} and Figure~\ref{fig:per_e3} detail the per-E3 performance breakdown.
+VHL-targeted proteins have similar positive rates to CRBN (36.9\% vs.\ 38.4\%), ruling out class imbalance.
+The failure likely reflects structural heterogeneity: VHL substrates span diverse families with varying topology, while CRBN recognition relies on surface-exposed lysines adjacent to the E3 interface---a constraint our lysine pooling explicitly encodes.
+\textbf{This E3-specificity is a key limitation}: practitioners should expect near-random performance for VHL-targeted and rare E3 proteins.
+Table~\ref{tab:per_e3_breakdown} details the per-E3 breakdown.
 
 \begin{table}[!ht]
 \centering
@@ -688,14 +673,6 @@ cIAP1 & 8 & 2 & 0.417 & 0.250 & 0.000 & 0.750 & \textcolor{red}{$\downarrow$} \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[!h]
-\centering
-\includegraphics[width=\columnwidth]{per_e3_breakdown.pdf}
-\Description{Bar chart showing AUROC by E3 ligase. CRBN shows good performance (0.758), while VHL is below random chance (0.396).}
-\caption{Per-E3 performance breakdown reveals VHL limitation. CRBN targets achieve good performance (0.758), but VHL targets fall below random chance (0.396), indicating E3-specific patterns that don't transfer across target proteins.}
-\label{fig:per_e3}
-\end{figure}
-
 \paragraph{Architectural fixes.}
 \label{sec:fixes}
 Size normalization ($1/\sqrt{N}$) and per-protein lysine softmax improved target-unseen AUROC from 0.529 to 0.657 (+24\%) while leaving random-split unchanged, confirming these addressed protein memorization shortcuts.
@@ -708,21 +685,10 @@ Additional analyses including 5-fold CV and training ablation studies are availa
 \subsection{Case Study: BRD4 Degradability}
 \label{sec:case_study}
 
-To validate the biological relevance of lysine-weighted pooling, we analyze BRD4 (UniProt: O60885), a well-studied PROTAC target with multiple successful CRBN-based degraders~\cite{zengerle2015selective}.
-\ours{} predicts high degradability for BRD4 with CRBN (score: 0.87).
-Analysis of lysine attention weights from the pooling mechanism (Eq.~\ref{eq:lyspool}) reveals three high-scoring lysines:
-
-\begin{itemize}[topsep=3pt,itemsep=1pt]
-\item \textbf{K374} (attention weight: 0.12, SASA: 94~\AA$^2$): Located in a disordered linker region between bromodomains BD1 and BD2, highly solvent-exposed.
-\item \textbf{K311} (attention weight: 0.09, SASA: 112~\AA$^2$): Surface-exposed on the BD1 domain.
-\item \textbf{K434} (attention weight: 0.08, SASA: 88~\AA$^2$): Near the BD2 domain C-terminus.
-\end{itemize}
-
-\textbf{Literature validation:}
-JQ1-based CRBN PROTACs (e.g., dBET1, ARV-825) successfully degrade BRD4 in cells.
-Mass spectrometry studies identify K374 as a major ubiquitination site following PROTAC treatment~\cite{zengerle2015selective}.
-The model's identification of K374 as the top-weighted lysine aligns with experimental evidence, supporting the lysine-pooling mechanism's biological relevance.
-However, this represents a single successful case; systematic validation across more targets would strengthen confidence in the mechanism.
+To validate biological relevance, we analyze BRD4 (UniProt: O60885), a well-characterized CRBN PROTAC target~\cite{zengerle2015selective}.
+\ours{} predicts high degradability (score: 0.87) and assigns top attention weights to K374 (weight: 0.12, SASA: 94\,\AA$^2$, inter-bromodomain linker), K311 (0.09), and K434 (0.08)---all surface-exposed residues.
+Mass spectrometry identifies K374 as a major ubiquitination site following PROTAC treatment~\cite{zengerle2015selective}, corroborating the model's ranking.
+This single case supports the biological grounding of lysine-weighted pooling; systematic multi-target validation remains future work.
 
 \subsection{Calibration and Reliability}
 \label{sec:calibration}
@@ -811,12 +777,7 @@ Code and models: \url{https://github.com/bryanc5864/DegradoMap}.
 % ================================================================
 
 % \bibliographystyle{ACM-Reference-Format} % unused with thebibliography
-\vspace{-4pt}
-{\footnotesize
 \begin{thebibliography}{27}
-\setlength{\itemsep}{-3pt}
-\setlength{\parsep}{0pt}
-\setlength{\topsep}{0pt}
 
 \bibitem{bekes2022protac}
 M.~B\'{e}k\'{e}s, D.~R.~Langley, and C.~M.~Crews.
@@ -939,7 +900,6 @@ V.~Gligorijevi\'{c}, P.~D.~Renfrew, T.~Kosciolek, et~al.
 \newblock {\em Nature Communications}, 12:3168, 2021.
 
 \end{thebibliography}
-} % end \small
 
 \end{document}
 % ================================================================
